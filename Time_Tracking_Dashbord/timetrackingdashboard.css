@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: hsl(226, 43%, 10%);
+    font-family: "Rubik", serif;
+}
+.containerEl{
+    display: flex;
+    flex-direction: column;
+    width: 375px;
+    min-width: 320px;
+    gap: 20px;
+    margin: 20px;
+}
+/* styles for the owner/avatar*/
+.avatar{
+    background-color: hsl(246, 80%, 60%);
+    border-radius: 10px;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-weight: 300;
+}
+.avatar p{
+    color: hsl(236, 100%, 87%);
+}
+.avatar h1{
+    font-weight: 300;
+    color: white;
+}
+.avatar img{
+    height: 50px;
+    width: 50px;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+.first{
+    background-color: hsl(235, 46%, 20%);
+    border-radius: 10px;
+}
+.first .info p {
+	font-size: 18px;
+}
+.first .info h2 {
+	font-weight: 300;
+	font-size: 24px;
+}
+.first .time {
+	padding: 20px;
+	display: flex;
+	justify-content: space-around;
+	font-size: 18px;
+}
+.first .time button {
+    border: none;
+    background-color: hsl(235, 46%, 20%);
+    color: hsl(236, 100%, 87%);
+	cursor: pointer;
+    font-weight: 300;
+    font-family: "Rubik", serif;
+    font-size: 16px;
+}
+.first .time .active, .first .time button:hover {
+	color: white;
+}
+/* styles for the cards*/
+.cards{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.content{
+    background-color: hsl(235, 46%, 20%);
+    border-radius: 10px;
+}
+.content h3{
+    font-weight: 500;
+}
+.icon{
+	height: 40px;
+	overflow: hidden;
+	position: relative;
+}
+.icon img{
+    position: absolute;
+	right: 10px;
+    top: -10px;
+}
+.work, .play, .study, .exercise, .social, .selfcare{
+    color: white;
+    border-radius: 12px;
+}
+.box:hover .content {
+	background-color: hsl(236deg 41% 34%);
+    cursor: pointer;
+}
+.cards .content .up, .cards .content .down {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+    padding: 10px;
+}
+.cards .content h3 {
+	font-weight: 400;
+	text-transform: capitalize;
+}
+.cards .content img {
+	fill: #bbc0ff;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.cards .content svg:hover {
+	fill: white;
+}
+.times{
+    display: flex;
+    color: hsl(236, 100%, 87%);
+}
+
+.work{
+    background-color: hsl(15, 100%, 70%);
+}
+.play{
+    background-color: hsl(195, 74%, 62%);
+}
+.study{
+    background-color: hsl(348, 100%, 68%);
+}
+.exercise{
+    background-color: hsl(145, 58%, 55%);
+}
+.social{
+    background-color: hsl(264, 64%, 52%);
+}
+.selfcare{
+    background-color: hsl(43, 84%, 65%);
+}
+
+/* styles for larger screen */
+@media (min-width: 768px){
+    body{
+        height: 100vh;
+    }
+    .containerEl{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-content: center;
+    }
+    .cards{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        width: 700px;
+        height: 20em;
+    }
+    .avatar{
+        flex-direction: column;
+    }
+    .avatar > img{
+        align-self: flex-start;
+    }
+    .first{
+        width: 100%;
+        min-width: 200px;
+    }
+    .first .time{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    button{
+        line-height: 20px;
+    }
+    .avatar{
+        height: 70%;
+        padding: 10px;
+    }
+    .content{
+        position: relative;
+        height: 75%;
+        color: white;
+    }
+    .cards .content  .down {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .cards .content .up, .cards .content .down{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .down{
+        margin-top: -10px;
+    }
+    .down p{
+        font-size: 30px;
+        font-weight: 300;
+    }
+    .times{
+        display: flex;
+        font-size: 13px;
+    }
+    .times p{
+        font-size: 13px;
+    }
+}
