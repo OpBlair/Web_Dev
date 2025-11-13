@@ -1,0 +1,62 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+  }
+
+  body{
+    font-family: 'Outfit', sans-serif ;
+    background-color: hsl(212, 45%, 89%);
+    text-align: center;
+  }
+
+  .attribution { font-size: 11px; text-align: center; }
+  .attribution a { color: hsl(228, 45%, 44%); }
+  
+  .container{
+    background-color: white;
+    margin-top: 10%;
+    margin-right: 20%;
+    margin-bottom: 100px;
+    margin-left: 20%;
+    border-radius: 18px;
+    width: 300px;
+    height: 500px;
+    max-width: 375px;
+    position: absolute;
+  }
+  @media (min-width: 655px) {
+    .container{
+      max-width: 1440px;
+      margin-top: 80px;
+      margin-right: 20%;
+      margin-bottom: 100px;
+      margin-left: 40%;
+    }
+    
+  }
+
+  h4{
+    font-size: 20px;
+  }
+
+  .container h4{
+    padding: 20px
+  }
+
+  .container p{
+    padding: 0px 20px 10px 20px;
+    font-size: 15px;
+  }
+
+  .qr_container{
+    padding: 20px;
+    position: relative;
+  }
+  
+  .qr_image{
+    position:relative;
+    border-radius: 18px;
+    height: 50%;
+    width: 100%;
+  }
