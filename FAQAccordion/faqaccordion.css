@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Work Sans", sans-serif;
+    background-color: hsl(275, 100%, 97%);
+    margin: 0 auto;
+    color: hsl(292, 42%, 14%);
+}
+
+.image{
+    width: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+}
+
+img{
+    height: 50%;
+    width: 100%;
+    object-fit: cover;
+}
+
+section{
+    width: 50%;
+    max-width: 375px;
+    display: flex;
+    flex-direction: column;
+    float: center;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: hsl(0, 0%, 100%);
+    overflow: hidden;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.icon{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.header > h1{
+    font-size: calc(16px + 2em);
+    margin-left: 20px;
+}
+
+article >.header:first-child{
+    display: flex;
+    justify-content: space-between;
+}
+
+article h2{
+    font-size: small;
+    font-weight: 700;
+}
+
+article p{
+    display: none;
+    padding: 15px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: hsl(0, 0%, 50%);
+}
+
+article hr{
+    margin: 10px 0;
+    background-color: hsl(0, 0%, 50%);
+    height: 0.5px;
+    border: none;
+}
+
+h2:hover{
+    cursor: pointer;
+    
+    color: hsl(292, 16%, 49%);
+}
+
+@media(min-width: 768px){
+    section{
+        width: 80%;
+        max-width: 500px;
+    }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link rel="stylesheet" href="contactForm.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script defer src="contactForm.js"></script>
+  
+  <title>Frontend Mentor | Contact form</title>
+
+</head>
+<body>
+
+  <form action="" novalidate id="contactForm">
+    <h1>Contact Us</h1>
+
+    <fieldset class="name">
+      <fieldset>
+        <label for="firstname">First Name *</label>
+        <input class="input" type="text" id="firstname" name="firstname" autocomplete="firstname" required>
+        <P id="firstNameError">This field is required</P>
+      </fieldset>
+    
+      <fieldset>
+        <label for="lastname">Last Name *</label>
+        <input class="input" type="text" id="lastname" name="lastname" autocomplete="lastname" required>
+        <p id="lastNameError">This field is required</p> 
+      </fieldset>
+
+    </fieldset>
+
+    <label for="email">Email Address *</label>
+    <input class="input" type="email" id="email" name="email" required>
+    <p id="emailError">Please enter a valid email address</p>
+    <p id="emailRequiredError">This field is required</p>
+  
+
+    <label>Query Type *</label>
+    <fieldset class="queryType">
+      <fieldset class="query">
+        <input type="radio" id="general" name="queryType" value="general">
+        <label for="general">General Enquiry</label>
+      </fieldset>
+      <fieldset class="query">
+        <input type="radio" id="support" name="queryType" value="support">
+        <label for="support">Support Request</label>
+      </fieldset>  
+    </fieldset>
+    <p id="queryTypeError">Please select a query type</p>
+  
+    <label for="message">Message *</label>
+    <textarea id="message" name="message"></textarea>
+    <p id="messageError">This field is required</p>
+  
+    <fieldset class="confirm">
+      <input type="checkbox" id="confirm">
+      <label for="confirm">I consent to being contacted by the team *</label>
+      <p id="confirmError">To submit this form, please consent to being contacted</p>  
+    </fieldset>
+
+    <button id="submitBtn">Submit</button>
+  </form>
+  
+  <!--success message box-->
+  <div class="success" style="display: none;">
+    <div class="upper">
+      <img src="./assets/images/icon-success-check.svg">
+      <h3>Message Sent!</h3>
+    </div>
+    <p>Thanks for completing the form. We'll be in touch soon!</p>  
+  </div>
+  
+  </div>
+</body>
+</html>

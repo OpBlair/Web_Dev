@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple bookmark manager to organize your favorite websites.">
+  <meta name="keywords" content="bookmark, manager, websites, browser extension">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <script defer src="bookmarkLandingPage.js"></script>
+  
+  <title>Frontend Mentor | Bookmark landing page</title>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+  <header class="bg-white shadow">
+    <nav class="container mx-auto flex items-center justify-between py-6 px-4">
+      <img src="./images/logo-bookmark.svg" alt="Bookmark logo" width="150" height="50" class="w-32">
+      <ul class="flex items-center space-x-6">
+        <li><a href="#" class="hover:text-red-500">Features</a></li>
+        <li><a href="#" class="hover:text-red-500">Pricing</a></li>
+        <li><a href="#" class="hover:text-red-500">Contact</a></li>
+        <li><button type="button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Login</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container mx-auto flex flex-col md:flex-row items-center py-12 px-4">
+      <div class="hero-image w-full md:w-1/2 mb-8 md:mb-0">
+        <img src="./images/illustration-hero.svg" alt="Feature illustration" width="600" height="400" class="w-full">
+      </div>
+      <div class="hero-content w-full md:w-1/2 text-center md:text-left">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">A Simple Bookmark Manager</h1>
+        <p class="text-gray-600 mb-6">
+          A clean and simple interface to organize your favourite websites. Open a new 
+          browser tab and see your sites load instantly. Try it for free.
+        </p>
+        <div class="hero-buttons flex justify-center md:justify-start space-x-4">
+          <button type="button" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Get it on Chrome</button>
+          <button type="button" class="bg-gray-200 text-gray-800 px-6 py-3 rounded hover:bg-gray-300">Get it on Firefox</button>
+        </div>
+      </div>
+    </section>
+
+    <article class="container mx-auto text-center py-12 px-4">
+      <h2 class="text-3xl font-bold mb-4">Features</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Our aim is to make it quick and easy for you to access your favourite websites. 
+        Your bookmarks sync between your devices so you can access them on the go.
+      </p>
+    </article>
+
+    <div class="feature-links container mx-auto text-center">
+      <ul class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8">
+        <li><a href="#" class="text-gray-800 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-2">Simple Bookmarking</a></li>
+        <li><a href="#" class="text-gray-800 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-2">Speedy Searching</a></li>
+        <li><a href="#" class="text-gray-800 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-2">Easy Sharing</a></li>
+      </ul>
+    </div>
+
+    <div class="features container mx-auto text-center py-12 px-4">
+      <div class="image mb-8">
+        <img id="slide-image" src="" alt="Feature illustration" width="600" height="400" class="w-full mx-auto">
+      </div>
+      <h2 id="slide-heading" class="text-2xl font-bold mb-4"></h2>
+      <p id="slide-description" class="text-gray-600 max-w-2xl mx-auto"></p>
+      <button type="button" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 mt-4" style="display: none;">More Info</button>
+    </div>
+
+    <section class="extension-download container mx-auto text-center py-12 px-4">
+      <div class="description mb-12">
+        <h2 class="text-3xl font-bold mb-4">Download the extension</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          We’ve got more browsers in the pipeline. Please do let us know if you’ve 
+          got a favourite you’d like us to prioritize.
+        </p>
+      </div>
+      <div class="browsers grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="card bg-white shadow-lg p-6 rounded-lg">
+          <div class="browser-icon mb-4">
+            <img src="./images/logo-chrome.svg" alt="Chrome logo" width="100" height="100" class="mx-auto">
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Add to Chrome</h3>
+          <p class="text-gray-600 mb-4">Minimum version 62</p>
+          <img src="./images/bg-dots.svg" alt="" width="200" height="10" class="mx-auto mb-4">
+          <button type="button" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Add & Install Extension</button>
+        </div>
+        <div class="card bg-white shadow-lg p-6 rounded-lg md:mt-8">
+          <div class="browser-icon mb-4">
+            <img src="./images/logo-firefox.svg" alt="Firefox logo" width="100" height="100" class="mx-auto">
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Add to Firefox</h3>
+          <p class="text-gray-600 mb-4">Minimum version 55</p>
+          <img src="./images/bg-dots.svg" alt="" width="200" height="10" class="mx-auto mb-4">
+          <button type="button" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Add & Install Extension</button>
+        </div>
+        <div class="card bg-white shadow-lg p-6 rounded-lg md:mt-16">
+          <div class="browser-icon mb-4">
+            <img src="./images/logo-opera.svg" alt="Opera logo" width="100" height="100" class="mx-auto">
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Add to Opera</h3>
+          <p class="text-gray-600 mb-4">Minimum version 46</p>
+          <img src="./images/bg-dots.svg" alt="" width="200" height="10" class="mx-auto mb-4">
+          <button type="button" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Add & Install Extension</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion container mx-auto py-12 px-4">
+      <div class="accordion-heading text-center mb-8">
+        <h3 class="text-3xl font-bold mb-4">Frequently Asked Questions</h3>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Here are some of our FAQs. If you have any other questions you’d like 
+          answered please feel free to email us.
+        </p>
+      </div>
+      <div class="accordion-content max-w-2xl mx-auto">
+        <button class="question w-full text-left py-4 border-b border-gray-200 flex justify-between items-center" aria-expanded="false" aria-controls="answer1">
+          <h4 class="text-lg font-medium">What is Bookmark?</h4>
+          <img src="./images/icon-arrow.svg" alt="Toggle answer" width="20" height="20">
+        </button>
+        <p id="answer1" class="text-gray-600 mt-2" style="display: none;">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tincidunt 
+          justo eget ultricies fringilla. Phasellus blandit ipsum quis quam ornare mattis.
+        </p>
+      </div>
+      <div class="accordion-content max-w-2xl mx-auto">
+        <button class="question w-full text-left py-4 border-b border-gray-200 flex justify-between items-center" aria-expanded="false" aria-controls="answer2">
+          <h4 class="text-lg font-medium">How can I request a new browser?</h4>
+          <img src="./images/icon-arrow.svg" alt="Toggle answer" width="20" height="20">
+        </button>
+        <p id="answer2" class="text-gray-600 mt-2" style="display: none;">
+          Vivamus luctus eros aliquet convallis ultricies. Mauris augue massa, ultricies non ligula. 
+          Suspendisse imperdiet. Vivamus luctus eros aliquet convallis ultricies. Mauris augue massa, 
+          ultricies non ligula. Suspendisse imperdiet.
+        </p>
+      </div>
+      <div class="accordion-content max-w-2xl mx-auto">
+        <button class="question w-full text-left py-4 border-b border-gray-200 flex justify-between items-center" aria-expanded="false" aria-controls="answer3">
+          <h4 class="text-lg font-medium">Is there a mobile app?</h4>
+          <img src="./images/icon-arrow.svg" alt="Toggle answer" width="20" height="20">
+        </button>
+        <p id="answer3" class="text-gray-600 mt-2" style="display: none;">
+          Sed consectetur quam id neque fermentum accumsan. Praesent luctus vestibulum dolor, ut condimentum 
+          urna vulputate eget. Cras in ligula quis est pharetra mattis sit amet pharetra purus. Sed 
+          sollicitudin ex et ultricies bibendum.
+        </p>
+      </div>
+      <div class="accordion-content max-w-2xl mx-auto">
+        <button class="question w-full text-left py-4 border-b border-gray-200 flex justify-between items-center" aria-expanded="false" aria-controls="answer4">
+          <h4 class="text-lg font-medium">What about other Chromium browsers?</h4>
+          <img src="./images/icon-arrow.svg" alt="Toggle answer" width="20" height="20">
+        </button>
+        <p id="answer4" class="text-gray-600 mt-2" style="display: none;">
+          Integer condimentum ipsum id imperdiet finibus. Vivamus in placerat mi, at euismod dui. Aliquam 
+          vitae neque eget nisl gravida pellentesque non ut velit.
+        </p>
+      </div>
+      <div class="text-center mt-8">
+        <button type="button" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">More Info</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="top container mx-auto text-center px-4 mb-8">
+      <p class="text-lg mb-4">35,000+ already joined</p>
+      <h2 class="text-2xl font-bold mb-6">Stay up-to-date with what we’re doing</h2>
+      <form class="flex justify-center space-x-4">
+        <label for="email" class="sr-only">Email address</label>
+        <input type="email" id="email" placeholder="Enter your email address" class="px-4 py-3 rounded w-full max-w-xs text-gray-800" required>
+        <button type="submit" class="bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600">Contact Us</button>
+      </form>
+    </div>
+    <div class="bottom container mx-auto flex flex-col md:flex-row items-center justify-between px-4">
+      <img src="./images/logo-bookmark.svg" alt="Bookmark logo" width="150" height="50" class="w-32 mb-4 md:mb-0">
+      <ul class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 text-center">
+        <li><a href="#" class="hover:text-red-500">Features</a></li>
+        <li><a href="#" class="hover:text-red-500">Pricing</a></li>
+        <li><a href="#" class="hover:text-red-500">Contact</a></li>
+      </ul>
+      <ul class="flex space-x-6 mt-4 md:mt-0">
+        <li><a href="https://facebook.com/bookmark" aria-label="Facebook"><img src="./images/icon-facebook.svg" alt="" width="24" height="24"></a></li>
+        <li><a href="https://twitter.com/bookmark" aria-label="Twitter"><img src="./images/icon-twitter.svg" alt="" width="24" height="24"></a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
