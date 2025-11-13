@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  
+  <title>Frontend Mentor | Room homepage</title>
+  <link rel="stylesheet" href="roomHomepage.css">
+  <script defer src="roomHomepage.js"></script>
+
+</head>
+<body>
+  <main>
+    <div class="upper">
+      <header>
+        <div class="image">
+          <img id="slider-image" src="./images/mobile-image-hero-1.jpg" alt="furniture image">
+        </div>
+        <nav role="navigation" aria-label="Main navigation">
+          <div class="nav-container">
+            <div class="hamburger">
+              <img src="./images/icon-hamburger.svg" alt="open menu">
+            </div>
+            <div class="logo">
+              <img src="./images/logo.svg" alt="Room homepage logo">
+            </div>
+            <ul class="nav-menu">
+              <li class="close">
+                <img src="./images/icon-close.svg" alt="close menu">
+              </li>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Shop</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="nav-buttons">
+          <div class="nav-button1"  onclick="prevSlide()" id="prev-button">
+            <img src="./images/icon-angle-left.svg" alt="previous icon">
+          </div>
+          <div class="nav-button1" onclick="nextSlide()" id="next-button">
+            <img src="./images/icon-angle-right.svg" alt="next icon">
+        </div>
+        </div>
+      </header>
+
+      <section>
+        <div class="slider">
+          <h1 id="slider-heading" class="heading"></h1>
+          <p id="slider-description" class="description"></p>
+          <p>Shop now <img src="./images/icon-arrow.svg" alt="arrow icon"></p>
+        </div>
+      </section>
+    </div>
+
+    <article>
+      <img src="./images/image-about-dark.jpg" alt="a chair and a table">
+      <div class="about">
+        <h2>About our furniture</h2>
+
+        <p>
+          Our multifunctional collection blends design and function to suit your individual taste.
+          Make each room unique, or pick a cohesive theme that best express your interests and what
+          inspires you. Find the furniture pieces you need, from traditional to contemporary styles
+          or anything in between. Product specialists are available to help you create your dream space.
+        </p>
+      </div>
+      <img src="./images/image-about-light.jpg" alt="a chair">
+    </article>
+
+  </main>
+</body>
+</html> 
+
