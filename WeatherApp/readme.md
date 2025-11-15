@@ -4,7 +4,7 @@
 ## 📝 Project Overview
 
 This is a responsive, single-page application (SPA) built to display current weather conditions and forecast data for any location searched by the user. The application focuses on a clean, modern design and user experience, adapting seamlessly across mobile and desktop viewports.
-
+ 
 ### Key Features
 
   * **Search Functionality:** Find weather data for cities globally.
