@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link rel="stylesheet" href="style.css">
+  
+  <title>Weather app</title>
+
+</head>
+<body>
+
+  <main>
+    <section class="upper">
+      <header>
+        <div class="head-content">
+          <div class="logo"><img src="./assets/images/logo.svg" alt="site logo"></div>
+          <div class="dropdown-container">
+            <select name="units" id="units">
+              <option value="Switch to Imperial">Switch to Imperial</option>
+              <optgroup label="Temperature">
+                <option value="Celsius">Celsius (°C)</option>
+                <option value="Fahrenheit">Fahrenheit (°F)</option>
+              </optgroup>
+              
+              <optgroup label="Wind Speed">
+                <option value="kmp">km/h</option>
+                <option value="mph">mph</option>
+              </optgroup>
+              
+              <optgroup label="Precipitation">
+                <option value="Millimeters">Millimeters (mm)</option>
+                <option value="Inches">Inches (in)</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <!-- Heading message -->
+        <div class="head-message">
+          <h1>How's the sky looking today?</h1>
+        </div>
+      </header>
+    </section>
+
+    <section class="lower">
+
+      <!-- search bar -->
+      <div class="search-bar">
+        <input id="search" type="text" placeholder="Search for a place...">
+        <button id="search-btn">Search</button>  
+      </div>
+
+      <!-- daily forecast -->
+      <section class="daily-forecast">
+        <!-- city daily forecast -->
+        <div class="city-details">
+          <!-- city forecast summary -->
+          <div class="city">
+            <picture>
+              <source media="(max-width: 375px)" srcset="./assets/images/bg-today-small.svg">
+              <source media="(min-width: 1440px)" srcset="./assets/images/bg-today-large.svg">
+              <img src="./assets/images/bg-today-small.svg">
+            </picture>
+            <div class="city-name">
+              <h2>Gulu, Uganda</h2>
+              <h3>Tuesday, Aug 5, 2025</h3>
+            </div>
+            <div class="city-temp">
+              <img src="./assets/images/icon-sunny.webp" alt="sun">
+              <p>68</p>
+            </div>
+          </div>
+          <!-- weather details -->
+          <div class="city-weather-details">
+            <div class="unit">
+              <h2>Feels like</h2>
+              <!-- Insert temperature here -->
+              <span id="temperature"></span>
+            </div>
+            <div class="unit">
+              <h2>Humidity</h2>
+              <!-- Insert humidity here -->
+              <span id="humidity"></span>
+            </div>
+            <div class="unit">
+              <h2>Wind</h2>
+              <!-- Insert wind here -->   
+              <span id="wind"></span>
+            </div>
+            <div class="unit">
+              <h2>Precipitation</h2>
+              <!-- Insert precipitation here -->
+              <span class="precipitation"></span>
+            </div> 
+          </div>
+        </div>
+        <!-- daily forecast details -->
+        <div class="daily-forecast-content">
+          <div class="heading">
+            <h2>Daily forecast</h2>
+          </div>
+          <div class="days-content">
+            <div class="day">
+              <h3>Tue</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="day">
+              <h3>Wed</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="day">
+              <h3>Thur</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="day">
+              <h3>Fri</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="day">
+              <h3>Sat</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="day">
+              <h3>Sun</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="day">
+              <h3>Mon</h3>
+              <img src="" alt="">
+              <ul>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+        </div>
+      </section>
+
+      <!-- hourly forecast -->
+      <section class="hourly-forecast">
+        <div class="hourly-forecast-top">
+          <h3>Hourly forecast</h3>
+          <select name="days" id="days">
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option>
+          </select>
+        </div>
+        <!-- hourly forecast content -->
+        <div class="hourly-forecast-content">
+          <div class="hour">
+            <img src="" alt="">
+            <p>1 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>2 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>3 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>4 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>5 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>6 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>7 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>8 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>9 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>10 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>11 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>12 PM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>1 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>2 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>3 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>4 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>5 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>6 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>7 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>8 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>9 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>10 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>11 AM</p>
+            <span>12</span>
+          </div>
+          <div class="hour">
+            <img src="" alt="">
+            <p>12 AM</p>
+            <span>12</span>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
