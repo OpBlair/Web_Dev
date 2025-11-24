@@ -84,6 +84,7 @@ main{
     height: 124px;
     gap: 12px;
     width: 343px;
+    margin-bottom: 12px;
 }
 
 #search{
@@ -200,6 +201,7 @@ main{
     display: flex;
     flex-direction: column;
     gap: 20px;
+    margin-top: 12px;
 }
 
 .day ul li{
