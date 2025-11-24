@@ -63,6 +63,13 @@ main{
     opacity: 0;
     cursor: pointer;
 }
+
+/* New CSS rule for the actual select element and its options */
+#units, #units option, #units optgroup {
+    background-color: hsl(243, 96%, 9%); 
+    color: white; 
+}
+
 .head-message{
     display: flex;
     flex-direction: column;
