@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GCDL Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- MAIN CONTAINER -->
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white shadow-lg">
+      <div class="p-6 border-b">
+        <h1 class="text-xl font-bold text-green-700">GCDL Dashboard</h1>
+        <p class="text-sm text-gray-500" id="roleDisplay"></p>
+      </div>
+
+      <nav class="p-4">
+        <ul class="space-y-2">
+          <li class="p-2 hover:bg-green-100 rounded cursor-pointer">Dashboard</li>
+          <li class="p-2 hover:bg-green-100 rounded cursor-pointer">Procurement</li>
+          <li class="p-2 hover:bg-green-100 rounded cursor-pointer">Sales</li>
+          <li class="p-2 hover:bg-green-100 rounded cursor-pointer">Stock</li>
+          <li class="p-2 hover:bg-green-100 rounded cursor-pointer">Credit</li>
+          <li class="p-2 hover:bg-green-100 rounded cursor-pointer">Reports</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <main class="flex-1 p-6">
+
+      <!-- TOP SECTION -->
+      <h2 class="text-2xl font-bold mb-4">Overview</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <!-- KPI CARDS -->
+        <div class="bg-white p-4 shadow rounded">
+          <p class="text-sm text-gray-500">Total Sales (Today)</p>
+          <h3 id="salesToday" class="text-xl font-bold">0</h3>
+        </div>
+
+        <div class="bg-white p-4 shadow rounded">
+          <p class="text-sm text-gray-500">Stock (Tons)</p>
+          <h3 id="totalStock" class="text-xl font-bold">0</h3>
+        </div>
+
+        <div class="bg-white p-4 shadow rounded">
+          <p class="text-sm text-gray-500">Revenue</p>
+          <h3 id="revenue" class="text-xl font-bold">0</h3>
+        </div>
+
+        <div class="bg-white p-4 shadow rounded">
+          <p class="text-sm text-gray-500">Total Credit</p>
+          <h3 id="credit" class="text-xl font-bold">0</h3>
+        </div>
+      </div>
+
+      <!-- CHART SECTION -->
+      <h2 class="text-xl font-bold mt-8 mb-4">Sales Trend</h2>
+      <div class="bg-white p-4 shadow rounded">
+        <div id="salesChart" class="flex space-x-2 h-40 items-end"></div>
+      </div>
+
+      <!-- TABLE SECTION -->
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Recent Sales -->
+        <div class="bg-white shadow p-4 rounded">
+          <h3 class="text-lg font-bold mb-3">Recent Sales</h3>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left border-b">
+                <th>Product</th>
+                <th>Tons</th>
+                <th>Buyer</th>
+              </tr>
+            </thead>
+            <tbody id="salesTable"></tbody>
+          </table>
+        </div>
+
+        <!-- Recent Procurement -->
+        <div class="bg-white shadow p-4 rounded">
+          <h3 class="text-lg font-bold mb-3">Recent Procurement</h3>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left border-b">
+                <th>Product</th>
+                <th>Tons</th>
+                <th>Dealer</th>
+              </tr>
+            </thead>
+            <tbody id="procTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- MOCK JSON + LOGIC -->
+  <script>
+    // --- SIMULATED BACKEND DATA ----
+    const mockData = {
+      role: "Branch Manager",
+      kpis: {
+        salesToday: 2400000,
+        stock: 62,
+        revenue: 5200000,
+        credit: 1700000
+      },
+      salesTrend: [12, 18, 9, 15, 20, 25, 22],
+      recentSales: [
+        { product: "Maize", tons: 3, buyer: "John Doe" },
+        { product: "Beans", tons: 1.5, buyer: "AgroCo Ltd" },
+        { product: "Rice", tons: 2, buyer: "Mary Farms" }
+      ],
+      recentProcurement: [
+        { product: "Maize", tons: 5, dealer: "Kato Dealer" },
+        { product: "Cowpeas", tons: 2, dealer: "Mukasa Agro" },
+        { product: "G-Nuts", tons: 1, dealer: "Nalongo Produce" }
+      ]
+    };
+
+    // --- UPDATE PAGE CONTENT ----
+    document.getElementById("roleDisplay").innerText = mockData.role;
+    document.getElementById("salesToday").innerText = mockData.kpis.salesToday.toLocaleString();
+    document.getElementById("totalStock").innerText = mockData.kpis.stock + " tons";
+    document.getElementById("revenue").innerText = mockData.kpis.revenue.toLocaleString();
+    document.getElementById("credit").innerText = mockData.kpis.credit.toLocaleString();
+
+    // --- SALES TREND CHART (simple bar mock) ----
+    const chart = document.getElementById("salesChart");
+    mockData.salesTrend.forEach(value => {
+      const bar = document.createElement("div");
+      bar.className = "bg-green-600 rounded";
+      bar.style.height = value * 5 + "px";
+      bar.style.width = "30px";
+      chart.appendChild(bar);
+    });
+
+    // --- TABLES ----
+    const salesTable = document.getElementById("salesTable");
+    mockData.recentSales.forEach(s => {
+      salesTable.innerHTML += `
+        <tr class="border-b">
+          <td>${s.product}</td>
+          <td>${s.tons}</td>
+          <td>${s.buyer}</td>
+        </tr>
+      `;
+    });
+
+    const procTable = document.getElementById("procTable");
+    mockData.recentProcurement.forEach(p => {
+      procTable.innerHTML += `
+        <tr class="border-b">
+          <td>${p.product}</td>
+          <td>${p.tons}</td>
+          <td>${p.dealer}</td>
+        </tr>
+      `;
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>GCDL Role-Based System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Optional: Tailwind doesn't use the 'menuItem' class, so let's make it look nice */
+        .menuItem:hover {
+            background-color: #ecfdf5; /* Tailwind's green-50 */
+            color: #047857; /* Tailwind's green-700 */
+        }
+        /* Style for active menu item, can be dynamically added with JS */
+        .menuItem.active {
+            background-color: #d1fae5; /* Tailwind's green-100 */
+            font-weight: bold;
+            color: #047857;
+        }
+        td, th {
+            padding: 8px 12px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div id="loginScreen" class="flex justify-center items-center h-screen">
+        <div class="bg-white w-96 p-6 shadow-xl rounded-lg border border-gray-200">
+            <h2 class="text-2xl font-extrabold mb-6 text-center text-green-700">🌽 GCDL Login</h2>
+
+            <input id="emailInput"
+                type="email"
+                placeholder="Enter your email"
+                class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:ring-green-500 focus:border-green-500" />
+
+            <button onclick="login()"
+                class="bg-green-600 text-white w-full p-3 rounded-lg shadow-md hover:bg-green-700 transition duration-150 ease-in-out font-semibold">
+                Login to Dashboard
+            </button>
+
+            <p class="text-sm text-gray-500 mt-4 p-2 bg-gray-50 rounded">
+                **Demo Emails:**<br>
+                <code class="text-green-700">ceo@gcdl.com</code> • <code class="text-green-700">manager@gcdl.com</code> • <code class="text-green-700">agent@gcdl.com</code>
+            </p>
+        </div>
+    </div>
+
+    <div id="appContainer" class="hidden min-h-screen flex">
+
+        <aside class="w-64 bg-white shadow-xl fixed h-full z-10">
+            <div class="p-6 border-b border-gray-200">
+                <h1 class="text-xl font-bold text-green-700">Golden Crop Ltd.</h1>
+                <p id="roleBadge" class="text-sm text-gray-500 mt-1">Role: Unassigned</p>
+                <button onclick="logout()" class="text-xs text-red-500 hover:text-red-700 mt-2">
+                    (Log Out)
+                </button>
+            </div>
+            <nav class="p-4">
+                <ul id="sidebar-menu" class="space-y-1">
+                    </ul>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 ml-64">
+            <h1 class="text-3xl font-bold mb-6 text-gray-800" id="main-title">Dashboard</h1>
+
+            <section id="ceoDashboard" class="hidden">
+                <h2 class="text-2xl font-semibold mb-5 border-b pb-2">CEO Global Overview</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-green-600 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Total Revenue (UGX)</p>
+                        <h3 id="ceoRevenue" class="text-2xl font-extrabold mt-1"></h3>
+                    </div>
+                    <div class="bg-blue-600 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Total Stock (Tons)</p>
+                        <h3 id="ceoStock" class="text-2xl font-extrabold mt-1"></h3>
+                    </div>
+                    <div class="bg-yellow-600 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Total Credit Owed (UGX)</p>
+                        <h3 id="ceoCredit" class="text-2xl font-extrabold mt-1"></h3>
+                    </div>
+                    <div class="bg-gray-600 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Branches Operational</p>
+                        <h3 class="text-2xl font-extrabold mt-1">2</h3>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold mt-10 mb-4">Branch Comparison</h3>
+                <div class="bg-white p-4 shadow rounded-lg overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr><th>Branch</th><th>Sales</th><th>Stock</th><th>Credit</th></tr>
+                        </thead>
+                        <tbody id="ceoBranchTable" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="managerDashboard" class="hidden">
+                <h2 class="text-2xl font-semibold mb-5 border-b pb-2">Manager Branch Overview</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-green-500 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Branch Sales (Today)</p>
+                        <h3 id="mSales" class="text-2xl font-extrabold mt-1"></h3>
+                    </div>
+                    <div class="bg-blue-500 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Current Stock (Tons)</p>
+                        <h3 id="mStock" class="text-2xl font-extrabold mt-1"></h3>
+                    </div>
+                    <div class="bg-red-500 text-white p-4 shadow-lg rounded-lg">
+                        <p class="text-sm font-light">Outstanding Credit</p>
+                        <h3 id="mCredit" class="text-2xl font-extrabold mt-1"></h3>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold mt-10 mb-4">Agent Performance</h3>
+                <div class="bg-white p-4 shadow rounded-lg overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr><th>Agent</th><th>Tons Sold</th><th>Transactions</th></tr>
+                        </thead>
+                        <tbody id="agentPerf" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="agentDashboard" class="hidden">
+                <h2 class="text-2xl font-semibold mb-5 border-b pb-2">Agent Transaction Panel</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <button onclick="showForm('salesForm')" class="bg-green-600 text-white p-3 rounded-lg shadow hover:bg-green-700 transition">Record Sale</button>
+                    <button onclick="showForm('procForm')" class="bg-blue-600 text-white p-3 rounded-lg shadow hover:bg-blue-700 transition">Record Procurement</button>
+                    <button onclick="showForm('creditForm')" class="bg-yellow-600 text-white p-3 rounded-lg shadow hover:bg-yellow-700 transition">Record Credit</button>
+                </div>
+
+                <div id="formsContainer" class="space-y-6 max-w-lg">
+
+                    <form id="salesForm" class="hidden bg-white p-6 shadow-lg rounded-lg space-y-4 border-l-4 border-green-600">
+                        <h3 class="text-lg font-bold">Record Cash Sale</h3>
+                        <input id="saleProd" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" placeholder="Produce Name (e.g., Maize)">
+                        <input id="saleTons" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" placeholder="Tonnage Sold" type="number" min="0">
+                        <input id="saleAmt" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" placeholder="Amount Paid (UGX)" type="number" min="0">
+                        <input id="saleBuyer" class="border p-2 w-full rounded focus:ring-green-500 focus:border-green-500" placeholder="Buyer Name">
+                        <button type="button" onclick="saveSale()" class="bg-green-600 w-full p-2 text-white rounded-lg hover:bg-green-700">Submit Sale</button>
+                    </form>
+
+                    <form id="procForm" class="hidden bg-white p-6 shadow-lg rounded-lg space-y-4 border-l-4 border-blue-600">
+                        <h3 class="text-lg font-bold">Record Procurement</h3>
+                        <input id="procProd" class="border p-2 w-full rounded focus:ring-blue-500 focus:border-blue-500" placeholder="Produce Name (e.g., Beans)">
+                        <input id="procTons" class="border p-2 w-full rounded focus:ring-blue-500 focus:border-blue-500" placeholder="Tons Procured" type="number" min="1">
+                        <input id="procDealer" class="border p-2 w-full rounded focus:ring-blue-500 focus:border-blue-500" placeholder="Dealer Name/Farm">
+                        <input id="procCost" class="border p-2 w-full rounded focus:ring-blue-500 focus:border-blue-500" placeholder="Total Cost (UGX)" type="number" min="0">
+                        <button type="button" onclick="saveProc()" class="bg-blue-600 w-full p-2 text-white rounded-lg hover:bg-blue-700">Submit Procurement</button>
+                    </form>
+
+                    <form id="creditForm" class="hidden bg-white p-6 shadow-lg rounded-lg space-y-4 border-l-4 border-yellow-600">
+                        <h3 class="text-lg font-bold">Record Credit Sale</h3>
+                        <input id="credName" class="border p-2 w-full rounded focus:ring-yellow-500 focus:border-yellow-500" placeholder="Buyer Name">
+                        <input id="credID" class="border p-2 w-full rounded focus:ring-yellow-500 focus:border-yellow-500" placeholder="National ID (Required)">
+                        <input id="credLoc" class="border p-2 w-full rounded focus:ring-yellow-500 focus:border-yellow-500" placeholder="Location">
+                        <input id="credAmt" class="border p-2 w-full rounded focus:ring-yellow-500 focus:border-yellow-500" placeholder="Amount Due (UGX)" type="number" min="1">
+                        <button type="button" onclick="saveCredit()" class="bg-yellow-600 w-full p-2 text-white rounded-lg hover:bg-yellow-700">Save Credit Sale</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        /* --- CORE DATA & STATE --- */
+        let currentRole = "";
+
+        // Simulating the database structure and initial data for all roles
+        const database = {
+            ceo: {
+                revenue: 15200000,
+                stock: 128,
+                credit: 3200000,
+                branches: [
+                    { name: "Kampala Branch", sales: 7200000, stock: 62, credit: 1200000 },
+                    { name: "Mukono Branch", sales: 8000000, stock: 66, credit: 2000000 }
+                ]
+            },
+
+            manager: {
+                sales: 2400000,
+                stock: 62,
+                credit: 1200000,
+                // These are agents under this specific manager's branch
+                agents: [
+                    { name: "Agent A (Sales)", tons: 12, trans: 4 },
+                    { name: "Agent B (Procurement)", tons: 9, trans: 3 }
+                ]
+            },
+
+            agent: {
+                // These arrays will grow as the agent submits new forms
+                sales: [],
+                procurement: [],
+                credit: [],
+                // This would be fetched from the actual stock records
+                stock: { maize: 20, beans: 15, rice: 10 }
+            }
+        };
+
+        /* --- UTILITY FUNCTIONS --- */
+
+        // Format number as currency (UGX style)
+        const formatUGX = (num) => {
+            return `UGX ${num.toLocaleString('en-US')}`;
+        };
+
+        // Dynamically create a sidebar menu item
+        const createMenuItem = (id, label) => {
+            const li = document.createElement('li');
+            li.className = "menuItem p-2 hover:bg-green-100 rounded cursor-pointer transition duration-150";
+            li.textContent = label;
+            li.onclick = () => showSection(id, li);
+            return li;
+        };
+
+        /* --- LOGIN & LOGOUT --- */
+
+        function login() {
+            const email = document.getElementById("emailInput").value.trim().toLowerCase();
+            if (!email) return alert("Please enter an email address.");
+
+            let role = "";
+            if (email === "ceo@gcdl.com") role = "CEO";
+            else if (email === "manager@gcdl.com") role = "Manager";
+            else if (email === "agent@gcdl.com") role = "Agent";
+            else return alert("Invalid credentials or unknown role for this demo email.");
+
+            currentRole = role;
+            document.getElementById("roleBadge").innerText = `Role: ${role}`;
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("appContainer").classList.remove("hidden");
+
+            setupSidebar(role);
+            loadDashboard(role);
+        }
+
+        function logout() {
+            currentRole = "";
+            document.getElementById("appContainer").classList.add("hidden");
+            document.getElementById("loginScreen").classList.remove("hidden");
+            document.getElementById("emailInput").value = ''; // Clear email input
+            document.getElementById("sidebar-menu").innerHTML = ''; // Clear sidebar
+        }
+
+        /* --- RBAC SIDEBAR SETUP --- */
+
+        function setupSidebar(role) {
+            const menu = document.getElementById('sidebar-menu');
+            menu.innerHTML = ''; // Clear existing menu
+
+            if (role === 'CEO') {
+                menu.appendChild(createMenuItem('ceoDashboard', 'Global Dashboard'));
+                menu.appendChild(createMenuItem('ceoReports', 'Executive Reports'));
+                menu.appendChild(createMenuItem('allBranches', 'All Branch Data'));
+            } else if (role === 'Manager') {
+                menu.appendChild(createMenuItem('managerDashboard', 'Branch Dashboard'));
+                menu.appendChild(createMenuItem('stockManagement', 'Stock Management'));
+                menu.appendChild(createMenuItem('creditTracking', 'Credit Sales'));
+            } else if (role === 'Agent') {
+                menu.appendChild(createMenuItem('agentDashboard', 'Transaction Panel'));
+                menu.appendChild(createMenuItem('mySales', 'My Sales Log'));
+                menu.appendChild(createMenuItem('myProcurements', 'My Procurements'));
+            }
+        }
+
+        /* --- DASHBOARD VIEW CONTROLS --- */
+
+        function showSection(id, element) {
+            // 1. Hide all sections
+            document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
+            // 2. Show the requested section
+            const section = document.getElementById(id);
+            if(section) section.classList.remove("hidden");
+
+            // 3. Update the main title
+            document.getElementById('main-title').textContent = element ? element.textContent : id;
+
+            // 4. Update the active state in the sidebar
+            document.querySelectorAll('.menuItem').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            // HACK: Re-load the specific dashboard on primary click for fresh data (in a real app, this would be API call)
+            if (id === 'ceoDashboard') loadCEO();
+            if (id === 'managerDashboard') loadManager();
+        }
+
+        function loadDashboard(role) {
+            // Find the primary dashboard section ID for the current role
+            let primarySectionId;
+            if (role === "CEO") primarySectionId = "ceoDashboard";
+            else if (role === "Manager") primarySectionId = "managerDashboard";
+            else if (role === "Agent") primarySectionId = "agentDashboard";
+
+            // Get the corresponding menu item to set it active and display the content
+            const primaryMenuItem = document.querySelector(`#sidebar-menu li[onclick*="${primarySectionId}"]`);
+            if (primaryMenuItem) {
+                showSection(primarySectionId, primaryMenuItem);
+            }
+        }
+
+        /* --- CEO DATA LOAD --- */
+
+        function loadCEO() {
+            const ceo = database.ceo;
+            ceoRevenue.innerText = formatUGX(ceo.revenue);
+            ceoStock.innerText = ceo.stock.toLocaleString() + " tons";
+            ceoCredit.innerText = formatUGX(ceo.credit);
+
+            ceoBranchTable.innerHTML = "";
+            ceo.branches.forEach(b => {
+                ceoBranchTable.innerHTML += `
+                    <tr class="hover:bg-gray-100 transition">
+                        <td class="font-medium">${b.name}</td>
+                        <td>${formatUGX(b.sales)}</td>
+                        <td>${b.stock} tons</td>
+                        <td>${formatUGX(b.credit)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        /* --- MANAGER DATA LOAD --- */
+
+        function loadManager() {
+            const m = database.manager;
+            mSales.innerText = formatUGX(m.sales);
+            mStock.innerText = m.stock.toLocaleString() + " tons";
+            mCredit.innerText = formatUGX(m.credit);
+
+            agentPerf.innerHTML = "";
+            m.agents.forEach(a => {
+                agentPerf.innerHTML += `
+                    <tr class="hover:bg-gray-100 transition">
+                        <td class="font-medium">${a.name}</td>
+                        <td>${a.tons} tons</td>
+                        <td>${a.trans}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        /* --- AGENT FORM LOGIC --- */
+
+        function showForm(id) {
+            // Hide all forms
+            document.querySelectorAll("#formsContainer form").forEach(f => f.classList.add("hidden"));
+            // Show the requested form
+            document.getElementById(id).classList.remove("hidden");
+        }
+
+        function saveSale() {
+            const sale = {
+                product: saleProd.value,
+                tons: Number(saleTons.value),
+                amount: Number(saleAmt.value),
+                buyer: saleBuyer.value,
+                date: new Date().toLocaleDateString()
+            };
+            if (!sale.product || !sale.tons || !sale.amount) return alert("Please fill out all sale fields.");
+            database.agent.sales.push(sale);
+            alert(`Sale of ${sale.tons} tons recorded! Stock must be updated.`);
+            // In a real app: Send data to backend API (e.g., POST /api/sales)
+            // Then: Clear the form fields
+        }
+
+        function saveProc() {
+            const proc = {
+                product: procProd.value,
+                tons: Number(procTons.value),
+                dealer: procDealer.value,
+                cost: Number(procCost.value),
+                date: new Date().toLocaleDateString()
+            };
+            if (!proc.product || proc.tons < 1 || !proc.dealer || !proc.cost) return alert("Please fill out all procurement fields correctly.");
+            database.agent.procurement.push(proc);
+            alert(`Procurement of ${proc.tons} tons added! Stock must be updated.`);
+            // In a real app: Send data to backend API (e.g., POST /api/procurement)
+        }
+
+        function saveCredit() {
+            const cred = {
+                name: credName.value,
+                id: credID.value,
+                location: credLoc.value,
+                amount: Number(credAmt.value),
+                date: new Date().toLocaleDateString()
+            };
+            if (!cred.name || !cred.id || cred.amount < 1) return alert("Please fill out buyer name, ID, and amount for credit sale.");
+            database.agent.credit.push(cred);
+            alert(`Credit sale of ${formatUGX(cred.amount)} saved! Buyer ID: ${cred.id}`);
+            // In a real app: Send data to backend API (e.g., POST /api/credit)
+        }
+    </script>
+
+</body>
+</html>

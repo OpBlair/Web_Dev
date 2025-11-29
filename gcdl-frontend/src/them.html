@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GCDL System | Improved Version</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="flex justify-center items-center h-screen">
+    <div class="bg-white w-96 p-6 shadow rounded-lg border-t-4 border-green-600">
+      <h2 class="text-2xl font-bold mb-4 text-center text-green-700">
+        Golden Crop Distributors Ltd
+      </h2>
+
+      <input id="emailInput"
+        type="email"
+        placeholder="Enter your email"
+        class="w-full p-3 border rounded mb-4 focus:ring focus:ring-green-200" />
+
+      <button onclick="login()"
+        class="bg-green-600 text-white w-full p-3 rounded shadow hover:bg-green-700">
+        Login
+      </button>
+
+      <p class="text-sm text-gray-500 mt-3 text-center">
+        Demo Accounts: ceo@gcdl.com | manager@gcdl.com | agent@gcdl.com
+      </p>
+    </div>
+  </div>
+
+
+  <!-- MAIN APP -->
+  <div id="appContainer" class="hidden min-h-screen flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white shadow-lg border-r">
+      <div class="p-6 border-b">
+        <h1 class="text-xl font-bold text-green-700">GCDL Dashboard</h1>
+        <p id="roleBadge" class="text-sm text-gray-500"></p>
+      </div>
+
+      <nav class="p-4 space-y-2">
+        <div onclick="showSection('ceoDashboard')" class="menuItem flex items-center gap-2 p-2 hover:bg-green-100 rounded cursor-pointer">
+          <i data-feather="bar-chart-2"></i> CEO Dashboard
+        </div>
+
+        <div onclick="showSection('managerDashboard')" class="menuItem flex items-center gap-2 p-2 hover:bg-green-100 rounded cursor-pointer">
+          <i data-feather="briefcase"></i> Manager Dashboard
+        </div>
+
+        <div onclick="showSection('agentDashboard')" class="menuItem flex items-center gap-2 p-2 hover:bg-green-100 rounded cursor-pointer">
+          <i data-feather="edit"></i> Agent Dashboard
+        </div>
+
+        <div onclick="logout()" class="flex items-center gap-2 p-2 text-red-600 hover:bg-red-100 rounded cursor-pointer mt-6">
+          <i data-feather="log-out"></i> Logout
+        </div>
+      </nav>
+    </aside>
+
+
+    <!-- CONTENT AREA -->
+    <main class="flex-1 p-6">
+
+      <!-- ==================================================================== -->
+      <!-- CEO DASHBOARD -->
+      <!-- ==================================================================== -->
+      <section id="ceoDashboard" class="hidden">
+        <h2 class="text-3xl font-bold mb-6 text-green-700">CEO Dashboard</h2>
+
+        <!-- Top KPIs -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="KPI">
+            <p>Total Revenue</p>
+            <h3 id="ceoRevenue"></h3>
+          </div>
+          <div class="KPI">
+            <p>Total Stock</p>
+            <h3 id="ceoStock"></h3>
+          </div>
+          <div class="KPI">
+            <p>Total Credit</p>
+            <h3 id="ceoCredit"></h3>
+          </div>
+          <div class="KPI">
+            <p>Total Branches</p>
+            <h3>2</h3>
+          </div>
+        </div>
+
+        <!-- Branch Table -->
+        <h3 class="text-xl font-bold mt-8">Branch Performance</h3>
+        <table class="styledTable mt-4">
+          <thead>
+            <tr><th>Branch</th><th>Sales</th><th>Stock</th><th>Credit</th></tr>
+          </thead>
+          <tbody id="ceoBranchTable"></tbody>
+        </table>
+
+      </section>
+
+
+
+
+      <!-- ==================================================================== -->
+      <!-- MANAGER DASHBOARD -->
+      <!-- ==================================================================== -->
+      <section id="managerDashboard" class="hidden">
+        <h2 class="text-3xl font-bold mb-6 text-green-700">Manager Dashboard</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="KPI"><p>Branch Sales Today</p><h3 id="mSales"></h3></div>
+          <div class="KPI"><p>Current Stock</p><h3 id="mStock"></h3></div>
+          <div class="KPI"><p>Outstanding Credit</p><h3 id="mCredit"></h3></div>
+        </div>
+
+        <h3 class="text-xl font-bold mt-8">Sales Agent Performance</h3>
+        <table class="styledTable mt-4">
+          <thead>
+            <tr><th>Agent</th><th>Tons</th><th>Transactions</th></tr>
+          </thead>
+          <tbody id="agentPerf"></tbody>
+        </table>
+      </section>
+
+
+
+
+      <!-- ==================================================================== -->
+      <!-- AGENT DASHBOARD -->
+      <!-- ==================================================================== -->
+      <section id="agentDashboard" class="hidden">
+        <h2 class="text-3xl font-bold mb-6 text-green-700">Agent Panel</h2>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <button onclick="showForm('salesForm')" class="btn-green">Record Sale</button>
+          <button onclick="showForm('procForm')" class="btn-blue">Record Procurement</button>
+          <button onclick="showForm('creditForm')" class="btn-yellow">Record Credit Sale</button>
+        </div>
+
+        <div id="formsContainer" class="space-y-6">
+
+          <!-- SALES FORM -->
+          <form id="salesForm" class="formBox hidden">
+            <h3 class="formTitle">Record Sale</h3>
+
+            <div class="grid grid-cols-2 gap-2">
+              <input id="saleProd" class="input" placeholder="Product">
+              <input id="saleTons" class="input" placeholder="Tonnage (tons)" type="number">
+              <input id="saleBuyer" class="input" placeholder="Buyer Name">
+              <input id="saleAmt" class="input" placeholder="Amount Paid" type="number">
+            </div>
+
+            <button type="button" onclick="saveSale()" class="btn-green w-full mt-3">Submit</button>
+          </form>
+
+
+          <!-- PROCUREMENT FORM -->
+          <form id="procForm" class="formBox hidden">
+            <h3 class="formTitle">Record Procurement</h3>
+
+            <div class="grid grid-cols-2 gap-2">
+              <input id="procProd" class="input" placeholder="Product">
+              <input id="procTons" class="input" placeholder="Tonnage (tons)" type="number">
+              <input id="procDealer" class="input" placeholder="Dealer Name">
+              <input id="procCost" class="input" placeholder="Cost" type="number">
+            </div>
+
+            <button type="button" onclick="saveProc()" class="btn-blue w-full mt-3">Submit</button>
+          </form>
+
+
+          <!-- CREDIT SALE FORM -->
+          <form id="creditForm" class="formBox hidden">
+            <h3 class="formTitle">Record Credit Sale</h3>
+
+            <div class="grid grid-cols-2 gap-2">
+              <input id="credName" class="input" placeholder="Buyer Name">
+              <input id="credID" class="input" placeholder="National ID">
+              <input id="credLoc" class="input" placeholder="Location">
+              <input id="credAmt" class="input" placeholder="Amount (UGX)" type="number">
+            </div>
+
+            <button type="button" onclick="saveCredit()" class="btn-yellow w-full mt-3">Submit</button>
+          </form>
+
+        </div>
+
+        <h3 class="text-xl font-bold mt-10">Recent Entries</h3>
+
+        <!-- AGENT DATA PREVIEW -->
+        <div id="agentPreview" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"></div>
+
+      </section>
+
+    </main>
+  </div>
+
+
+
+<!-- ==================================================================== -->
+<!-- JAVASCRIPT -->
+<!-- ==================================================================== -->
+
+<script>
+feather.replace();
+
+/* SIMULATED DATABASE (JSON) */
+const database = {
+  ceo: {
+    revenue: 15200000,
+    stock: 128,
+    credit: 3200000,
+    branches: [
+      { name: "Kampala", sales: 7200000, stock: 62, credit: 1200000 },
+      { name: "Mukono", sales: 8000000, stock: 66, credit: 2000000 }
+    ]
+  },
+
+  manager: {
+    sales: 2400000,
+    stock: 62,
+    credit: 1200000,
+    agents: [
+      { name: "Agent A", tons: 12, trans: 4 },
+      { name: "Agent B", tons: 9, trans: 3 }
+    ]
+  },
+
+  agent: {
+    sales: [],
+    procurement: [],
+    credit: [],
+    stock: { maize: 20, beans: 15, rice: 10 }
+  }
+};
+
+/* LOGIN */
+function login() {
+  const email = emailInput.value.trim();
+
+  const roles = {
+    "ceo@gcdl.com": "CEO",
+    "manager@gcdl.com": "Manager",
+    "agent@gcdl.com": "Agent"
+  };
+
+  if (!roles[email]) return alert("Invalid email!");
+
+  const role = roles[email];
+  roleBadge.innerText = role;
+
+  loginScreen.classList.add("hidden");
+  appContainer.classList.remove("hidden");
+
+  loadDashboard(role);
+}
+
+/* TOGGLE DASHBOARDS */
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+/* LOAD CORRECT DASHBOARD */
+function loadDashboard(role) {
+  if (role === "CEO") { showSection("ceoDashboard"); loadCEO(); }
+  if (role === "Manager") { showSection("managerDashboard"); loadManager(); }
+  if (role === "Agent") { showSection("agentDashboard"); loadAgentPreview(); }
+}
+
+/* CEO */
+function loadCEO() {
+  const c = database.ceo;
+
+  ceoRevenue.innerText = c.revenue.toLocaleString();
+  ceoStock.innerText = c.stock + " tons";
+  ceoCredit.innerText = c.credit.toLocaleString();
+
+  ceoBranchTable.innerHTML = "";
+  c.branches.forEach(b => {
+    ceoBranchTable.innerHTML += `
+      <tr>
+        <td>${b.name}</td>
+        <td>${b.sales.toLocaleString()}</td>
+        <td>${b.stock} tons</td>
+        <td>${b.credit.toLocaleString()}</td>
+      </tr>
+    `;
+  });
+}
+
+/* MANAGER */
+function loadManager() {
+  const m = database.manager;
+
+  mSales.innerText = m.sales.toLocaleString();
+  mStock.innerText = m.stock + " tons";
+  mCredit.innerText = m.credit.toLocaleString();
+
+  agentPerf.innerHTML = "";
+  m.agents.forEach(a => {
+    agentPerf.innerHTML += `
+      <tr>
+        <td>${a.name}</td>
+        <td>${a.tons}</td>
+        <td>${a.trans}</td>
+      </tr>
+    `;
+  });
+}
+
+/* AGENT FORMS */
+function showForm(id) {
+  document.querySelectorAll("#formsContainer form")
+    .forEach(f => f.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+/* AGENT — SAVE DATA */
+function saveSale() {
+  const obj = {
+    product: saleProd.value,
+    tons: Number(saleTons.value),
+    amount: Number(saleAmt.value),
+    buyer: saleBuyer.value
+  };
+
+  database.agent.sales.push(obj);
+  loadAgentPreview();
+  alert("Sale recorded!");
+}
+
+function saveProc() {
+  const obj = {
+    product: procProd.value,
+    tons: Number(procTons.value),
+    dealer: procDealer.value,
+    cost: Number(procCost.value)
+  };
+
+  database.agent.procurement.push(obj);
+
+  // increase stock
+  database.agent.stock[obj.product] =
+    (database.agent.stock[obj.product] || 0) + obj.tons;
+
+  loadAgentPreview();
+  alert("Procurement added!");
+}
+
+function saveCredit() {
+  const obj = {
+    name: credName.value,
+    id: credID.value,
+    location: credLoc.value,
+    amount: Number(credAmt.value)
+  };
+
+  database.agent.credit.push(obj);
+  loadAgentPreview();
+  alert("Credit sale saved!");
+}
+
+/* AGENT PREVIEW */
+function loadAgentPreview() {
+  agentPreview.innerHTML = `
+    <div class="p-4 bg-white shadow rounded">
+      <h4 class="font-bold">Sales</h4>
+      <pre>${JSON.stringify(database.agent.sales, null, 2)}</pre>
+    </div>
+    <div class="p-4 bg-white shadow rounded">
+      <h4 class="font-bold">Procurement</h4>
+      <pre>${JSON.stringify(database.agent.procurement, null, 2)}</pre>
+    </div>
+    <div class="p-4 bg-white shadow rounded">
+      <h4 class="font-bold">Credit Sales</h4>
+      <pre>${JSON.stringify(database.agent.credit, null, 2)}</pre>
+    </div>
+  `;
+}
+
+/* LOGOUT */
+function logout() {
+  location.reload();
+}
+
+</script>
+
+
+
+<!-- ==================================================================== -->
+<!-- STYLES (Tailwind component classes grouped) -->
+<!-- ==================================================================== -->
+<style>
+  .KPI {
+    @apply bg-white p-4 shadow rounded border-l-4 border-green-600;
+  }
+
+  .KPI h3 {
+    @apply text-2xl font-bold text-green-700;
+  }
+
+  .styledTable {
+    @apply w-full text-sm bg-white shadow rounded;
+  }
+
+  .styledTable th {
+    @apply bg-green-200 p-2 text-left;
+  }
+
+  .styledTable td {
+    @apply p-2 border-b;
+  }
+
+  .btn-green {
+    @apply bg-green-600 text-white p-3 rounded shadow hover:bg-green-700;
+  }
+
+  .btn-blue {
+    @apply bg-blue-600 text-white p-3 rounded shadow hover:bg-blue-700;
+  }
+
+  .btn-yellow {
+    @apply bg-yellow-500 text-white p-3 rounded shadow hover:bg-yellow-600;
+  }
+
+  .formBox {
+    @apply bg-white p-4 shadow rounded border border-gray-200;
+  }
+
+  .formTitle {
+    @apply text-lg font-bold text-green-700 mb-3;
+  }
+
+  .input {
+    @apply border p-2 rounded focus:ring focus:ring-green-200;
+  }
+</style>
+
+
+
+</body>
+</html>
