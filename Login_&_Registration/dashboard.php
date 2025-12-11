@@ -1,17 +1,14 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['logged_in'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Dashboard</title>
-</head>
+<head><title>Dashboard</title></head>
 <body>
 
 <h2>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h2>
