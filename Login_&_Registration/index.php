@@ -46,16 +46,16 @@ if(isset($_SESSION['username'])){
 </body>
 </html>
 <!--
-<?php
-session_start();
+//<?php
+// session_start();
 
 // If logged in, redirect to dashboard
-if(isset($_SESSION['username'])){
-	header("Location: dashboard.php");
-	exit();
-}
+# if(isset($_SESSION['username'])){
+#	header("Location: dashboard.php");
+#	exit();
+#}
 
-?>
+#?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
