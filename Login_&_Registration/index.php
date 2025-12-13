@@ -55,7 +55,6 @@ if(isset($_SESSION['username'])){
 	exit();
 }
 
-// NOTE: The PHP logic remains simple as this file is mostly the UI layer.
 ?>
 <!DOCTYPE html>
 <html lang="en">
