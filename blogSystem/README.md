@@ -1,121 +1,98 @@
-# Blog System
+# 📝 Blog System
 
-## Overview
+A **learning-focused** content management system built to demonstrate role-based access control and dynamic content handling using PHP and MySQL.
 
-This is a **learning project** for a blog system built with **PHP, MySQL, HTML, CSS, and JS**.
-The project demonstrates **role-based content management** with three user roles:
+## 🚀 Project Overview
 
-* **Admin** – manage users, view all posts, moderate content
-* **Author** – create, edit, and manage their own posts
-* **Reader** – view published posts, like/dislike, comment, and save posts
+This project showcases a multi-user blog environment where permissions dynamically shift based on user roles. Currently, the system is in a **frontend-first** state, utilizing PHP sessions and JSON for mock data while the MySQL backend integration is finalized.
 
-Currently, the project is **frontend-first**, with mock data in PHP sessions or JSON files. Backend integration with MySQL is planned next.
+### **User Roles & Permissions**
 
----
-
-## Features
-
-1. **Role-Based Access Control**
-
-   * Navigation and available actions change depending on whether the user is an admin, author, or reader.
-
-2. **Post Management**
-
-   * Authors/Admin can create, edit, or delete posts
-   * Readers can like, dislike, comment, and save posts
-
-3. **Dynamic Content Simulation**
-
-   * Posts and users are simulated via PHP session or JSON files
-   * Database schema exists for future MySQL integration
-
-4. **Frontend Design**
-
-   * CSS Flexbox layout with sidebar navigation
-   * Buttons and post display styled for clarity
+* **Admin:** Full system oversight—manage users, moderate all posts, and view site-wide analytics.
+* **Author:** Content creators—create, edit, and manage personal posts.
+* **Reader:** The audience—view posts, engage via likes/dislikes, leave comments, and save favorites.
 
 ---
 
-## Project Structure
+## ✨ Key Features
 
-```
-blog-system/
-├── backend/            # Backend logic (PHP files, e.g., blogSystem.php)
-├── frontend/           # Frontend files (HTML, CSS, JS)
-│   ├── index.php       # Homepage displaying posts
-│   ├── login.php       # Login page
-│   ├── register.php    # Registration page
-│   ├── style.css       # CSS styling
-│   └── main.js         # JS for fetching mock data / frontend interaction
-├── dbSchema/           # Database schema
-│   └── blogSystem.sql  # MySQL schema for users, posts, comments, tags
+* **Role-Based Access Control (RBAC):** Navigation and UI elements adapt based on the logged-in user's permissions.
+* **Post Management:** Full CRUD (Create, Read, Update, Delete) capabilities for Authors and Admins.
+* **Engagement Tools:** Interactive Reader features including a like/dislike system and post-saving.
+* **Hybrid Data Handling:** Currently runs on PHP sessions/JSON mock data with a ready-to-deploy MySQL schema.
+* **Responsive UI:** Built with CSS Flexbox featuring a persistent sidebar navigation.
+
+---
+
+## 📂 Project Structure
+
+```text
+blogSystem/
+├── backend/            # PHP logic and server-side scripts
+│   └── db_logic.php    # Database connection & core functions
+├── frontend/           # UI Layer (HTML, CSS, JS)
+│   ├── index.php       # Main entry point
+│   └── blogSystem.css  # Global styles
+├── dbSchema/           # Database architecture
+│   └── blogSystem.sql  # SQL export for users, posts, comments, and tags
 └── README.md           # Project documentation
+
 ```
 
 ---
 
-## How to Run (Frontend-Only Prototype)
+## 🛠️ Technical Setup
 
-1. Ensure **PHP** is installed on your machine.
-2. Place the project folder in your **local server root** (e.g., XAMPP `htdocs`, MAMP `www`).
-3. Start PHP server from terminal:
+### **Requirements**
 
+* **PHP 8.0+** (Ensure `pdo_mysql` extension is enabled)
+* **MySQL 8.0+**
+* **Fedora Users:** Run `sudo dnf install php-mysqlnd` to satisfy dependencies.
+
+### **Development Environment**
+* **OS: Fedora 42(Workstation Edition)**
+* **Tooling: Fedora's native dnf5 package manager for php-MySQL extensions.**
+
+### **Installation & Running**
+
+1. **Clone the repository** to your local machine.
+2. **Import the Database:** Execute the `blogSystem.sql` file in your MySQL environment (phpMyAdmin, Workbench, etc.).
+3. **Start the Server:** Navigate to the project root in your terminal and run:
 ```bash
 php -S localhost:8000
-```
-
-4. Open your browser:
 
 ```
-http://localhost:8000/frontend/index.php
-```
 
-> The pages will load **mock data** from JSON files or PHP session. Backend database integration is not yet active.
+
+4. **Access the App:** Open your browser to:
+`http://localhost:8000/frontend/index.php`
+
+> **Note:** Successful database connection will trigger a `DB connected` message in both the browser UI and the DevTools console.
 
 ---
 
-## Database Schema
+## 🗺️ Roadmap
 
-The project includes a **MySQL schema** (`dbSchema/blogSystem.sql`) with the following tables:
+### **Phase 1: Persistence**
 
-* `users` – stores user accounts and roles
-* `posts` – stores blog posts
-* `comments` – stores comments for posts
-* `tags` – stores tags for posts
-* `post_tags` – many-to-many relationship between posts and tags
+* [ ] **Full Backend Migration:** Replace all PHP `$_SESSION` mock data with PDO prepared statements in `db_logic.php`.
+* [ ] **Relational Queries:** Implement `JOIN` queries to display tags and author names alongside posts.
 
+### **Phase 2: Security & Auth**
+
+* [ ] **Password Hashing:** Utilize `password_hash()` and `password_verify()` for user security.
+* [ ] **Session Protection:** Implement `session_regenerate_id()` to prevent session hijacking.
+* [ ] **SQL Injection Prevention:** Ensure all user inputs are handled via prepared statements.
+
+### **Phase 3: Frontend**
+* [ ] **Search & Filter:** Add functionality to search posts by title or filter by tags.
+* [ ] **Mobile Optimization:** Refine CSS media queries for a seamless mobile experience.
+* [ ] **Author Dashboard:** Add a statistics panel for authors to track post engagement.
 ---
 
-## Next Steps / Roadmap
+## 👤 Author
 
-1. **Backend Integration**
+**Tonny Blair**
+*Project Lead & Developer*
 
-   * Connect frontend to `blogSystem.php` for login, registration, CRUD operations
-   * Replace session/JSON mock data with real database queries
 
-2. **Authentication & Authorization**
-
-   * Secure login and registration
-   * Role-based permissions for admin, author, and reader
-
-3. **Post Features**
-
-   * Implement create/edit/delete posts fully
-   * Add comments and reactions (like/dislike/save)
-
-4. **UI/UX Improvements**
-
-   * Responsive design for mobile
-   * Improved post layout and navigation
-
-5. **Optional Advanced Features**
-
-   * Search functionality
-   * Tag filtering
-   * Post statistics for authors
-
----
-
-## Author
-
-**TONNY BLAIR**
