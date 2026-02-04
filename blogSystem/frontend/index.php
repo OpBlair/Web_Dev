@@ -1,7 +1,5 @@
 <?php
 session_start();
-session_destroy();
-session_start();
 
 if(!isset($_SESSION['user'])){
     $_SESSION['user'] = [
@@ -10,7 +8,29 @@ if(!isset($_SESSION['user'])){
     ];
 }
 
-$user = $_SESSION['user'];
+$user = $_SESSION['user'] ?? null; //if no user is logged in, set user to null.
+
+$posts = [
+    [
+        "title" => "The Future of Robotics",
+        "excerpt" => "How embedded systems are changing the world...",
+        "author" => "Admin",
+        "date" => "Feb 3, 2026"
+    ],
+    [
+        "title" => "Learning PHP logic",
+        "excerpt" => "Why session management is key to security...",
+        "author" => "John_Doe",
+        "date" => "Feb 1, 2026"
+    ],
+    [
+        "title" => "The Word",
+        "excerpt" => "Fear of the Lord is the beginning of wisdom",
+        "author" => "The Bible",
+        "date" => "Jan 1, 2026"
+    ]
+];
+
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +45,12 @@ $user = $_SESSION['user'];
     <main>
         <!--- NAVIGATION BAR  ---> 
         <nav class="nav-bar">
+            <div class="user-badge">
+                <strong><?php echo $user['username']; ?></strong>
+                <span style="display:block; font-size: 0.7rem; opacity: 0.7;">
+                    Role: <?php echo strtoupper($user['role']); ?>
+                </span>
+            </div>
             <input type="search" placeholder="enter text to search">
             <ul>
                 <?php if($user['role'] === 'reader'):?>
@@ -42,26 +68,41 @@ $user = $_SESSION['user'];
         </nav>
 
         <!-- CONTENT SECTION -->
-        <section class="content">
-            <div class="blog-content">
-                <p>"The fear of the Lord is the beginning of Wisdom."</p>
+         <section class="content">
+            <div class="posts-container">
+                <?php foreach($posts as $post): ?>
+                    <div class="blog-content">
+                        <h2><?php echo $post['title']; ?></h2>
+                        <small>By <?php echo $post['author']; ?> | <?php echo $post['date']; ?></small>
+                        <p><?php echo $post['excerpt']; ?></p>
 
-                <?php if($user['role'] === 'reader'): ?>
-                    <div class="blog-reaction">
-                        <button>like</button>
-                        <button>dislike</button>
-                        <button>comment</button>
-                        <button>save</button>
+                        <!---- IF A USER ISN'T LOGGED IN ----->
+                        <?php if(!$user): ?>
+                            <p><a href="login.php">Log in</a> to like or comment!</p>
+
+                        <!------ USER REACTION FOR A READER ------>
+                        <?php elseif($user['role'] === 'reader'): ?>
+                            <div class="actions">
+                                <button class="btn-alt">Like</button>
+                                <button class="btn-alt">Dislike</button>
+                                <button class="btn-alt">Comment</button>
+                                <button class="btn-alt">Save</button>
+                            </div>
+                        <!------ USER REACTION FOR AN ADMIN AND A AUTHOR ---->
+                        <?php elseif($user['role'] === 'author' || $user['role'] === 'admin'): ?>
+                            <div class="actions">
+                                <button class="btn-alt">Like</button>
+                                <button class="btn-alt">Comment</button>
+                                <button class="btn-main">Edit Post</button>
+                                <button class="btn-danger">Delete</button>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                <?php elseif ($user['role'] === 'author' || $user['role'] === 'admin'): ?>
-                    <div class="blog-creation">
-                        <button>edit</button>
-                        <button>post</button>
-                        <button>delete</button>
-                    </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
         </section>
+
     </main>
 </body>
 </html>
+
