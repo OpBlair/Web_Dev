@@ -20,9 +20,6 @@ try{
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $stmt = $pdo->query("SELECT 1");
-    echo "<script>console.log('DB connected');</script>";
-    echo "DB connected";
-    exit;
 } catch (PDOException $e){
     die("Database connection failed :(".$e->getMessage());
 }
