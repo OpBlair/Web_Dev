@@ -10,12 +10,12 @@
 <body>
     <div class="register">
         <h2>Create Account</h2>
-        <form action="" method="post" style="display:flex; flex-direction:column; gap:15px;">
-            <input type="text" placeholder="first name">
-            <input type="text" placeholder="last name">
-            <input type="email" placeholder="email">
-            <input type="password" placeholder="enter new password">
-            <input type="password" placeholder="confirm password">
+        <form action="../backend/register_handler.php" method="post" style="display:flex; flex-direction:column; gap:15px;">
+            <input type="text" name="first_name" placeholder="first name">
+            <input type="text" name="last_name" placeholder="last name">
+            <input type="email" name="email" placeholder="email">
+            <input type="password" name="password" placeholder="enter new password">
+            <input type="password" name="confirm_password" placeholder="confirm password">
 
             <button type="submit">Register</button>
         </form>
