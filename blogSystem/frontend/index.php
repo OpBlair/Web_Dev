@@ -8,11 +8,7 @@ if(!isset($_SESSION['user'])){
     ];
 }
 
-$user = $_SESSION['user'] ?? null; //if no user is logged in, set user to null.
-
-// Let's assume $user is fetched from your session
-// and $post is an associative array from your SQL: 
-// SELECT posts.*, users.first_name FROM posts JOIN users ON posts.author_id = users.user_id;
+$user = $_SESSION['user'] ?? null; //if no user is logged in, set user to null
 
 $current_user_id = $_SESSION['user']['user_id'];
 $current_user_role = $_SESSION['user']['role'];
@@ -22,17 +18,6 @@ $isOwner = ($current_user_id === $post['author_id']);
 $isAdmin = ($current_user_role === 'admin');
 $isAuthorRole = ($current_user_role === 'author');
 
-/*
-<div class="actions">
-    <button class="btn-alt">Like</button>
-    <button class="btn-alt">Comment</button>
-
-    <?php if ($isAdmin || ($isAuthorRole && $isOwner)): ?>
-        <button class="btn-main">Edit Post</button>
-        <button class="btn-danger">Delete</button>
-    <?php endif; ?>
-</div>
-*/
 $posts = [
     [
         "title" => "The Future of Robotics",
