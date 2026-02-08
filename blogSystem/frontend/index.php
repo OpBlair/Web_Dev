@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$view = $_GET['view'] ?? 'posts';
+
 if(!isset($_SESSION['user'])){
     $_SESSION['user'] = [
         'username' => 'John_Doe',
@@ -8,7 +10,11 @@ if(!isset($_SESSION['user'])){
     ];
 }
 
-$user = $_SESSION['user'] ?? null; //if no user is logged in, set user to null
+$user = $_SESSION['user'] ?? null; //if no user is logged in, set user to null.
+
+// Let's assume $user is fetched from your session
+// and $post is an associative array from your SQL: 
+// SELECT posts.*, users.first_name FROM posts JOIN users ON posts.author_id = users.user_id;
 
 $current_user_id = $_SESSION['user']['user_id'];
 $current_user_role = $_SESSION['user']['role'];
@@ -18,6 +24,17 @@ $isOwner = ($current_user_id === $post['author_id']);
 $isAdmin = ($current_user_role === 'admin');
 $isAuthorRole = ($current_user_role === 'author');
 
+/*
+<div class="actions">
+    <button class="btn-alt">Like</button>
+    <button class="btn-alt">Comment</button>
+
+    <?php if ($isAdmin || ($isAuthorRole && $isOwner)): ?>
+        <button class="btn-main">Edit Post</button>
+        <button class="btn-danger">Delete</button>
+    <?php endif; ?>
+</div>
+*/
 $posts = [
     [
         "title" => "The Future of Robotics",
@@ -67,11 +84,12 @@ $posts = [
                     <li>create new post</li>
                     <li>my posts & post stats</li>
                 <?php elseif($user['role'] === 'admin'):?>
-                    <li>Dashboard Overview</li>
-                    <li>All Posts</li>
-                    <li>Manage Users</li>
-                    <li>Notifications</li>
-                    <li>Site Settings</li>
+                    <li class="<?php echo ($view == 'overview') ? 'active' : ''; ?>"><a href="?view=overview">Dashboard Overview</a></li>
+                    <li class="<?php echo ($view == 'posts') ? 'active' : ''; ?>"><a href="?view=posts">All Posts</a></li>
+                    <li class="<?php echo($view == 'users' /*|| 'manage'*/) ? 'active' : ''; ?>"><a href="?view=users">Manage Users</a></li>
+                    <li class="<?php echo ($view == 'notification') ? 'active' : ''; ?>"><a href="?view=notification">Notifications</a></li>
+                    <li class="<?php echo ($view == 'settings') ? 'active' : ''; ?>"><a href="?view=settings">Site Settings</a></li>
+                    <li><a href="?">Logout</a></li>
                 <?php endif;?>
             </ul>
         </nav>
@@ -90,133 +108,139 @@ $posts = [
             
             <!-- CONTENT SECTION -->
             <section class="content">
-                <!----- OVERALL OVERVIEW VIEW ----->
-                <?php if($user['role'] === 'admin'): ?>
-                <div class="overveiw">
-                    <div class="number-of-authors">
-                        <span>Authors</span>
-                        <span>10</span>
-                    </div>
-                    <div class="number-of-readers">
-                        <span>Readers</span>
-                        <span>20</span>
-                    </div>
-                    <div class="number-of-posts">
-                        <span>Posts</span>
-                        <span>30</span>
-                    </div>
-                    <div class="number-of-comments">
-                        <span>Comments</span>
-                        <span>5</span>
-                    </div>
-                </div>
-                <?php endif; ?>
-                
-                <!-----OVERVIEW OF USER DATA ------->
-                <?php if($user['role'] === 'admin'): ?>
-                    <div class="users-data">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Joined</th>
-                                    <th>Posts</th>
-                                    <th>Comments</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>John Doe</td>
-                                    <td>jdoe@gmail.com</td>
-                                    <td>Admin</td>
-                                    <td>Feb 5, 2026</td>
-                                    <td>5</td>
-                                    <td>7</td>
-                                    <td>
-                                        <a href="?manage_user=1" class="btn-manage">Manage</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-
-                <!-------- USER MANAGEMENT DASHBOARD   ------->
-                <?php if($user['role'] === 'admin' && isset($_GET['manage_user'])): ?>
-                    <section class="management-panel">
-                        <header class="panel-header">
-                            <h3>Managing User: John Doe</h3>
-                            <div class="user-controls">
-                                <p>Role: Admin</p>
-                                <button class="btn-main">Update Role</button>
-                                <select name="role">
-                                    <option value="reader">Reader</option>
-                                    <option value="author">Author</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                                <button class="btn-danger">Suspend Account</button>
+                <?php 
+                switch($view){
+                    case 'overview':
+                        //----- OVERALL OVERVIEW VIEW -----
+                        if($user['role'] !== 'admin') break; ?>
+                        <div class="overveiw">
+                            <div class="stat-card">
+                                <span>Authors</span>
+                                <span>10</span>
                             </div>
-                        </header>
-
-                        <div class="user-activity-grid">
-                            <div class="activity-block">
-                                <h4>Recent Posts by this User</h4>
-                                <ul>
-                                    <li>"PHP Logic" <button class="btn-sm btn-danger">Delete</button></li>
-                                    <li>"My First Blog" <button class="btn-sm btn-danger">Delete</button></li>
-                                </ul>
+                            <div class="stat-card">
+                                <span>Readers</span>
+                                <span>20</span>
                             </div>
-
-                            <div class="activity-block">
-                                <h4>User Comments</h4>
-                                <div class="comment-item">
-                                    <p>"This post is awesome!"</p>
-                                    <small>On: The Future of Robotics</small>
-                                    <button class="btn-sm btn-danger">Delete Comment</button>
-                                </div>
+                            <div class="stat-card">
+                                <span>Posts</span>
+                                <span>30</span>
+                            </div>
+                            <div class="stat-card">
+                                <span>Comments</span>
+                                <span>5</span>
                             </div>
                         </div>
-                    </section>
-                <?php endif; ?>
-
-                <!------- POSTS OVERVIEW ------>
-                <div class="posts-container">
-                    <?php foreach($posts as $post): ?>
-                        <div class="blog-content">
-                            <h2><?php echo $post['title']; ?></h2>
-                            <small>By <?php echo $post['author']; ?> | <?php echo $post['date']; ?></small>
-                            <p><?php echo $post['excerpt']; ?></p>
-
-                            <!---- IF A USER ISN'T LOGGED IN ----->
-                            <?php if(!$user): ?>
-                                <p><a href="login.php">Log in</a> to like or comment!</p>
-
-                            <!------ USER REACTION FOR A READER ------>
-                            <?php elseif($user['role'] === 'reader'): ?>
-                                <div class="actions">
-                                    <button class="btn-alt">Like</button>
-                                    <button class="btn-alt">Dislike</button>
-                                    <button class="btn-alt">Comment</button>
-                                    <button class="btn-alt">Save</button>
-                                </div>
-                            <!------ USER REACTION FOR AN ADMIN AND A AUTHOR ---->
-                            <?php elseif($user['role'] === 'author' || $user['role'] === 'admin'): ?>
-                                <div class="actions">
-                                    <button class="btn-alt">Like</button>
-                                    <button class="btn-alt">Comment</button>
-                                    <button class="btn-main">Edit Post</button>
-                                    <button class="btn-danger">Delete</button>
-                                </div>
-                            <?php endif; ?>
+                        <?php break;
+                    case 'users':
+                        //-----OVERVIEW OF USER DATA ------
+                        if($user['role'] !== 'admin') break; ?>
+                        <div class="users-data">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Joined</th>
+                                        <th>Posts</th>
+                                        <th>Comments</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>John Doe</td>
+                                        <td>jdoe@gmail.com</td>
+                                        <td>Admin</td>
+                                        <td>Feb 5, 2026</td>
+                                        <td>5</td>
+                                        <td>7</td>
+                                        <td>
+                                            <a href="?view=manage&id=1" class="btn-manage">Manage</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+                        <?php break;
+
+                    case 'manage':
+                        //------- USER MANAGEMENT DASHBOARD   -------
+                         if($user['role'] !== 'admin' && isset($_GET['manage_user'])) break; ?>
+                        <section class="management-panel">
+                            <header class="panel-header">
+                                <h3>Managing User: John Doe</h3>
+                                <div class="user-controls">
+                                    <p>Role: Admin</p>
+                                    <button class="btn-main">Update Role</button>
+                                    <select name="role">
+                                        <option value="reader">Reader</option>
+                                        <option value="author">Author</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                    <button class="btn-danger">Suspend Account</button>
+                                </div>
+                            </header>
+
+                            <div class="user-activity-grid">
+                                <div class="activity-block">
+                                    <h4>Recent Posts by this User</h4>
+                                    <ul>
+                                        <li>"PHP Logic" <button class="btn-sm btn-danger">Delete</button></li>
+                                        <li>"My First Blog" <button class="btn-sm btn-danger">Delete</button></li>
+                                    </ul>
+                                </div>
+
+                                <div class="activity-block">
+                                    <h4>User Comments</h4>
+                                    <div class="comment-item">
+                                        <p>"This post is awesome!"</p>
+                                        <small>On: The Future of Robotics</small>
+                                        <button class="btn-sm btn-danger">Delete Comment</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <?php break;
+                    case 'posts':
+                    default: ?>
+                    <!------- POSTS OVERVIEW ------>
+                    <div class="posts-container">
+                        <?php foreach($posts as $post): ?>
+                            <div class="blog-content">
+                                <h2><?php echo $post['title']; ?></h2>
+                                <small>By <?php echo $post['author']; ?> | <?php echo $post['date']; ?></small>
+                                <p><?php echo $post['excerpt']; ?></p>
+
+                                <!---- IF A USER ISN'T LOGGED IN ----->
+                                <?php if(!$user): ?>
+                                    <p><a href="login.php">Log in</a> to like or comment!</p>
+
+                                <!------ USER REACTION FOR A READER ------>
+                                <?php elseif($user['role'] === 'reader'): ?>
+                                    <div class="actions">
+                                        <button class="btn-alt">Like</button>
+                                        <button class="btn-alt">Dislike</button>
+                                        <button class="btn-alt">Comment</button>
+                                        <button class="btn-alt">Save</button>
+                                    </div>
+                                <!------ USER REACTION FOR AN ADMIN AND A AUTHOR ---->
+                                <?php elseif($user['role'] === 'author' || $user['role'] === 'admin'): ?>
+                                    <div class="actions">
+                                        <button class="btn-alt">Like</button>
+                                        <button class="btn-alt">Comment</button>
+                                        <button class="btn-main">Edit Post</button>
+                                        <button class="btn-danger">Delete</button>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php break;
+                } ?>
             </section>
         </div>
-
     </main>
 </body>
 </html>
