@@ -1,31 +1,43 @@
 <?php
 session_start();
+// Database connection (assuming $pdo is in db_logic.php)
+require_once '../backend/db_logic.php';
 
+// Fetch posts with author names
 $view = $_GET['view'] ?? 'posts';
+$user = $_SESSION['user'] ?? null;
 
-if(!isset($_SESSION['user'])){
-    $_SESSION['user'] = [
-        'user_id' => 1,
-        'username' => 'John_Doe',
-        'role' => 'admin' // roles 'admin', 'author', 'reader'
-    ];
+// Adjust the query based on the view
+if ($view === 'my_posts' && $user) {
+    $sql = "SELECT posts.*, users.first_name FROM posts 
+            JOIN users ON posts.author_id = users.user_id 
+            WHERE posts.author_id = ? 
+            ORDER BY posts.created_at DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$user['user_id']]);
+} else {
+    // Default: Fetch all published posts
+    $sql = "SELECT posts.*, users.first_name FROM posts 
+            JOIN users ON posts.author_id = users.user_id 
+            WHERE posts.status = 'published' 
+            ORDER BY posts.created_at DESC";
+    $stmt = $pdo->query($sql);
 }
-
-$user = $_SESSION['user'] ?? null; //if no user is logged in, set user to null.
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Let's assume $user is fetched from your session
 // and $post is an associative array from your SQL: 
 // SELECT posts.*, users.first_name FROM posts JOIN users ON posts.author_id = users.user_id;
-
+/*
 $current_user_id = $_SESSION['user']['user_id'];
 $current_user_role = $_SESSION['user']['role'];
 
 // Permission Helper Logic
+
 $isOwner = ($current_user_id === $post['author_id']);
 $isAdmin = ($current_user_role === 'admin');
 $isAuthorRole = ($current_user_role === 'author');
 
-/*
 <div class="actions">
     <button class="btn-alt">Like</button>
     <button class="btn-alt">Comment</button>
@@ -36,26 +48,6 @@ $isAuthorRole = ($current_user_role === 'author');
     <?php endif; ?>
 </div>
 */
-$posts = [
-    [
-        "title" => "The Future of Robotics",
-        "excerpt" => "How embedded systems are changing the world...",
-        "author" => "Admin",
-        "date" => "Feb 3, 2026"
-    ],
-    [
-        "title" => "Learning PHP logic",
-        "excerpt" => "Why session management is key to security...",
-        "author" => "John_Doe",
-        "date" => "Feb 1, 2026"
-    ],
-    [
-        "title" => "The Word",
-        "excerpt" => "Fear of the Lord is the beginning of wisdom",
-        "author" => "The Bible",
-        "date" => "Jan 1, 2026"
-    ]
-];
 
 ?>
 
@@ -73,8 +65,9 @@ $posts = [
         <nav class="nav-bar">
             <div class="user-badge">
                 <span style="display:block; font-size: 0.7rem; opacity: 0.7;">
-                    Role: <?php echo strtoupper($user['username']); ?>
+                    <?php echo strtoupper($user['username'] ?? 'GUEST'); ?>
                 </span>
+                <small>(<?php echo strtoupper($user['role'] ?? 'visitor'); ?>)</small>
             </div>
             <ul>
                 <?php if($user['role'] === 'reader'):?>
@@ -89,9 +82,9 @@ $posts = [
                     <li class="<?php echo ($view == 'overview') ? 'active' : ''; ?>"><a href="?view=overview">Dashboard Overview</a></li>
                     <li class="<?php echo ($view == 'posts') ? 'active' : ''; ?>"><a href="?view=posts">All Posts</a></li>
                     <li class="<?php echo($view == 'users' /*|| 'manage'*/) ? 'active' : ''; ?>"><a href="?view=users">Manage Users</a></li>
-                    <li class="<?php echo ($view == 'notification') ? 'active' : ''; ?>"><a href="?view=notification">Notifications</a></li>
                     <li class="<?php echo ($view == 'settings') ? 'active' : ''; ?>"><a href="?view=settings">Site Settings</a></li>
                 <?php endif;?>
+                <li class="<?php echo ($view == 'notification') ? 'active' : ''; ?>"><a href="?view=notification">Notifications</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
@@ -103,8 +96,7 @@ $posts = [
                     <input type="search" placeholder="Search users or posts...">
                 </div>
                 <div class="user-profile">
-                    <span><?php echo $user['username']; ?></span>
-                    <small>(<?php echo strtoupper($user['role']); ?>)</small>
+                    <span class="avatar-circle"><?php echo htmlspecialchars(mb_strtoupper(mb_substr($user['username'], 0, 1)) ?? 'Guest'); ?></span>
                 </div>
             </header>
             
@@ -205,15 +197,26 @@ $posts = [
                             </div>
                         </section>
                         <?php break;
+                    case 'create':
+                        if ($user['role'] === 'reader') break; ?>
+                        <div class="create-post">
+                            <h2>Create a New Post</h2>
+                            <form action="../backend/process_post.php" method="POST">
+                                <input type="text" name="title" placeholder="Post Title">
+                                <textarea name="content" id="content" placeholder="What's on your mind ?"></textarea>
+                                <button type="submit" class="btn-main">Publish Post</button>
+                            </form>
+                        </div>
+                        <?php break;
                     case 'posts':
                     default: ?>
                     <!------- POSTS OVERVIEW ------>
                     <div class="posts-container">
                         <?php foreach($posts as $post): ?>
                             <div class="blog-content">
-                                <h2><?php echo $post['title']; ?></h2>
-                                <small>By <?php echo $post['author']; ?> | <?php echo $post['date']; ?></small>
-                                <p><?php echo $post['excerpt']; ?></p>
+                                <h2><?php echo htmlspecialchars($post['title']); ?></h2>
+                                <small>By <?php echo htmlspecialchars($post['first_name']); ?> | <?php echo date('M j, Y', strtotime($post['created_at'])); ?></small>
+                                <p><?php echo htmlspecialchars(substr($post['content'], 0, 150)) . '...'; ?></p>
 
                                 <!---- IF A USER ISN'T LOGGED IN ----->
                                 <?php if(!$user): ?>
@@ -222,16 +225,16 @@ $posts = [
                                 <!------ USER REACTION FOR A READER ------>
                                 <?php elseif($user['role'] === 'reader'): ?>
                                     <div class="actions">
-                                        <button class="btn-alt" id="like">Like</button>
+                                        <button class="btn-alt like-btn">Like</button>
                                         <button class="btn-alt">Dislike</button>
-                                        <button class="btn-alt">Comment</button>
+                                        <button class="btn-alt comment-btn">Comment</button>
                                         <button class="btn-alt">Save</button>
                                     </div>
                                 <!------ USER REACTION FOR AN ADMIN AND A AUTHOR ---->
                                 <?php elseif($user['role'] === 'author' || $user['role'] === 'admin'): ?>
                                     <div class="actions">
-                                        <button class="btn-alt">Like</button>
-                                        <button class="btn-alt">Comment</button>
+                                        <button class="btn-alt like-btn">Like</button>
+                                        <button class="btn-alt comment-btn">Comment</button>
                                         <button class="btn-main">Edit Post</button>
                                         <button class="btn-danger">Delete</button>
                                     </div>
@@ -244,5 +247,17 @@ $posts = [
             </section>
         </div>
     </main>
+    <script>
+    // We 'inject' the PHP value into a JS variable
+    const currentUserId = <?php echo json_encode($user['user_id'] ?? 0); ?>;
+    const userRole = <?php echo json_encode($user['role'] ?? 'guest'); ?>;
+
+    console.log("Logged in user ID:", currentUserId);
+    
+    if (userRole === 'admin') {
+        alert("Welcome, Boss!");
+    }
+</script>
+
 </body>
 </html>
