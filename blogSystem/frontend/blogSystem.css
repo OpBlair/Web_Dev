@@ -72,7 +72,20 @@ main { display: flex; height: 100vh; width: 100vw; }
     background: #f8f9fa;
     outline: none;
 }
-
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.avatar-circle:hover {cursor: pointer;}
 /* CONTENT SCROLLING */
 .content {
     flex: 1;
@@ -141,8 +154,98 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
 .btn-main { background: var(--accent-color); color: white; }
 .btn-danger { background: var(--danger); color: white; }
 .btn-alt { background: #edf2f7; color: #4a5568; }
+#like:hover { background-color: rgb(5, 210, 5); color: white; transition: 0.5s;}
 .btn-manage { background: var(--sidebar-color); color: white; }
 
+/* IMPROVED CREATE POST SECTION */
+.create-post {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+.create-post h2 {
+    margin-bottom: 20px;
+    color: var(--sidebar-color);
+    font-size: 1.5rem;
+}
+
+.create-post form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create-post input[type="text"], 
+.create-post textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: #f8fafc;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.create-post textarea {
+    min-height: 200px;
+    resize: none;
+}
+
+.create-post input:focus, 
+.create-post textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+}
+
+/* AESTHETIC ACTION BUTTONS */
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #f0f2f5;
+    padding-top: 20px;
+}
+
+.btn-alt {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+/* Specific Hover States for Better UX */
+.btn-alt:hover {
+    transform: translateY(-2px);
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Like Button Green Glow */
+.btn-alt.like-btn:hover {
+    color: #22c55e;
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+
+/* Comment Button Blue Glow */
+.btn-alt.comment-btn:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: #eff6ff;
+}
+
+/* Save/Dislike Button Neutral Glow */
+.btn-alt.util-btn:hover {
+    color: #334155;
+    border-color: #94a3b8;
+}
 
 /* AUTH PAGES STYLING */
 .auth-wrapper {
