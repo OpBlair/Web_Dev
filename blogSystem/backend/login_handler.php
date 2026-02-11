@@ -14,7 +14,7 @@ if(empty($email) || empty($password)){
 
 // ---- FETCH USER BY EMAIL -----
 $stmt = $pdo->prepare(
-    "SELECT user_id, password_hash, role
+    "SELECT user_id, first_name, password_hash, role
     FROM users
     WHERE email = ?
     LIMIT 1"
@@ -36,6 +36,7 @@ session_start();
 
 $_SESSION['user'] = [
     'user_id' => $user['user_id'],
+    'username' => $user['first_name'],
     'email' => $email,
     'role' => $user['role']
 ];
