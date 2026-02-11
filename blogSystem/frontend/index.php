@@ -5,8 +5,9 @@ $view = $_GET['view'] ?? 'posts';
 
 if(!isset($_SESSION['user'])){
     $_SESSION['user'] = [
+        'user_id' => 1,
         'username' => 'John_Doe',
-        'role' => 'author' // roles 'admin', 'author', 'reader'
+        'role' => 'admin' // roles 'admin', 'author', 'reader'
     ];
 }
 
@@ -71,26 +72,27 @@ $posts = [
         <!--- NAVIGATION BAR  ---> 
         <nav class="nav-bar">
             <div class="user-badge">
-                <strong><?php echo $user['username']; ?></strong>
                 <span style="display:block; font-size: 0.7rem; opacity: 0.7;">
-                    Role: <?php echo strtoupper($user['role']); ?>
+                    Role: <?php echo strtoupper($user['username']); ?>
                 </span>
             </div>
             <ul>
                 <?php if($user['role'] === 'reader'):?>
-                    <li>My comments</li>
-                    <li>Saved posts</li>
+                    <li class="<?php echo ($view == 'home') ? 'active' : ''; ?>"><a href="?view=home">Home</a></li>
+                    <li class="<?php echo ($view == 'comments') ? 'active' : ''; ?>"><a href="?view=comments">My comments</a></li>
+                    <li class="<?php echo ($view == 'saved_posts') ? 'active' : ''; ?>"><a href="?view=saved_posts">Saved posts</a></li>
                 <?php elseif($user['role'] === 'author'):?>
-                    <li>create new post</li>
-                    <li>my posts & post stats</li>
+                    <li class="<?php echo ($view == 'home') ? 'active' : ''; ?>"><a href="?view=home">Home</a></li>
+                    <li class="<?php echo ($view == "create") ? 'active' : ''; ?>"><a href="?view=create">Create new post</a></li>
+                    <li class="<?php echo ($view == "my_posts") ? 'active' : ''; ?>"><a href="?view=my_posts">My posts</a></li>
                 <?php elseif($user['role'] === 'admin'):?>
                     <li class="<?php echo ($view == 'overview') ? 'active' : ''; ?>"><a href="?view=overview">Dashboard Overview</a></li>
                     <li class="<?php echo ($view == 'posts') ? 'active' : ''; ?>"><a href="?view=posts">All Posts</a></li>
                     <li class="<?php echo($view == 'users' /*|| 'manage'*/) ? 'active' : ''; ?>"><a href="?view=users">Manage Users</a></li>
                     <li class="<?php echo ($view == 'notification') ? 'active' : ''; ?>"><a href="?view=notification">Notifications</a></li>
                     <li class="<?php echo ($view == 'settings') ? 'active' : ''; ?>"><a href="?view=settings">Site Settings</a></li>
-                    <li><a href="?">Logout</a></li>
                 <?php endif;?>
+                <li><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
 
@@ -220,7 +222,7 @@ $posts = [
                                 <!------ USER REACTION FOR A READER ------>
                                 <?php elseif($user['role'] === 'reader'): ?>
                                     <div class="actions">
-                                        <button class="btn-alt">Like</button>
+                                        <button class="btn-alt" id="like">Like</button>
                                         <button class="btn-alt">Dislike</button>
                                         <button class="btn-alt">Comment</button>
                                         <button class="btn-alt">Save</button>
