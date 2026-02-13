@@ -255,7 +255,7 @@ $isAuthorRole = ($current_user_role === 'author');
     console.log("Logged in user ID:", currentUserId);
     
     if (userRole === 'admin') {
-        alert("Welcome, Boss!");
+        console.log("Welcome, Boss!");
     }
 </script>
 
