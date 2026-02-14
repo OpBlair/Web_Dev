@@ -14,7 +14,7 @@ if ($view === 'my_posts' && $user) {
             WHERE posts.author_id = ? 
             ORDER BY posts.created_at DESC";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$user['user_id']]);
+    $stmt->execute([$user['user_d']]);
 } else {
     // Default: Fetch all published posts
     $sql = "SELECT posts.*, users.first_name FROM posts 
