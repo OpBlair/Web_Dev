@@ -1,6 +1,6 @@
 <?php
 session_start();
-// Database connection (assuming $pdo is in db_logic.php)
+
 require_once '../backend/db_logic.php';
 
 // Fetch posts with author names
@@ -24,32 +24,6 @@ if ($view === 'my_posts' && $user) {
     $stmt = $pdo->query($sql);
 }
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Let's assume $user is fetched from your session
-// and $post is an associative array from your SQL: 
-// SELECT posts.*, users.first_name FROM posts JOIN users ON posts.author_id = users.user_id;
-/*
-$current_user_id = $_SESSION['user']['user_id'];
-$current_user_role = $_SESSION['user']['role'];
-
-// Permission Helper Logic
-
-$isOwner = ($current_user_id === $post['author_id']);
-$isAdmin = ($current_user_role === 'admin');
-$isAuthorRole = ($current_user_role === 'author');
-
-<div class="actions">
-    <button class="btn-alt">Like</button>
-    <button class="btn-alt">Comment</button>
-
-    <?php if ($isAdmin || ($isAuthorRole && $isOwner)): ?>
-        <button class="btn-main">Edit Post</button>
-        <button class="btn-danger">Delete</button>
-    <?php endif; ?>
-</div>
-*/
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
