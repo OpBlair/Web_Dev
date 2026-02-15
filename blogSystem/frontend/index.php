@@ -222,7 +222,6 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </main>
     <script>
-    // We 'inject' the PHP value into a JS variable
     const currentUserId = <?php echo json_encode($user['user_id'] ?? 0); ?>;
     const userRole = <?php echo json_encode($user['role'] ?? 'guest'); ?>;
 
