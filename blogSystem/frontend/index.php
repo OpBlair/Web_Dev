@@ -1,29 +1,14 @@
 <?php
 session_start();
 
-require_once '../backend/db_logic.php';
-
-// Fetch posts with author names
+require_once '../backend/get_posts.php';
+require_once '../backend/get_users.php';
 $view = $_GET['view'] ?? 'posts';
 $user = $_SESSION['user'] ?? null;
 
-// Adjust the query based on the view
-if ($view === 'my_posts' && $user) {
-    $sql = "SELECT posts.*, users.first_name FROM posts 
-            JOIN users ON posts.author_id = users.user_id 
-            WHERE posts.author_id = ? 
-            ORDER BY posts.created_at DESC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$user['user_d']]);
-} else {
-    // Default: Fetch all published posts
-    $sql = "SELECT posts.*, users.first_name FROM posts 
-            JOIN users ON posts.author_id = users.user_id 
-            WHERE posts.status = 'published' 
-            ORDER BY posts.created_at DESC";
-    $stmt = $pdo->query($sql);
-}
-$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$posts = fetchPosts($view, $user);
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -102,35 +87,34 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php break;
                     case 'users':
                         //-----OVERVIEW OF USER DATA ------
-                        if($user['role'] !== 'admin') break; ?>
-                        <div class="users-data">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>User</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Joined</th>
-                                        <th>Posts</th>
-                                        <th>Comments</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>John Doe</td>
-                                        <td>jdoe@gmail.com</td>
-                                        <td>Admin</td>
-                                        <td>Feb 5, 2026</td>
-                                        <td>5</td>
-                                        <td>7</td>
-                                        <td>
-                                            <a href="?view=manage&id=1" class="btn-manage">Manage</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        if($view === 'users' && $user['role'] === 'admin'): ?>
+                            <?php $users = fetchUsers(); ?>
+                        
+                            <div class="users-data">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Posts</th><th>Comments</th><th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($users as $u): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($u['first_name'].' '.$u['last_name']); ?></td>
+                                            <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                            <td><?php echo htmlspecialchars($u['role']); ?></td>
+                                            <td><?php echo date('M j, Y', strtotime($u['created_at'])); ?></td>
+                                            <td><?php echo $u['post_count']; ?></td>
+                                            <td><?php echo $u['comment_count']; ?></td>
+                                            <td>
+                                                <a href="?view=manage&id=1" class="btn-manage">Manage</a>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
                         <?php break;
 
                     case 'manage':
@@ -222,14 +206,12 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </main>
     <script>
+    // We 'inject' the PHP value into a JS variable
     const currentUserId = <?php echo json_encode($user['user_id'] ?? 0); ?>;
     const userRole = <?php echo json_encode($user['role'] ?? 'guest'); ?>;
 
     console.log("Logged in user ID:", currentUserId);
     
-    if (userRole === 'admin') {
-        console.log("Welcome, Boss!");
-    }
 </script>
 
 </body>
