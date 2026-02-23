@@ -117,43 +117,74 @@ $posts = fetchPosts($view, $user);
                         <?php endif; ?>
                         <?php break;
 
-                    case 'manage':
-                        //------- USER MANAGEMENT DASHBOARD   -------
-                         if($user['role'] !== 'admin' && isset($_GET['manage_user'])) break; ?>
-                        <section class="management-panel">
-                            <header class="panel-header">
-                                <h3>Managing User: John Doe</h3>
+                   case 'manage':
+                        if($user['role'] !== 'admin') break; 
+                        // Mocking user data - in production, you'd fetch this via $_GET['id']
+                        $managedUser = ['name' => 'John Doe', 'role' => 'Author', 'email' => 'john@example.com']; 
+                        ?>
+                        
+                        <div class="management-panel">
+                            <header class="management-header">
+                                <div class="profile-summary">
+                                    <div class="avatar-large">JD</div>
+                                    <div class="profile-text">
+                                        <h3><?php echo $managedUser['name']; ?></h3>
+                                        <p><?php echo $managedUser['email']; ?> • <span class="badge"><?php echo $managedUser['role']; ?></span></p>
+                                    </div>
+                                </div>
+                                
                                 <div class="user-controls">
-                                    <p>Role: Admin</p>
-                                    <button class="btn-main">Update Role</button>
-                                    <select name="role">
-                                        <option value="reader">Reader</option>
-                                        <option value="author">Author</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                    <button class="btn-danger">Suspend Account</button>
+                                    <form class="control-group">
+                                        <select name="role" class="select-input">
+                                            <option value="reader">Change to Reader</option>
+                                            <option value="author">Change to Author</option>
+                                            <option value="admin">Change to Admin</option>
+                                        </select>
+                                        <button class="btn-main">Update</button>
+                                    </form>
+                                    <button class="btn-danger-outline">Suspend Account</button>
                                 </div>
                             </header>
 
                             <div class="user-activity-grid">
                                 <div class="activity-block">
-                                    <h4>Recent Posts by this User</h4>
-                                    <ul>
-                                        <li>"PHP Logic" <button class="btn-sm btn-danger">Delete</button></li>
-                                        <li>"My First Blog" <button class="btn-sm btn-danger">Delete</button></li>
+                                    <div class="block-header">
+                                        <h4>Recent Posts</h4>
+                                        <span class="count-pill">2</span>
+                                    </div>
+                                    <ul class="activity-list">
+                                        <li>
+                                            <div class="item-info">
+                                                <strong>PHP Logic Essentials</strong>
+                                                <small>Published 2 days ago</small>
+                                            </div>
+                                            <button class="btn-icon-danger" title="Delete Post">×</button>
+                                        </li>
+                                        <li>
+                                            <div class="item-info">
+                                                <strong>My First Blog</strong>
+                                                <small>Published 1 week ago</small>
+                                            </div>
+                                            <button class="btn-icon-danger" title="Delete Post">×</button>
+                                        </li>
                                     </ul>
                                 </div>
 
                                 <div class="activity-block">
-                                    <h4>User Comments</h4>
-                                    <div class="comment-item">
-                                        <p>"This post is awesome!"</p>
-                                        <small>On: The Future of Robotics</small>
-                                        <button class="btn-sm btn-danger">Delete Comment</button>
+                                    <div class="block-header">
+                                        <h4>Latest Comments</h4>
+                                        <span class="count-pill">1</span>
+                                    </div>
+                                    <div class="comment-item-card">
+                                        <p>"This post is awesome! Really helped me understand sessions."</p>
+                                        <div class="comment-meta">
+                                            <small>On: <em>The Future of Robotics</em></small>
+                                            <button class="btn-link-danger">Delete</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </div>
                         <?php break;
                     case 'create':
                         if ($user['role'] === 'reader') break; ?>
