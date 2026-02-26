@@ -28,6 +28,7 @@ try{
     die("Database error: " . $e->getMessage());
 }
 
-header("Location: ./frontend/index.php#post-" . $post_id);
+// REDIRECT BACK TO THE SAME PAGE
+header("Location: " . $_SERVER['HTTP_REFERER'] . "$post-" . $post_id);
 exit();
 ?>
