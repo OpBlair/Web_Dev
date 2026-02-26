@@ -140,7 +140,7 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
 
 /* BUTTONS */
 .actions { margin-top: 20px; display: flex; gap: 10px; }
-.btn-main, .btn-danger, .btn-alt, .btn-manage {
+.btn-main, .btn-danger, .btn-alt, .btn-manage, .post-comment-btn {
     padding: 8px 18px;
     border-radius: 6px;
     border: none;
@@ -174,14 +174,14 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
     font-size: 1.5rem;
 }
 
-.create-post form {
+.create-post form , .comment-section form{
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
 .create-post input[type="text"], 
-.create-post textarea {
+.create-post textarea, .comment-section textarea {
     width: 100%;
     padding: 14px;
     border-radius: 8px;
@@ -191,13 +191,13 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
     transition: all 0.3s ease;
 }
 
-.create-post textarea {
+.create-post textarea, .comment-section textarea {
     min-height: 200px;
     resize: none;
 }
 
 .create-post input:focus, 
-.create-post textarea:focus {
+.create-post textarea:focus, .comment-section textarea {
     outline: none;
     border-color: var(--accent-color);
     background: white;
@@ -213,7 +213,7 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
     padding-top: 20px;
 }
 
-.btn-alt {
+.btn-alt, .post-comment-btn {
     background: #f1f5f9;
     color: #64748b;
     border: 1px solid transparent;
@@ -228,7 +228,7 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
 }
 
 /* Like Button Green Glow */
-.btn-alt.like-btn:hover {
+.btn-alt.like-btn:hover, .post-comment-btn:hover {
     color: #22c55e;
     border-color: #22c55e;
     background: #f0fdf4;
@@ -537,7 +537,9 @@ td { padding: 15px; border-top: 1px solid var(--border-color); }
     background: white;
     box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
 }
-
+.comment-section{
+    display: none;
+}
 /* AESTHETIC ACTION BUTTONS */
 .actions {
     margin-top: 20px;
