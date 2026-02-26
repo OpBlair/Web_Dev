@@ -25,10 +25,10 @@ function fetchPosts($view = 'posts', $user = null){
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // RETRIEVE COMMENTS FOR EACH POST
-    foreach($posts as $post){
+    foreach($posts as &$post){
         $commentStmt = $pdo->prepare("SELECT comments.*, users.first_name 
             FROM comments 
-            JOIN users ON comments.user_id = users.users_id 
+            JOIN users ON comments.user_id = users.user_id 
             WHERE comments.post_id = ? 
             ORDER BY comments.created_at ASC"
         );
