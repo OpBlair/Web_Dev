@@ -219,6 +219,23 @@ $posts = fetchPosts($view, $user);
                                         <button class="btn-alt comment-btn">Comment</button>
                                         <button class="btn-alt">Save</button>
                                     </div>
+                                    <div class="comment-section">
+                                        <form action="../backend/comments/process_comment.php" method="post" >
+                                            <input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>"/>
+                                            <textarea name="comment-content" placeholder="write your comment here"></textarea>
+                                            <button name="post-comment-btn" class="post-comment-btn" type="submit">post comment</button>
+                                        </form>
+                                        <div class="other-comments" id="comments-for-<?php echo $post['post_id']; ?>">
+                                            <?php foreach($post['comments'] ?? [] as $comment): ?>
+                                                <div class="comment-item-card">
+                                                    <p><?php echo htmlspecialchars($comment['content']); ?></p>
+                                                    <div class="comment-meta">
+                                                        <small>By <?php echo htmlspecialchars($comment['first_name']); ?> on <?php echo date('M j, Y', strtotime($comment['created_at'])); ?></small>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
                                 <!------ USER REACTION FOR AN ADMIN AND A AUTHOR ---->
                                 <?php elseif($user['role'] === 'author' || $user['role'] === 'admin'): ?>
                                     <div class="actions">
@@ -226,6 +243,14 @@ $posts = fetchPosts($view, $user);
                                         <button class="btn-alt comment-btn">Comment</button>
                                         <button class="btn-main">Edit Post</button>
                                         <button class="btn-danger">Delete</button>
+                                    </div>
+                                    <div class="comment-section">
+                                        <form action="../backend/comments/process_comment.php" method="post" >
+                                            <input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>"/>
+                                            <textarea name="comment-content" placeholder="write your comment here"></textarea>
+                                            <button name="post-comment-btn" class="post-comment-btn" type="submit">post comment</button>
+                                        </form>
+                                        <div class="other-comments"></div>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -240,6 +265,24 @@ $posts = fetchPosts($view, $user);
     // We 'inject' the PHP value into a JS variable
     const currentUserId = <?php echo json_encode($user['user_id'] ?? 0); ?>;
     const userRole = <?php echo json_encode($user['role'] ?? 'guest'); ?>;
+
+    const commentBtn = document.querySelectorAll('.comment-btn');
+    commentBtn.forEach(button => {
+        button.addEventListener('click', () => {
+            console.log("I was clicked");
+            const postContainer = button.closest('.blog-content');
+            if(!postContainer) return;
+
+            const commentSection = postContainer.querySelector('.comment-section');
+            if(!commentSection) return;
+
+            if(commentSection.style.display === 'flex'){
+                commentSection.style.display = 'none';
+            } else {
+                commentSection.style.display = 'flex';
+            }
+        });
+    })
 
     console.log("Logged in user ID:", currentUserId);
     
