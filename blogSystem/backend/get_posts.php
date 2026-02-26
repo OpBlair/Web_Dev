@@ -6,7 +6,7 @@ function fetchPosts($view = 'posts', $user = null){
     global $pdo;
 
     // Adjust the query based on the view
-    if ($view === 'my_posts' && $user) {
+    if($view === 'my_posts' && $user) {
         $sql = "SELECT posts.*, users.first_name FROM posts 
                 JOIN users ON posts.author_id = users.user_id 
                 WHERE posts.author_id = ? 
@@ -22,7 +22,19 @@ function fetchPosts($view = 'posts', $user = null){
         $stmt = $pdo->query($sql);
     }
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // RETRIEVE COMMENTS FOR EACH POST
+    foreach($posts as $post){
+        $commentStmt = $pdo->prepare("SELECT comments.*, users.first_name 
+            FROM comments 
+            JOIN users ON comments.user_id = users.users_id 
+            WHERE comments.post_id = ? 
+            ORDER BY comments.created_at ASC"
+        );
+        $commentStmt->execute([$post['post_id']]);
+        $post['comments'] = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return $posts;
+}
 ?>
