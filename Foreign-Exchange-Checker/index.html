@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+
+  <title>FX Checker</title>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="./assets/images/logo.svg" alt="FX Checker">
+        </div>
+
+        <div class="market-meta">
+            <!-- Dynamic: number of available currencies, e.g. "55" -->
+            <span class="currency-count">[55]</span> currencies &middot; eod &middot; ecb data
+        </div>
+
+        <div class="live-markets" aria-label="Live markets ticker">
+            <span>&middot;</span>
+            <span class="ticker-label">Live markets</span>
+            <!-- Live markets ticker — auto-scrolls across the page, pauses on hover -->
+            <!-- Dynamic: scrolling list of currency pairs, each with its rate and 24h change (▲ up / ▼ down) -->
+            <div class="ticker-wrapper">
+                <ul class="ticker-list">
+                <li>EUR/USD 1.0912 <span class="trend up">▲ 0.12%</span></li>
+                <li>GBP/USD 1.2734 <span class="trend down">▼ 0.05%</span></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Converter -->
+        <section>
+            <h2>check the rate</h2>
+
+            <div class="send">
+                <p>send</p>
+                <!-- Dynamic: amount to convert (number input, defaults to 1,000) -->
+                <input type="number"/>
+                <!-- Dynamic: selected "send" currency — flag + code; opens the currency picker -->
+                <select name="currencyFlag" id="">
+                    <option value="usd">usd</option>
+                </select>
+            </div>
+
+            <!-- Swap the send and receive currencies (icon button) -->
+             <button class="swap-currencies-btn">
+                <picture>
+                    <source media="(min-width: 375px)" srcset="assets/images/icon-exchange-vertical.svg">
+                    <source media="(min-width: 768px)" srcset="assets/images/icon-exchange.svg">
+                    <img src="assets/images/icon-exchange-vertical.svg" alt="exchange currency">
+                </picture>
+             </button>
+
+            <div class="receive">
+                <p>receive</p>
+                <!-- Dynamic: converted amount -->
+                <input type="number"/>
+                <!-- Dynamic: selected "receive" currency — flag + code; opens the currency picker -->
+                <select name="currencyFlag" id="">
+                    <option value="usd">usd</option>
+                </select>
+            </div>
+        
+            <div class="conversion-meta">
+                <!-- Dynamic: exchange rate for the active pair, e.g. "1 USD = 0.8530 EUR" -->
+                <p class="exchange-rate">1 usd = 0.8530 euro </p>
+
+                <div class="conversion-actions">
+                    <!-- Favorite toggle for the active pair — reads "Favorite" when unpinned, "Favorited" when pinned -->
+                    <button type="button" class="favorite-toggle-btn" aria-pressed="false">
+                        <span class="state-unpinned">Favorite</span>
+                        <span class="state-pinned hidden">Favorited</span>
+                    </button>
+                    
+                    <button type="button" class="log-conversion-btn">Log conversion</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Currency picker — popover opened from either currency button -->
+        <dialog id="currency-picker">
+            <form>
+                <label for="currency-search"></label>
+                <input type="search" id="currency-search" placeholder="Search currencies...">
+            </form>
+        </dialog>
+
+        <div class="picker-sections">
+            <!-- Dynamic: number of popular currencies -->
+            <!-- Dynamic: popular currencies, each row: flag, code, name (a checkmark marks the selected one) -->
+            <section class="picker-group">
+                <h3>Popular (<span class="count">[4]</span>)</h3>
+                <ul class="currency-list" role="listbox">
+                    <li class="currency-row is-selected" role="option" aria-selected="true">
+                        <img src="./assets/images/flags/usd.svg" alt="" class="flag">
+                        <span class="code">USD</span>
+                        <span class="name">US Dollar</span>
+                        <span class="checkmark" aria-hidden="true">✓</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Dynamic: number of other currencies -->
+            <!-- Dynamic: every other currency, each row: flag, code, name -->
+            <!-- Dynamic: while searching, the list filters to the currencies matching the query -->
+            <section class="picker-group">
+            <h3>Other currencies (<span class="count">[51]</span>)</h3>
+            <ul class="currency-list" role="listbox">
+                <li class="currency-row" role="option" aria-selected="false">
+                    <img src="./assets/images/flags/aud.svg" alt="" class="flag">
+                    <span class="code">AUD</span>
+                    <span class="name">Australian Dollar</span>
+                </li>
+            </ul>
+            </section>
+        </div>
+
+        <!-- Tabs — collapse into a dropdown on mobile -->
+        <nav>
+            <div class="mobile-tab-dropdown">
+                <select name="" id="">
+                    <option value="history">history</option>
+                    <option value="compare">compare</option>
+                    <option value="favorites">favorites</option> <!-- Dynamic: number of favorited pairs (badge) -->
+                    <option value="logs">logs</option> <!-- Dynamic: number of logged conversions (badge) -->
+                </select>
+            </div>
+
+            <div class="tablet-tab-dropdown">
+                <button>History</button>
+                <button>Compare</button>
+                <button>
+                    Favorites <span class="badge">[10]</span>
+                </button>
+                <button>
+                    Log <span class="badge">[8]</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Tab panel: History (default tab) -->
+        <section id="panel-history">
+            <div class="metrics-card">
+                <!-- Dynamic: opening rate for the selected range -->
+                <div class="metric-card">
+                    <span class="metric-label">open</span>
+                    <span class="metric-value">0.8516</span>
+                </div>
+
+                <!-- Dynamic: latest rate -->
+                <div class="metric-card">
+                    <span class="metric-label">last</span>
+                    <span class="metric-value">0.8530</span>
+                </div>
+
+                <!-- Dynamic: change over the range (signed; positive green, negative red) -->
+                <div class="metric-card">
+                    <span class="metric-label">change</span>
+                    <span class="metric-value">+0.0014</span>
+                </div>
+
+                <!-- Dynamic: percentage change over the range (▲/▼; positive green, negative red) -->
+                <div class="metric-card">
+                    <span class="metric-label">% change</span>
+                    <span class="metric-value">+0.16%</span>
+                </div>
+            </div>
+
+            <!-- Date range selector -->
+            <div class="timeFrame">
+                <button type="button" role="radio" aria-checked="false">1d</button>
+                <button type="button" role="radio" aria-checked="false">1w</button>
+                <button type="button" role="radio" aria-checked="true">1m</button>
+                <button type="button" role="radio" aria-checked="false">3m</button>
+                <button type="button" role="radio" aria-checked="false">1y</button>
+                <button type="button" role="radio" aria-checked="false">5y</button>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <!-- Dynamic: active pair, e.g. "USD/EUR" -->
+                    <h4 class="active-pair">USD/EUR</h4> 
+                    <!-- Dynamic: latest rate and timestamp, e.g. "0.8530 · May 14 16:00 CET" -->
+                    <p class="chart-timestamp">0.8530 &middot; May 14 16:00 CET</p> 
+                </div>
+                
+                <!-- Dynamic: line + area chart of the pair's rate history, with Y-axis (high/mid/low) and X-axis date labels -->
+                <div class="chart-visuallization">
+
+                </div>
+
+                <!-- History empty / error state -->
+                <div class="error-state hidden">
+                    <p class="error-title">No chart data available</p>
+                    <p class="error-msg">We couldn't load rate history for <span class="current-pair">[pair]</span> right now. This usually clears up in a minute.</p>
+                </div>
+            </div>
+        </section>    
+
+        <!-- Tab panel: Compare -->
+        <section id="panel-compare">
+            <!-- Dynamic: send amount and base currency, e.g. "1,000 from USD" -->
+            <!-- Dynamic: number of comparison rows, e.g. "8 pairs" -->
+            <!-- Dynamic: one row per currency, each: flag, code, name, converted amount, reference rate (e.g. "@ 0.7366"), and a star to pin/unpin -->
+            <div class="panel-header">
+                <h3>Multi-currency</h3>
+                <p class="meta-summary"><span class="amount">1,000</span> from <span class="base-currency">USD</span> (<span class="row-count">8 pairs</span>)</p>
+            </div>
+
+            <ul class="comparison-list">
+                <li class="comparison-row">
+                <div class="currency-info">
+                    <img src="./assets/images/flags/eur.svg" alt="" class="flag">
+                    <span class="code">EUR</span>
+                    <span class="name">Euro</span>
+                </div>
+                <div class="conversion-data">
+                    <span class="converted-amount">853.00</span>
+                    <span class="reference-rate">@ 0.8530</span>
+                </div>
+                <button type="button" class="pin-row-btn" aria-label="Pin pair">
+                    <img src="./assets/images/icon-star.svg" alt="star outline icon">
+                </button>
+                </li>
+            </ul>
+
+            <!-- Compare empty state -->
+            <div class="empty-state hidden">
+                <p class="empty-title">No comparison available</p>
+                <p class="empty-msg">Enter an amount in Send above to see what your money is worth in other currencies.</p>
+            </div>
+        </section>
+
+        <!-- Tab panel: Favorites (pinned pairs, saved in the browser) -->
+        <section id="panel-favorites">
+            <!-- Dynamic: number of pinned pairs, e.g. "10 favorites" -->
+            <div class="panel-header">
+                <h3>Pinned pairs</h3>
+                <p class="meta-summary"><span class="fav-count">10</span> favorites</p>
+            </div>
+
+            <!-- Dynamic: one row per pinned pair, each: pair (e.g. "USD → EUR"), live rate, 24h change %, and a filled star to unpin -->
+            <ul class="favorites-list">
+                <li class="favorites-row">
+                <span class="pair-direction">USD <img src="assets/images/icon-arrow-right.svg" alt="right arrow"> EUR</span>
+                <span class="live-rate">0.8530</span>
+                <span class="change-pct status-positive">▲ 0.24%</span>
+                <button type="button" class="unpin-row-btn" aria-label="Unpin pair">
+                    <img src="./assets/images/icon-star-filled.svg" alt="filled star icon">
+                </button>
+                </li>
+            </ul>
+
+            <!-- Favorites empty state -->
+            <div class="empty-state hidden">
+                <p class="empty-title">No pinned pairs yet</p>
+                <p class="empty-msg">Pin a pair to track its rate here. Tap the star icon on any conversion or comparison row.</p>
+            </div>
+        </section>
+
+        <!-- Tab panel: Log (conversion history, saved in the browser) -->
+        <section id="panel-log">
+            <div class="panel-header">
+                <h3>Conversion log</h3>
+                <!-- Dynamic: number of logged conversions, e.g. "8 logged" -->
+                <p class="meta-summary"><span class="log-count">8</span> logged</p>
+                <button type="button" class="clear-all-btn">Clear all</button>
+            </div>
+
+            <!-- Dynamic: one row per logged conversion, each: relative time (e.g. "20m", "1h", "13 May"), pair, send amount, receive amount, and a delete button -->
+            <ul class="log-list">
+                <li class="log-row">
+                <time class="log-time" datetime="PT20M">20m</time>
+                <span class="log-pair">USD/EUR</span>
+                <span class="log-send">1,000 USD</span>
+                <span class="log-arrow"><img src="assets/images/icon-arrow-right.svg" alt="right arrow"></span>
+                <span class="log-receive">853.00 EUR</span>
+                <button type="button" class="delete-log-item" aria-label="Delete entry"><img src="assets/images/icon-delete.svg" alt="recycle-bin icon"></button>
+                </li>
+            </ul>
+
+            <!-- Log empty state -->
+            <div class="empty-state hidden">
+                <p class="empty-title">No conversions logged yet</p>
+                <p class="empty-msg">Every conversion is recorded here automatically when you tap Log conversion. Your log is private to this session and this browser.</p>
+            </div>
+        </section>
+        
+    </main>
+</body>
+</html>
