@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
-
-  <title>FX Checker</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+    <link rel="stylesheet" href="style.css">
+    <title>FX Checker</title>
 </head>
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">
-            <img src="./assets/images/logo.svg" alt="FX Checker">
-        </div>
+        <section>
+            <div class="logo">
+                <img src="./assets/images/logo.svg" alt="FX Checker">
+            </div>
 
-        <div class="market-meta">
-            <!-- Dynamic: number of available currencies, e.g. "55" -->
-            <span class="currency-count">[55]</span> currencies &middot; eod &middot; ecb data
-        </div>
+            <div class="market-meta">
+                <!-- Dynamic: number of available currencies, e.g. "55" -->
+                <span class="currency-count">[55]</span> currencies &middot; eod &middot; ecb data
+            </div>
+        </section>
 
         <div class="live-markets" aria-label="Live markets ticker">
-            <span>&middot;</span>
-            <span class="ticker-label">Live markets</span>
+            <div class="ticker-logo">
+                <span>&middot;</span>
+                <span class="ticker-label">Live markets</span>
+            </div>
             <!-- Live markets ticker — auto-scrolls across the page, pauses on hover -->
             <!-- Dynamic: scrolling list of currency pairs, each with its rate and 24h change (▲ up / ▼ down) -->
             <div class="ticker-wrapper">
                 <ul class="ticker-list">
-                <li>EUR/USD 1.0912 <span class="trend up">▲ 0.12%</span></li>
-                <li>GBP/USD 1.2734 <span class="trend down">▼ 0.05%</span></li>
+                    <li>EUR/USD 1.0912 <span class="trend up">▲ 0.12%</span></li>
+                    <li>GBP/USD 1.2734 <span class="trend down">▼ 0.05%</span></li>
                 </ul>
             </div>
         </div>
@@ -36,52 +40,59 @@
 
     <main>
         <!-- Converter -->
-        <section>
+        <section class="convert-section">
             <h2>check the rate</h2>
 
-            <div class="send">
-                <p>send</p>
-                <!-- Dynamic: amount to convert (number input, defaults to 1,000) -->
-                <input type="number"/>
-                <!-- Dynamic: selected "send" currency — flag + code; opens the currency picker -->
-                <select name="currencyFlag" id="">
-                    <option value="usd">usd</option>
-                </select>
-            </div>
-
-            <!-- Swap the send and receive currencies (icon button) -->
-             <button class="swap-currencies-btn">
-                <picture>
-                    <source media="(min-width: 375px)" srcset="assets/images/icon-exchange-vertical.svg">
-                    <source media="(min-width: 768px)" srcset="assets/images/icon-exchange.svg">
-                    <img src="assets/images/icon-exchange-vertical.svg" alt="exchange currency">
-                </picture>
-             </button>
-
-            <div class="receive">
-                <p>receive</p>
-                <!-- Dynamic: converted amount -->
-                <input type="number"/>
-                <!-- Dynamic: selected "receive" currency — flag + code; opens the currency picker -->
-                <select name="currencyFlag" id="">
-                    <option value="usd">usd</option>
-                </select>
-            </div>
-        
-            <div class="conversion-meta">
-                <!-- Dynamic: exchange rate for the active pair, e.g. "1 USD = 0.8530 EUR" -->
-                <p class="exchange-rate">1 usd = 0.8530 euro </p>
-
-                <div class="conversion-actions">
-                    <!-- Favorite toggle for the active pair — reads "Favorite" when unpinned, "Favorited" when pinned -->
-                    <button type="button" class="favorite-toggle-btn" aria-pressed="false">
-                        <span class="state-unpinned">Favorite</span>
-                        <span class="state-pinned hidden">Favorited</span>
-                    </button>
-                    
-                    <button type="button" class="log-conversion-btn">Log conversion</button>
+            <form class="converter-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="send-amount">send</label>
+                    <!-- Dynamic: amount to convert (number input, defaults to 1,000) -->
+                    <div class="input-group">
+                        <input type="number" id="send-amount" value="1000" min="0" step="any" required>
+                        <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select send currency">
+                            <img src="./assets/images/flags/us.webp" alt="usa flag" class="flag">
+                            <span class="currency-code">USD</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Swap the send and receive currencies (icon button) -->
+                <button class="swap-currencies-btn">
+                    <picture>
+                        <source media="(min-width: 375px)" srcset="assets/images/icon-exchange-vertical.svg">
+                        <source media="(min-width: 768px)" srcset="assets/images/icon-exchange.svg">
+                        <img src="assets/images/icon-exchange-vertical.svg" alt="exchange currency">
+                    </picture>
+                </button>
+
+                <div class="form-group">
+                    <label for="receive-amount">receive</label>
+                    <!-- Dynamic: converted amount -->
+                    <div class="input-group">
+                        <output id="receive-amount" for="send-amount">853.00</output>
+                        <!-- Dynamic: selected "receive" currency — flag + code; opens the currency picker -->
+                        <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select receive currency">
+                            <img src="./assets/images/flags/eu.webp" alt="europe flag" class="flag">
+                            <span class="currency-code">EUR</span>
+                        </button>
+                    </div>
+                </div>
+            
+                <div class="conversion-meta">
+                    <!-- Dynamic: exchange rate for the active pair, e.g. "1 USD = 0.8530 EUR" -->
+                    <p class="exchange-rate">1 usd = 0.8530 euro </p>
+
+                    <div class="conversion-actions">
+                        <!-- Favorite toggle for the active pair — reads "Favorite" when unpinned, "Favorited" when pinned -->
+                        <button type="button" class="favorite-toggle-btn" aria-pressed="false">
+                            <span class="state-unpinned"> <img src="./assets/images/icon-star.svg" alt="star icon">Favorite</span>
+                            <span class="state-pinned hidden"><img src="./assets/images/icon-star-filled.svg" alt="filled star icon">Favorited</span>
+                        </button>
+                        
+                        <button type="button" class="log-conversion-btn">Log conversion</button>
+                    </div>
+                </div>
+            </form>
         </section>
 
         <!-- Currency picker — popover opened from either currency button -->
@@ -90,37 +101,38 @@
                 <label for="currency-search"></label>
                 <input type="search" id="currency-search" placeholder="Search currencies...">
             </form>
-        </dialog>
 
-        <div class="picker-sections">
-            <!-- Dynamic: number of popular currencies -->
-            <!-- Dynamic: popular currencies, each row: flag, code, name (a checkmark marks the selected one) -->
-            <section class="picker-group">
-                <h3>Popular (<span class="count">[4]</span>)</h3>
+            <div class="picker-sections">
+                <!-- Dynamic: number of popular currencies -->
+                <!-- Dynamic: popular currencies, each row: flag, code, name (a checkmark marks the selected one) -->
+                <section class="picker-group">
+                    <h3>Popular (<span class="count">[4]</span>)</h3>
+                    <ul class="currency-list" role="listbox">
+                        <li class="currency-row is-selected" role="option" aria-selected="true">
+                            <img src="./assets/images/flags/usd.svg" alt="" class="flag">
+                            <span class="code">USD</span>
+                            <span class="name">US Dollar</span>
+                            <span class="checkmark" aria-hidden="true">✓</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Dynamic: number of other currencies -->
+                <!-- Dynamic: every other currency, each row: flag, code, name -->
+                <!-- Dynamic: while searching, the list filters to the currencies matching the query -->
+                <section class="picker-group">
+                <h3>Other currencies (<span class="count">[51]</span>)</h3>
                 <ul class="currency-list" role="listbox">
-                    <li class="currency-row is-selected" role="option" aria-selected="true">
-                        <img src="./assets/images/flags/usd.svg" alt="" class="flag">
-                        <span class="code">USD</span>
-                        <span class="name">US Dollar</span>
-                        <span class="checkmark" aria-hidden="true">✓</span>
+                    <li class="currency-row" role="option" aria-selected="false">
+                        <img src="./assets/images/flags/aud.svg" alt="" class="flag">
+                        <span class="code">AUD</span>
+                        <span class="name">Australian Dollar</span>
                     </li>
                 </ul>
-            </section>
+                </section>
+            </div>
 
-            <!-- Dynamic: number of other currencies -->
-            <!-- Dynamic: every other currency, each row: flag, code, name -->
-            <!-- Dynamic: while searching, the list filters to the currencies matching the query -->
-            <section class="picker-group">
-            <h3>Other currencies (<span class="count">[51]</span>)</h3>
-            <ul class="currency-list" role="listbox">
-                <li class="currency-row" role="option" aria-selected="false">
-                    <img src="./assets/images/flags/aud.svg" alt="" class="flag">
-                    <span class="code">AUD</span>
-                    <span class="name">Australian Dollar</span>
-                </li>
-            </ul>
-            </section>
-        </div>
+        </dialog>
 
         <!-- Tabs — collapse into a dropdown on mobile -->
         <nav>
