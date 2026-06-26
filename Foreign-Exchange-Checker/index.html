@@ -6,6 +6,7 @@
 
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
     <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
     <title>FX Checker</title>
 </head>
 <body>
@@ -85,11 +86,11 @@
                     <div class="conversion-actions">
                         <!-- Favorite toggle for the active pair — reads "Favorite" when unpinned, "Favorited" when pinned -->
                         <button type="button" class="favorite-toggle-btn" aria-pressed="false">
-                            <span class="state-unpinned"> <img src="./assets/images/icon-star.svg" alt="star icon">Favorite</span>
-                            <span class="state-pinned hidden"><img src="./assets/images/icon-star-filled.svg" alt="filled star icon">Favorited</span>
+                            <span class="state-unpinned"> <img src="./assets/images/icon-star.svg" alt="star icon">favorite</span>
+                            <span class="state-pinned hidden"><img src="./assets/images/icon-star-filled.svg" alt="filled star icon">favorited</span>
                         </button>
                         
-                        <button type="button" class="log-conversion-btn">Log conversion</button>
+                        <button type="button" class="log-conversion-btn">log conversion</button>
                     </div>
                 </div>
             </form>
@@ -222,8 +223,11 @@
             <!-- Dynamic: number of comparison rows, e.g. "8 pairs" -->
             <!-- Dynamic: one row per currency, each: flag, code, name, converted amount, reference rate (e.g. "@ 0.7366"), and a star to pin/unpin -->
             <div class="panel-header">
-                <h3>Multi-currency</h3>
-                <p class="meta-summary"><span class="amount">1,000</span> from <span class="base-currency">USD</span> (<span class="row-count">8 pairs</span>)</p>
+                <div class="panel-header-top">
+                    <h3>Multi-currency</h3>
+                    <p class="meta-summary"><span class="amount">1,000</span> from <span class="base-currency">USD</span></p>
+                </div>
+                <span class="row-count">8 pairs</span>
             </div>
 
             <ul class="comparison-list">
@@ -278,23 +282,23 @@
         </section>
 
         <!-- Tab panel: Log (conversion history, saved in the browser) -->
-        <section id="panel-log">
+        <section id="panel-log" class="hidden">
             <div class="panel-header">
                 <h3>Conversion log</h3>
                 <!-- Dynamic: number of logged conversions, e.g. "8 logged" -->
-                <p class="meta-summary"><span class="log-count">8</span> logged</p>
+                <p class="meta-summary"><span class="log-count">0</span> logged</p>
                 <button type="button" class="clear-all-btn">Clear all</button>
             </div>
 
             <!-- Dynamic: one row per logged conversion, each: relative time (e.g. "20m", "1h", "13 May"), pair, send amount, receive amount, and a delete button -->
-            <ul class="log-list">
+            <ul class="log-timeline-list">
                 <li class="log-row">
-                <time class="log-time" datetime="PT20M">20m</time>
-                <span class="log-pair">USD/EUR</span>
-                <span class="log-send">1,000 USD</span>
-                <span class="log-arrow"><img src="assets/images/icon-arrow-right.svg" alt="right arrow"></span>
-                <span class="log-receive">853.00 EUR</span>
-                <button type="button" class="delete-log-item" aria-label="Delete entry"><img src="assets/images/icon-delete.svg" alt="recycle-bin icon"></button>
+                    <time class="log-time" datetime="PT20M">20m</time>
+                    <span class="log-pair">USD/EUR</span>
+                    <span class="log-send">1,000 USD</span>
+                    <span class="log-arrow"><img src="assets/images/icon-arrow-right.svg" alt="right arrow"></span>
+                    <span class="log-receive">853.00 EUR</span>
+                    <button type="button" class="delete-log-item" aria-label="Delete entry"><img src="assets/images/icon-delete.svg" alt="recycle-bin icon"></button>
                 </li>
             </ul>
 

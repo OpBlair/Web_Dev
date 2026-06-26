@@ -4,36 +4,41 @@
     font-weight: 100 900;
     font-style: normal;
 }
-:root{
+
+:root {
     --bg-primary: #000000;
     --bg-lime: #cef739;
     --bg-secondary: #2e2e2e;
-
     --text-primary: #fff;
     --text-secondary: #9d9d9d;
-
     --font-mono: 'JetBrains Mono Custom', monospace;
 }
 
-*, *::before, *::after{
-    box-sizing: border-box; margin: 0; padding: 0;
+*, *::before, *::after {
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0;
 }
 
-body{
+body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     font-family: var(--font-mono);
     display: flex;
     flex-direction: column;
-    align-items: center;
     min-height: 100vh;
     line-height: 1.5;
-    padding: 1rem;
+    padding: 0;
 }
 
-header, main{ width: 100%; max-width: 375px;}
+header, main { 
+    width: 100%; 
+    max-width: 375px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-header{
+header {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -53,7 +58,6 @@ header section {
 }
 
 .logo { display: flex; align-items: center; }
-
 .logo img { display: block; height: 1.6rem; width: auto; }
 
 .market-meta {
@@ -102,27 +106,41 @@ header section {
 .ticker-list {
     display: flex; 
     align-items: center;
-    gap: 2rem; 
     list-style-type: none;
-    padding-left: 1rem;
+    padding: 0;
     white-space: nowrap; 
+    animation: marquee-scroll 25s linear infinite;
+}
+
+.ticker-list:hover {
+    animation-play-state: paused;
 }
 
 .ticker-list li {
-    font-size: 0.8rem;
-    display: flex;
+    padding: 1rem;
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    font-size: 0.6rem;
+    border-right: 1px solid var(--text-secondary);
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
 }
 
 .trend { font-weight: 700; font-size: 0.75rem; }
-
 .trend.up { color: #4ade80; }
 .trend.down { color: #f87171; }
 
-main{
+main {
     width: 100%;
-    padding: 16px 32px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -175,6 +193,8 @@ main{
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    padding-bottom: 6px; 
+    transition: border-color 0.2s ease;
 }
 
 .input-group input,
@@ -190,10 +210,16 @@ main{
     outline: none;
 }
 
+/* Chrome, Safari, Edge, Opera */
 .input-group input::-webkit-outer-spin-button,
 .input-group input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+/* Firefox */
+.input-group input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 .currency-select-btn {
@@ -209,9 +235,9 @@ main{
 
 .currency-select-btn .flag {
     width: 20px;
-    height: 14px;
+    height: 20px;
     object-fit: cover;
-    border-radius: 2px;
+    border-radius: 50%;
 }
 
 .currency-select-btn .currency-code {
@@ -244,21 +270,26 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    align-items: center;
+    gap: 12px;
     border-top: 1px dashed #2e2e2e;
-    padding-top: 16px;
+    padding-top: 12px;
     margin-top: 4px;
 }
 
 .exchange-rate {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--text-secondary);
     text-transform: uppercase;
+    text-align: center;
 }
 
 .conversion-actions {
     display: flex;
     gap: 12px;
+    width: 100%;
+    height: 32px;
+    align-items: center;
 }
 
 .conversion-actions button {
@@ -269,23 +300,801 @@ main{
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
+    text-transform: uppercase;
 }
 
 .favorite-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    border: 1px solid #2e2e2e;
-    color: var(--text-primary);
+    background-color: var(--bg-lime);
+    color: var(--bg-primary);
+    border: none;
+}
+
+.favorite-toggle-btn span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; 
+    width: 100%;
+    height: 100%;
+}
+
+.favorite-toggle-btn img {
+    filter: invert(1);
+    object-fit: contain;
 }
 
 .log-conversion-btn {
-    background-color: var(--bg-lime);
-    border: none;
-    color: var(--bg-primary);
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--bg-lime);
 }
 
 .hidden {
     display: none !important;
+}
+
+/* --- CURRENCY PICKER DIALOG --- */
+dialog#currency-picker {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 303px; 
+    max-height: 250px; 
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--text-primary);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    outline: none;
+}
+
+dialog#currency-picker::backdrop {
+    background: transparent;
+}
+
+dialog#currency-picker form {
+    margin-bottom: 12px;
+}
+
+#currency-search {
+    width: 100%;
+    background-color: var(--bg-primary);
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    outline: none;
+}
+
+.picker-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    max-height: 160px; 
+}
+
+.picker-sections::-webkit-scrollbar {
+    width: 4px;
+}
+.picker-sections::-webkit-scrollbar-thumb {
+    background: #2e2e2e;
+    border-radius: 4px;
+}
+
+.picker-group h3 {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.currency-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    list-style: none;
+}
+
+.currency-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.currency-row:hover,
+.currency-row.is-selected {
+    background-color: var(--bg-secondary);
+}
+
+.currency-row .code {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.currency-row .name {
+    font-size: 0.75rem;
+}
+
+.currency-row .flag {
+    width: 24px;
+    height: 24px;
+    object-fit: cover; 
+    border-radius: 50%; 
+    background-color: #2e2e2e; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    flex-shrink: 0; 
+}
+
+/* --- NAVIGATION TABS --- */
+nav {
+    width: 100%;
+    margin-top: -10px; 
+}
+
+.mobile-tab-dropdown {
+    display: block;
+    width: 100%;
+}
+
+.mobile-tab-dropdown select {
+    width: 100%;
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 12px 16px;
+    border-radius: 12px;
+    outline: none;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.tablet-tab-dropdown {
+    display: none;
+    width: 100%;
+    gap: 8px;
+    border-bottom: 1px solid #2e2e2e;
+    padding-bottom: 8px;
+}
+
+.tablet-tab-dropdown button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.tablet-tab-dropdown button:hover,
+.tablet-tab-dropdown button.is-active {
+    color: var(--text-primary);
+}
+
+.tablet-tab-dropdown button.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--bg-lime);
+}
+
+.tablet-tab-dropdown .badge {
+    font-size: 0.7rem;
+    color: var(--bg-lime);
+    margin-left: 4px;
+}
+
+/* ==========================================================================
+   PANEL WORKSPACES
+   ========================================================================== */
+
+/* --- METRICS GRID (Strict 2x2 on Mobile Viewports) --- */
+.metrics-card {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.metric-card {
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}
+
+.metric-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.metric-card:has(.negative),
+.trend.down {
+    color: #f87171; 
+}
+
+.metric-card:has(.positive),
+.trend.up {
+    color: #4ade80; 
+}
+
+/* --- TIMEFRAME SELECTOR --- */
+.timeFrame {
+    display: flex;
+    justify-content: space-between;
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.timeFrame button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 8px 0;
+    cursor: pointer;
+    border-radius: 6px;
+    text-transform: uppercase;
+    transition: all 0.15s ease;
+}
+
+.timeFrame button:hover {
+    color: var(--text-primary);
+}
+
+.timeFrame button[aria-checked="true"] {
+    background-color: var(--bg-secondary);
+    color: var(--bg-lime);
+}
+
+/* --- CHART VISUALIZATION ZONE --- */
+.chart-container {
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+}
+
+.chart-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #2e2e2e;
+    padding-bottom: 12px;
+}
+
+.active-pair {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.chart-timestamp {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.chart-visuallization {
+    width: 100%;
+    height: 180px; 
+    background: linear-gradient(180deg, rgba(206, 247, 57, 0.03) 0%, transparent 100%);
+    border-bottom: 1px dashed #2e2e2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* --- SYSTEM MESSAGES --- */
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px 12px;
+    gap: 8px;
+}
+
+.error-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #f87171;
+    text-transform: uppercase;
+}
+
+.error-msg {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   PANEL: COMPARE (MULTI-CURRENCY)
+   ========================================================================== */
+
+/* --- SHARED PANEL HEADERS --- */
+.panel-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #2e2e2e;
+}
+
+.panel-header h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+}
+.panel-header-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.meta-summary {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.meta-summary .amount,
+.meta-summary .base-currency,
+.meta-summary .row-count {
+    color: var(--bg-lime);
+    font-weight: 700;
+}
+
+/* --- COMPARISON LIST AND ROWS --- */
+.comparison-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    width: 100%;
+}
+
+.comparison-row {
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: border-color 0.15s ease;
+}
+
+.comparison-row:hover {
+    border-color: #3e3e42;
+}
+
+/* Currency Block (Left Side) */
+.currency-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.comparison-row .flag {
+    width: 22px;
+    height: 22px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #2e2e2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.comparison-row .code {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.comparison-row .name {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Calculation Metrics (Middle Side) */
+.conversion-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    text-align: right;
+    font-family: var(--font-mono);
+}
+
+.converted-amount {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.reference-rate {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+}
+
+/* Pin Action Anchor Button (Right Side) */
+.pin-row-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+
+.pin-row-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+.pin-row-btn img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.pin-row-btn:hover img {
+    opacity: 1;
+}
+
+.pin-row-btn:active img {
+    transform: scale(0.9);
+}
+
+/* --- EMPTY CONTAINER FALLBACK STATES --- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 16px;
+    gap: 8px;
+    background-color: #171719;
+    border: 1px dashed #2e2e2e;
+    border-radius: 16px;
+    width: 100%;
+}
+
+.empty-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.empty-msg {
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    max-width: 280px;
+}
+
+/* ==========================================================================
+   PANEL: FAVORITES (PINNED PAIRS)
+   ========================================================================== */
+#panel-favorites .panel-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.favorites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    width: 100%;
+}
+
+.favorites-row {
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* Direction Pair Indicator (Left Side) */
+.pair-direction {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pair-direction img {
+    width: 14px;
+    height: 14px;
+    opacity: 0.4;
+}
+
+/* Market Trends & Data Rates (Middle Side) */
+.favorites-row .live-rate {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-left: auto; /* Pushes the numbers right next to the status indicators */
+    font-family: var(--font-mono);
+}
+
+.change-pct {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+/* Precise trend state badges */
+.change-pct.status-positive {
+    background-color: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+}
+
+.change-pct.status-negative {
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+}
+
+/* Unpin Star Trigger Button (Right Side) */
+.unpin-row-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.unpin-row-btn img {
+    width: 16px;
+    height: 16px;
+    /* Invert filter forces regular dark assets into high-vis lime to show selection active status */
+    filter: drop-shadow(0 0 2px rgba(206, 247, 57, 0.2));
+}
+
+.unpin-row-btn:hover img {
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   PANEL: CONVERSION LOGS (HISTORICAL LEDGER)
+   ========================================================================== */
+
+/* Extends the standard header container with an inline clear trigger utility anchor link */
+#panel-log .panel-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.clear-all-log-btn {
+    background: transparent;
+    border: none;
+    color: #f87171; /* High-vis clear warning indicator label accent */
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.clear-all-log-btn:hover {
+    background-color: rgba(248, 113, 113, 0.08);
+}
+
+/* --- TIMELINE LIST MATRIX CONTAINER --- */
+
+.log-timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    list-style: none;
+    width: 100%;
+}
+
+/* --- MOBILE VIEWPORTS (Stacked Column Card) --- */
+.log-item-row {
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center; /* Keeps delete icon centered on the right edge */
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--font-mono);
+}
+
+.log-content-meta {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.time-currency-pair {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.log-time {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    background-color: var(--bg-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.pair-tokens {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.log-arrow-icon {
+    width: 10px;
+    height: 10px;
+    opacity: 0.4;
+}
+
+.currency-pair-amount {
+    display: flex;
+    flex-direction: column; /* Stack the send and receive values on mobile */
+    gap: 2px;
+}
+
+.log-send-amount {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.log-receive-amount {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.log-receive-amount.highlight {
+    color: var(--bg-lime);
+}
+
+/* Delete Trigger Button Structure */
+.delete-log-row-item {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.delete-log-row-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.delete-log-row-item img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+}
+
+.delete-log-row-item:hover img {
+    opacity: 1;
+}
+
+/* --- TABLET / DESKTOP BREAKPOINT (Flat Horizontal Row) --- */
+@media (min-width: 480px) {
+    .log-content-meta {
+        flex-direction: row; /* Flattens content container */
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .time-currency-pair {
+        flex-shrink: 0;
+    }
+
+    .currency-pair-amount {
+        flex-direction: row; /* Flattens numbers inline alongside tokens */
+        align-items: center;
+        gap: 16px;
+        text-align: right;
+    }
+
+    .log-send-amount {
+        font-size: 0.8rem;
+    }
+
+    .log-receive-amount {
+        font-size: 0.9rem;
+    }
 }
