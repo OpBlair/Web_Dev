@@ -2,10 +2,9 @@
 
 const picker = document.getElementById('currency-picker');
 const triggerBtns = document.querySelectorAll('.currency-select-btn');
-const searchInput = document.getElementById('currency-search');
-let activeTriggerButton = null; // Keeps track of which button opened the menu
+let activeTriggerButton = null;
 
-// Currencies and Flags Data 
+// Currencies and Flags Data
 const currencies = [
   {code: 'ARS', name: 'Argentine Peso', flag: './assets/images/flags/ar.webp', popular: false},
   {code: 'AUD', name: 'Australian Dollar', flag: './assets/images/flags/au.webp', popular: true},
@@ -65,57 +64,41 @@ const currencies = [
   {code: 'ZAR', name: 'South African Rand', flag: './assets/images/flags/za.webp', popular: false}
 ];
 
-// 1. DOM Renderer Setup
-function populateCurrencyPicker(filterText = '') {
+// --- LIVE FOREX RATES API ENGINE ---
+async function fetchLatestRates(baseCurrency) {
+    try {
+        const response = await fetch(`https://api.frankfurter.dev/v2/rates?base=${baseCurrency}`);
+        if (!response.ok) throw new Error('Network rates delivery error.');
+        return await response.json();
+    } catch (error) {
+        console.error("Rates integration fault:", error);
+        return null;
+    }
+}
+
+// DOM Renderer Setup
+function populateCurrencyPicker() {
     const pickerSections = document.querySelector('.picker-sections');
     if (!pickerSections) return;
     
-    const cleanFilterText = filterText.toLowerCase().trim();
+    const popularList = currencies.filter(c => c.popular);
+    const otherList = currencies.filter(c => !c.popular);
 
-    // Match query string natively against either codes or names
-    const filteredCurrencies = currencies.filter(c => 
-        c.code.toLowerCase().includes(cleanFilterText) || 
-        c.name.toLowerCase().includes(cleanFilterText)
-    );
+    pickerSections.innerHTML = `
+        <section class="picker-group">
+            <h3>Popular (<span class="count">[${popularList.length}]</span>)</h3>
+            <ul class="currency-list" id="popular-container" role="listbox">
+                ${popularList.map(c => createRowHtml(c)).join('')}
+            </ul>
+        </section>
 
-    // Render fallback empty view if queries return no matching records
-    if (filteredCurrencies.length === 0) {
-        pickerSections.innerHTML = `
-            <div class="search-empty-state" style="padding: 2.5rem 1rem; text-align: center; color: #888;">
-                <p style="margin: 0; font-size: 0.95rem;">No currencies match "${filterText}"</p>
-            </div>
-        `;
-        return;
-    }
-
-    const popularList = filteredCurrencies.filter(c => c.popular);
-    const otherList = filteredCurrencies.filter(c => !c.popular);
-
-    let htmlPayload = '';
-
-    if (popularList.length > 0) {
-        htmlPayload += `
-            <section class="picker-group">
-                <h3>Popular (<span class="count">[${popularList.length}]</span>)</h3>
-                <ul class="currency-list" id="popular-container" role="listbox">
-                    ${popularList.map(c => createRowHtml(c)).join('')}
-                </ul>
-            </section>
-        `;
-    }
-
-    if (otherList.length > 0) {
-        htmlPayload += `
-            <section class="picker-group">
-                <h3>Other currencies (<span class="count">[${otherList.length}]</span>)</h3>
-                <ul class="currency-list" id="other-container" role="listbox">
-                    ${otherList.map(c => createRowHtml(c)).join('')}
-                </ul>
-            </section>
-        `;
-    }
-
-    pickerSections.innerHTML = htmlPayload;
+        <section class="picker-group">
+            <h3>Other currencies (<span class="count">[${otherList.length}]</span>)</h3>
+            <ul class="currency-list" id="other-container" role="listbox">
+                ${otherList.map(c => createRowHtml(c)).join('')}
+            </ul>
+        </section>
+    `;
 }
 
 function createRowHtml(currency) {
@@ -128,32 +111,13 @@ function createRowHtml(currency) {
     `;
 }
 
-// Build list on script parse
 populateCurrencyPicker();
 
-// --- SEARCH FUNCTIONALITY ENGINE ---
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        populateCurrencyPicker(e.target.value);
-    });
-}
-
-function clearSearch() {
-    if (searchInput) {
-        searchInput.value = '';
-        populateCurrencyPicker(''); // Reset DOM rendering pipeline to default configuration
-    }
-}
-
-// 2. Click Triggers & Position Synchronization Combined
 triggerBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation(); 
         activeTriggerButton = btn; 
         
-        // Reset query conditions whenever picker drops down fresh
-        clearSearch();
-
         if (!picker.open) {
             picker.show();
         }
@@ -169,7 +133,6 @@ triggerBtns.forEach(btn => {
     });
 });
 
-// 3. Selection Event Delegation
 document.querySelector('.picker-sections').addEventListener('click', (e) => {
     const row = e.target.closest('.currency-row');
     if (!row || !activeTriggerButton) return;
@@ -177,7 +140,6 @@ document.querySelector('.picker-sections').addEventListener('click', (e) => {
     const selectedCode = row.getAttribute('data-code');
     const selectedFlagSrc = row.querySelector('.flag').getAttribute('src');
 
-    // Update form elements safely
     activeTriggerButton.querySelector('.currency-code').textContent = selectedCode;
     activeTriggerButton.querySelector('.flag').setAttribute('src', selectedFlagSrc);
     activeTriggerButton.querySelector('.flag').setAttribute('alt', `${selectedCode} flag`);
@@ -185,7 +147,6 @@ document.querySelector('.picker-sections').addEventListener('click', (e) => {
     picker.close();
 });
 
-// 4. Click Outside Closer
 document.addEventListener('click', (e) => {
     if (picker.open && !picker.contains(e.target)) {
         picker.close();
@@ -205,7 +166,6 @@ const panels = {
 
 function switchTab(tabId) {
     Object.keys(panels).forEach(key => {
-        if (!panels[key]) return;
         if (key === tabId) {
             panels[key].classList.remove('hidden');
         } else {
@@ -225,6 +185,7 @@ function switchTab(tabId) {
     });
 }
 
+// Event Listener for Mobile Select Dropdown
 if (mobileSelect) {
     mobileSelect.addEventListener('change', (e) => {
         switchTab(e.target.value);
@@ -234,6 +195,7 @@ if (mobileSelect) {
 desktopButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const btnText = btn.textContent.toLowerCase().trim();
+        
         if (btnText.includes('history')) switchTab('history');
         if (btnText.includes('compare')) switchTab('compare');
         if (btnText.includes('favorites')) switchTab('favorites');
@@ -253,13 +215,16 @@ timeframeButtons.forEach(button => {
         if (currentActive) {
             currentActive.setAttribute('aria-checked', 'false');
         }
+        
         button.setAttribute('aria-checked', 'true');
+        
         const selectedTimeframe = button.textContent.trim();
         console.log(`Loading metrics pipeline history for range index: ${selectedTimeframe}`);
     });
 });
 
 // --- COMPARE PANEL DATA ENGINE ---
+
 const comparisonDataMock = [
     { code: 'EUR', name: 'Euro', flag: './assets/images/flags/eu.webp', rate: 0.8530 },
     { code: 'GBP', name: 'British Pound', flag: './assets/images/flags/gb.webp', rate: 0.7845 },
@@ -269,29 +234,34 @@ const comparisonDataMock = [
     { code: 'CHF', name: 'Swiss Franc', flag: './assets/images/flags/ch.webp', rate: 0.8910 }
 ];
 
+/**
+ * Renders and updates the multi-currency comparison panel grid
+ * @param {number} baseAmount - The numeric input value from the user (e.g., 1000)
+ * @param {string} baseCurrencyCode - The active 3-letter source currency (e.g., "USD")
+ */
 function updateComparePanel(baseAmount, baseCurrencyCode) {
     const listContainer = document.querySelector('.comparison-list');
     const emptyState = document.querySelector('#panel-compare .empty-state');
     const summaryAmount = document.querySelector('#panel-compare .meta-summary .amount');
     const summaryBase = document.querySelector('#panel-compare .meta-summary .base-currency');
-    const summaryCount = document.querySelector('#panel-compare .row-count');
-
-    if (!listContainer) return;
+    const summaryCount = document.querySelector('#panel-compare .meta-summary .row-count');
 
     if (!baseAmount || baseAmount <= 0) {
         listContainer.innerHTML = '';
-        if (emptyState) emptyState.classList.remove('hidden');
+        emptyState.classList.remove('hidden');
         return;
     }
 
-    if (emptyState) emptyState.classList.add('hidden');
+    emptyState.classList.add('hidden');
 
     if (summaryAmount) summaryAmount.textContent = Number(baseAmount).toLocaleString(undefined, { minimumFractionDigits: 0 });
     if (summaryBase) summaryBase.textContent = baseCurrencyCode;
     if (summaryCount) summaryCount.textContent = `${comparisonDataMock.length} pairs`;
 
     let htmlPayload = '';
+
     comparisonDataMock.forEach(item => {
+
         const totalConverted = (baseAmount * item.rate).toFixed(2);
         const localizedTotal = Number(totalConverted).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
@@ -314,25 +284,29 @@ function updateComparePanel(baseAmount, baseCurrencyCode) {
     });
 
     listContainer.innerHTML = htmlPayload;
+
     setupPinRowListeners();
 }
 
 function setupPinRowListeners() {
     const pinButtons = document.querySelectorAll('.pin-row-btn');
     pinButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
             const targetCurrency = btn.getAttribute('data-code');
             console.log(`Pin status requested toggled for: ${targetCurrency}`);
         });
     });
 }
 
+// --- INITIALIZE TEST CALL ---
 updateComparePanel(1000, 'USD');
 
 // --- FAVORITES PANEL DATA ENGINE ---
+
 let favoritesDataMock = [
     { source: 'USD', target: 'EUR', rate: 0.8530, change: '+0.24', direction: 'up' },
-    { source: 'EUR', target: 'GBP', rate: 0.8841, change: '-0.12', direction: 'down' }
+    { source: 'EUR', target: 'GBP', rate: 0.8841, change: '-0.12', direction: 'down' },
+    { source: 'BTC', target: 'USD', rate: 64250.00, change: '+4.19', direction: 'up' }
 ];
 
 function updateFavoritesPanel() {
@@ -340,24 +314,27 @@ function updateFavoritesPanel() {
     const emptyState = document.querySelector('#panel-favorites .empty-state');
     const favCountBadge = document.querySelector('#panel-favorites .meta-summary .fav-count');
 
-    if (!favoritesContainer) return;
-
     if (!favoritesDataMock || favoritesDataMock.length === 0) {
         favoritesContainer.innerHTML = '';
-        if (emptyState) emptyState.classList.remove('hidden');
+        emptyState.classList.remove('hidden');
         if (favCountBadge) favCountBadge.textContent = '0';
         return;
     }
 
-    if (emptyState) emptyState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+
     if (favCountBadge) favCountBadge.textContent = favoritesDataMock.length;
 
     let htmlPayload = '';
+
     favoritesDataMock.forEach((item, index) => {
         const isUp = item.direction === 'up';
         const trendIcon = isUp ? '▲' : '▼';
         const trendClass = isUp ? 'status-positive' : 'status-negative';
-        const displayRate = item.rate >= 100 ? item.rate.toLocaleString() : item.rate.toFixed(4);
+        
+        const displayRate = item.rate >= 100 
+            ? item.rate.toLocaleString(undefined, { minimumFractionDigits: 2 }) 
+            : item.rate.toFixed(4);
 
         htmlPayload += `
             <li class="favorites-row" data-index="${index}">
@@ -367,8 +344,8 @@ function updateFavoritesPanel() {
                     ${item.target}
                 </span>
                 <span class="live-rate">${displayRate}</span>
-                <span class="change-pct ${trendClass}">${trendIcon} ${Math.abs(parseFloat(item.change))}%</span>
-                <button type="button" class="unpin-row-btn" aria-label="Unpin pair">
+                <span class="change-pct ${trendClass}">${trendIcon} ${Math.abs(item.change)}%</span>
+                <button type="button" class="unpin-row-btn" aria-label="Unpin ${item.source} to ${item.target} pair">
                     <img src="./assets/images/icon-star-filled.svg" alt="filled star icon">
                 </button>
             </li>
@@ -376,16 +353,21 @@ function updateFavoritesPanel() {
     });
 
     favoritesContainer.innerHTML = htmlPayload;
+
     setupUnpinListeners();
 }
 
 function setupUnpinListeners() {
     const unpinButtons = document.querySelectorAll('.unpin-row-btn');
     unpinButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
             const rowItem = btn.closest('.favorites-row');
             const targetIndex = parseInt(rowItem.getAttribute('data-index'), 10);
+            
+            console.log(`Removing item index target from favorites array stack: ${targetIndex}`);
+            
             favoritesDataMock.splice(targetIndex, 1);
+            
             updateFavoritesPanel();
         });
     });
@@ -394,41 +376,54 @@ function setupUnpinListeners() {
 updateFavoritesPanel();
 
 // --- CONVERSION HISTORICAL LOG ENGINE ---
+
 let logsDataMock = [
-    { id: 101, fromAmount: 1000, fromCode: 'USD', toAmount: 853.00, toCode: 'EUR', timeLabel: '20m', datetimeAttr: 'PT20M' }
+    { id: 101, fromAmount: 1000, fromCode: 'USD', toAmount: 853.00, toCode: 'EUR', timeLabel: '14:32 · Jun 26' },
+    { id: 102, fromAmount: 250, fromCode: 'GBP', toAmount: 318.50, toCode: 'USD', timeLabel: '11:15 · Jun 25' },
+    { id: 103, fromAmount: 50000, fromCode: 'JPY', toAmount: 284.12, toCode: 'CHF', timeLabel: '09:04 · Jun 24' }
 ];
 
 function updateLogPanel() {
     const logsContainer = document.querySelector('.log-timeline-list');
     const emptyState = document.querySelector('#panel-log .empty-state');
     const countBadge = document.querySelector('#panel-log .meta-summary .log-count');
-    const clearAllBtn = document.querySelector('.clear-all-btn');
-
-    if (!logsContainer) return;
+    const clearAllBtn = document.querySelector('.clear-all-log-btn');
 
     if (!logsDataMock || logsDataMock.length === 0) {
         logsContainer.innerHTML = '';
-        if (emptyState) emptyState.classList.remove('hidden');
+        emptyState.classList.remove('hidden');
         if (countBadge) countBadge.textContent = '0';
+        if (clearAllBtn) clearAllBtn.classList.add('hidden'); 
         return;
     }
 
-    if (emptyState) emptyState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    if (clearAllBtn) clearAllBtn.classList.remove('hidden');
     if (countBadge) countBadge.textContent = logsDataMock.length;
 
     let htmlPayload = '';
+
     logsDataMock.forEach(log => {
         const fmtFrom = Number(log.fromAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
         const fmtTo = Number(log.toAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
         htmlPayload += `
-            <li class="log-row" data-log-id="${log.id}">
-                <time class="log-time" datetime="${log.datetimeAttr}">${log.timeLabel}</time>
-                <span class="log-pair">${log.fromCode}/${log.toCode}</span>
-                <span class="log-send">${fmtFrom} ${log.fromCode}</span>
-                <span class="log-arrow"><img src="assets/images/icon-arrow-right.svg" alt="right arrow"></span>
-                <span class="log-receive">${fmtTo} ${log.toCode}</span>
-                <button type="button" class="delete-log-item" aria-label="Delete entry">
+            <li class="log-item-row" data-log-id="${log.id}">
+                <div class="log-content-meta">
+                    <div class="time-currency-pair">
+                        <time class="log-time" datetime="${log.datetimeAttr}">${log.timeLabel}</time>
+                        <div class="pair-tokens">
+                            <span class="log-code">${log.fromCode}</span>
+                            <img src="assets/images/icon-arrow-right.svg" alt="right arrow" class="log-arrow-icon">
+                            <span class="log-code">${log.toCode}</span> 
+                        </div>
+                    </div>
+                    <div class="currency-pair-amount">
+                        <span class="log-send-amount">${fmtFrom}</span>
+                        <span class="log-receive-amount highlight">${fmtTo}</span>
+                    </div>
+                </div>
+                <button type="button" class="delete-log-row-item" aria-label="Delete log record reference ID entry: ${log.id}">
                     <img src="assets/images/icon-delete.svg" alt="recycle-bin icon">
                 </button>
             </li>
@@ -436,21 +431,24 @@ function updateLogPanel() {
     });
 
     logsContainer.innerHTML = htmlPayload;
+
     setupLogListeners();
 }
 
 function setupLogListeners() {
-    const deleteButtons = document.querySelectorAll('.delete-log-item');
+    const deleteButtons = document.querySelectorAll('.delete-log-row-item');
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            const rowItem = btn.closest('.log-row');
+            const rowItem = btn.closest('.log-item-row');
             const logId = parseInt(rowItem.getAttribute('data-log-id'), 10);
+            
             logsDataMock = logsDataMock.filter(item => item.id !== logId);
+            
             updateLogPanel();
         });
     });
 
-    const clearAllBtn = document.querySelector('.clear-all-btn');
+    const clearAllBtn = document.querySelector('.clear-all-log-btn');
     if (clearAllBtn) {
         clearAllBtn.onclick = () => {
             logsDataMock = [];
@@ -460,30 +458,3 @@ function setupLogListeners() {
 }
 
 updateLogPanel();
-
-// --- LIVE MARKETS TICKER ENGINE ---
-function initializeLiveTicker() {
-    const tickerList = document.querySelector('.ticker-list');
-    if (!tickerList) return;
-
-    // 1. Mock Live feeds array data schema
-    const liveMarketsMock = [
-        { pair: 'EUR/USD', rate: '1.0912', change: '+0.12', direction: 'up' },
-        { pair: 'GBP/USD', rate: '1.2734', change: '-0.05', direction: 'down' },
-        { pair: 'USD/JPY', rate: '156.82', change: '+0.45', direction: 'up' },
-        { pair: 'AUD/USD', rate: '0.6641', change: '-0.18', direction: 'down' },
-        { pair: 'USD/CAD', rate: '1.3620', change: '+0.02', direction: 'up' }
-    ];
-
-    // 2. Generate the base list items
-    const baseHtml = liveMarketsMock.map(item => {
-        const isUp = item.direction === 'up';
-        const trendIcon = isUp ? '▲' : '▼';
-        const trendClass = isUp ? 'trend up' : 'trend down';
-        return `<li>${item.pair} ${item.rate} <span class="${trendClass}">${trendIcon} ${Math.abs(parseFloat(item.change))}%</span></li>`;
-    }).join('');
-
-    tickerList.innerHTML = baseHtml + baseHtml;
-}
-
-initializeLiveTicker();
