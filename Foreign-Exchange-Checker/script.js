@@ -209,13 +209,17 @@ document.querySelector('.picker-sections').addEventListener('click', async (e) =
     picker.close();
 
     const codeBlocks = document.querySelectorAll('.currency-code');
+
     if(codeBlocks.length >= 2){
         const sourceCurrency = codeBlocks[0].textContent.trim();
-        const tartgetCurrency = codeBlocks[1].textContent.trim();
+        const targetCurrency = codeBlocks[1].textContent.trim();
         
-        await updateExchangeRate(sourceCurrency, tartgetCurrency);
+        await updateExchangeRate(sourceCurrency, targetCurrency);
+
+        syncChartHeadings(sourceCurrency, targetCurrency);
     }
     calculateForex();
+    updateForexChart();
 });
 
 document.addEventListener('click', (e) => {
@@ -612,7 +616,10 @@ function initDefaultExchangeRate() {
         const defaultSource = codeBlocks[0].textContent.trim();
         const defaultTarget = codeBlocks[1].textContent.trim();
         
-        updateExchangeRate(defaultSource, defaultTarget);
+        updateExchangeRate(defaultSource, defaultTarget).then(() => {
+            syncChartHeadings(defaultSource, defaultTarget);
+        });
+
         updateMarqueeTicker(defaultSource);
     } else {
         updateExchangeRate('USD', 'EUR');
@@ -724,11 +731,14 @@ async function updateForexChart() {
 
     const rates = apiData.map(item => item.rate);
 
+    updateHistoricalMetrics(apiData);
+
     if (forexChartInstance) {
         forexChartInstance.destroy();
     }
 
     const ctx = canvasElement.getContext('2d');
+
     forexChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -737,7 +747,19 @@ async function updateForexChart() {
                 label: `${base}/${target}`,
                 data: rates,
                 borderColor: '#cef739',
-                backgroundColor: 'rgba(206, 247, 57, 0.05)',
+                backgroundColor: function(context) {
+                    const chart = context.chart;
+                    const { ctx, chartArea } = chart;
+
+                    if (!chartArea) return null;
+
+                    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    
+                    gradient.addColorStop(0, '#cef739'); 
+                    gradient.addColorStop(1, '#171719');
+                    
+                    return gradient;
+                },
                 borderWidth: 2,
                 pointRadius: dates.length > 30 ? 0 : 2, 
                 tension: 0.2, 
@@ -761,7 +783,14 @@ async function updateForexChart() {
                     }
                 },
                 y: { 
-                    ticks: { precision: 4 } 
+                    grid: {
+                        color: '#2e2e2e',           
+                        borderColor: 'transparent',  
+                        borderDash: [5, 5], 
+                        drawTicks: false            
+                    },
+                    ticks: { precision: 4},
+                    color: '#9d9d9d'
                 }
             }
         }
@@ -772,3 +801,79 @@ window.onload = () => {
     initDefaultExchangeRate();
     updateForexChart();
 };
+
+// Function to Keep Chart Headings in Sync using source timestamps
+function syncChartHeadings(base, target, sourceTimestamp = null) {
+    const activeCurrencyPair = document.querySelector('.active-pair');
+    const timeStamp = document.querySelector('.chart-timestamp');
+    const rateTextElement = document.querySelector('.exchange-rate');
+
+    if (activeCurrencyPair) {
+        activeCurrencyPair.textContent = `${base}/${target}`;
+    }
+
+    if (timeStamp && rateTextElement) {
+        const rateParts = rateTextElement.textContent.split('=');
+        const visualRate = rateParts[1] ? rateParts[1].trim().split(' ')[0] : '0.0000';
+
+        const rateDate = sourceTimestamp ? new Date(sourceTimestamp) : new Date();
+        
+        const formattedDate = rateDate.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'CET' 
+        }).toUpperCase().replace(',', '');
+
+        timeStamp.innerHTML = `${visualRate} &middot; ${formattedDate} CET`;
+    }
+}
+
+/**
+ * Calculates historical math aggregates and updates panel cards
+ * @param {Array} apiData - The chronological array of historical rate objects
+ */
+function updateHistoricalMetrics(apiData) {
+    // Exact structural map to match your updated production HTML classes
+    const targetOpen = document.querySelector('.metric-open');
+    const targetLast = document.querySelector('.metric-last');
+    const changeEl = document.querySelector('.metric-change');
+    const pctEl = document.querySelector('.metric-percentage');
+
+    if (!apiData || !Array.isArray(apiData) || apiData.length === 0) return;
+
+    const openRate = apiData[0].rate;
+    const lastRate = apiData[apiData.length - 1].rate;
+
+    const rawChange = lastRate - openRate;
+    const rawPctChange = (rawChange / openRate) * 100;
+
+    const formattedOpen = openRate.toFixed(4);
+    const formattedLast = lastRate.toFixed(4);
+    
+    const sign = rawChange >= 0 ? '+' : '';
+    const formattedChange = `${sign}${rawChange.toFixed(4)}`;
+
+    const arrowImg = rawChange >= 0 
+        ? `<img src="./assets/images/icon-chevron-down.svg" alt="up chevron" class="metric-arrow">`
+        : `<img src="./assets/images/icon-chevron-down.svg" alt="down chevron" class="metric-arrow">`;
+        
+    const formattedPct = `${arrowImg}<span>${sign}${rawPctChange.toFixed(2)}%</span>`;
+
+    // 4. Safe DOM injection
+    if (targetOpen) targetOpen.textContent = formattedOpen;
+    if (targetLast) targetLast.textContent = formattedLast;
+    if (changeEl) changeEl.textContent = formattedChange;
+    if (pctEl) pctEl.innerHTML = formattedPct;
+    
+    const statusClass = rawChange >= 0 ? 'status-positive' : 'status-negative';
+    
+    [changeEl, pctEl].forEach(el => {
+        if (el) {
+            el.classList.remove('status-positive', 'status-negative');
+            el.classList.add(statusClass);
+        }
+    });
+}

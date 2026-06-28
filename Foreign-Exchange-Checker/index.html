@@ -7,6 +7,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
     <title>FX Checker</title>
 </head>
 <body>
@@ -162,25 +164,25 @@
                 <!-- Dynamic: opening rate for the selected range -->
                 <div class="metric-card">
                     <span class="metric-label">open</span>
-                    <span class="metric-value">0.8516</span>
+                    <span class="metric-value metric-open"></span>
                 </div>
 
                 <!-- Dynamic: latest rate -->
                 <div class="metric-card">
                     <span class="metric-label">last</span>
-                    <span class="metric-value">0.8530</span>
+                    <span class="metric-value metric-last"></span>
                 </div>
 
                 <!-- Dynamic: change over the range (signed; positive green, negative red) -->
                 <div class="metric-card">
                     <span class="metric-label">change</span>
-                    <span class="metric-value">+0.0014</span>
+                    <span class="metric-value metric-change"></span>
                 </div>
 
                 <!-- Dynamic: percentage change over the range (▲/▼; positive green, negative red) -->
                 <div class="metric-card">
                     <span class="metric-label">% change</span>
-                    <span class="metric-value">+0.16%</span>
+                    <span class="metric-value metric-percentage"></span>
                 </div>
             </div>
 
@@ -197,14 +199,14 @@
             <div class="chart-container">
                 <div class="chart-header">
                     <!-- Dynamic: active pair, e.g. "USD/EUR" -->
-                    <h4 class="active-pair">USD/EUR</h4> 
+                    <h4 class="active-pair"></h4> 
                     <!-- Dynamic: latest rate and timestamp, e.g. "0.8530 · May 14 16:00 CET" -->
-                    <p class="chart-timestamp">0.8530 &middot; May 14 16:00 CET</p> 
+                    <p class="chart-timestamp"></p> 
                 </div>
                 
                 <!-- Dynamic: line + area chart of the pair's rate history, with Y-axis (high/mid/low) and X-axis date labels -->
                 <div class="chart-visuallization">
-
+                    <canvas id="forexChart"></canvas>
                 </div>
 
                 <!-- History empty / error state -->
