@@ -32,8 +32,6 @@
             <!-- Dynamic: scrolling list of currency pairs, each with its rate and 24h change (▲ up / ▼ down) -->
             <div class="ticker-wrapper">
                 <ul class="ticker-list">
-                    <li>EUR/USD 1.0912 <span class="trend up">▲ 0.12%</span></li>
-                    <li>GBP/USD 1.2734 <span class="trend down">▼ 0.05%</span></li>
                 </ul>
             </div>
         </div>
@@ -49,7 +47,7 @@
                     <label for="send-amount">send</label>
                     <!-- Dynamic: amount to convert (number input, defaults to 1,000) -->
                     <div class="input-group">
-                        <input type="number" id="send-amount" value="1000" min="0" step="any" required>
+                        <input type="number" id="send-amount" value="1000" min="0" step="any" required placeholder="0">
                         <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select send currency">
                             <img src="./assets/images/flags/us.webp" alt="usa flag" class="flag">
                             <span class="currency-code">USD</span>
@@ -70,7 +68,7 @@
                     <label for="receive-amount">receive</label>
                     <!-- Dynamic: converted amount -->
                     <div class="input-group">
-                        <output id="receive-amount" for="send-amount">853.00</output>
+                        <output id="receive-amount" for="send-amount">0.00</output>
                         <!-- Dynamic: selected "receive" currency — flag + code; opens the currency picker -->
                         <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select receive currency">
                             <img src="./assets/images/flags/eu.webp" alt="europe flag" class="flag">
@@ -81,7 +79,7 @@
             
                 <div class="conversion-meta">
                     <!-- Dynamic: exchange rate for the active pair, e.g. "1 USD = 0.8530 EUR" -->
-                    <p class="exchange-rate">1 usd = 0.8530 euro </p>
+                    <p class="exchange-rate"></p>
 
                     <div class="conversion-actions">
                         <!-- Favorite toggle for the active pair — reads "Favorite" when unpinned, "Favorited" when pinned -->

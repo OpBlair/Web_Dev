@@ -76,6 +76,25 @@ async function fetchLatestRates(baseCurrency) {
     }
 }
 
+async function updateExchangeRate(sourceCode, targetCode) {
+    if (sourceCode === targetCode) {
+        const uiExchangeText = document.querySelector('.exchange-rate');
+        if (uiExchangeText) uiExchangeText.textContent = `1 ${sourceCode.toLowerCase()} = 1.0000 ${targetCode.toLowerCase()}`;
+        return;
+    }
+
+    const liveRates = await fetchLatestRates(sourceCode);
+    
+    if (liveRates && Array.isArray(liveRates)) {
+        const match = liveRates.find(item => item.quote === targetCode);
+        const uiExchangeText = document.querySelector('.exchange-rate');
+        
+        if (match && uiExchangeText) {
+            uiExchangeText.textContent = `1 ${sourceCode.toLowerCase()} = ${match.rate.toFixed(5)} ${targetCode.toLowerCase()}`;
+        }
+    }
+}
+
 // DOM Renderer Setup
 function populateCurrencyPicker() {
     const pickerSections = document.querySelector('.picker-sections');
@@ -101,6 +120,42 @@ function populateCurrencyPicker() {
     `;
 }
 
+// --- CURRENCY PICKER FILTER SEARCH ENGINE ---
+function setupPickerSearch() {
+    const searchInput = document.getElementById('currency-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const currencyRows = document.querySelectorAll('.currency-row');
+
+        currencyRows.forEach(row => {
+            const code = row.getAttribute('data-code').toLowerCase();
+            const name = row.querySelector('.name').textContent.toLowerCase();
+
+            if (code.includes(query) || name.includes(query)) {
+                row.style.display = ''; 
+            } else {
+                row.style.display = 'none'; 
+            }
+        });
+
+        const groups = document.querySelectorAll('.picker-group');
+        groups.forEach(group => {
+            const totalRows = group.querySelectorAll('.currency-row');
+            const hiddenRows = group.querySelectorAll('.currency-row[style*="display: none"]');
+            
+            if (totalRows.length === hiddenRows.length) {
+                group.style.display = 'none';
+            } else {
+                group.style.display = '';
+            }
+        });
+    });
+}
+
+setupPickerSearch();
+
 function createRowHtml(currency) {
     return `
         <li class="currency-row" role="option" data-code="${currency.code}">
@@ -118,6 +173,13 @@ triggerBtns.forEach(btn => {
         e.stopPropagation(); 
         activeTriggerButton = btn; 
         
+        // Clear previous search terms
+        const searchInput = document.getElementById('currency-search');
+        if (searchInput) {
+            searchInput.value = '';
+            document.querySelectorAll('.currency-row, .picker-group').forEach(el => el.style.display = '');
+        }
+
         if (!picker.open) {
             picker.show();
         }
@@ -133,7 +195,7 @@ triggerBtns.forEach(btn => {
     });
 });
 
-document.querySelector('.picker-sections').addEventListener('click', (e) => {
+document.querySelector('.picker-sections').addEventListener('click', async (e) => {
     const row = e.target.closest('.currency-row');
     if (!row || !activeTriggerButton) return;
 
@@ -145,6 +207,15 @@ document.querySelector('.picker-sections').addEventListener('click', (e) => {
     activeTriggerButton.querySelector('.flag').setAttribute('alt', `${selectedCode} flag`);
 
     picker.close();
+
+    const codeBlocks = document.querySelectorAll('.currency-code');
+    if(codeBlocks.length >= 2){
+        const sourceCurrency = codeBlocks[0].textContent.trim();
+        const tartgetCurrency = codeBlocks[1].textContent.trim();
+        
+        await updateExchangeRate(sourceCurrency, tartgetCurrency);
+    }
+    calculateForex();
 });
 
 document.addEventListener('click', (e) => {
@@ -297,9 +368,6 @@ function setupPinRowListeners() {
         });
     });
 }
-
-// --- INITIALIZE TEST CALL ---
-updateComparePanel(1000, 'USD');
 
 // --- FAVORITES PANEL DATA ENGINE ---
 
@@ -458,3 +526,93 @@ function setupLogListeners() {
 }
 
 updateLogPanel();
+
+// --- DYNAMIC MARQUEE ENGINE ---
+async function updateMarqueeTicker(baseCurrencyCode) {
+    const marqueeTrack = document.querySelector('.ticker-list'); 
+    if (!marqueeTrack) return;
+
+    const liveRates = await fetchLatestRates(baseCurrencyCode);
+    if (!liveRates || !Array.isArray(liveRates)) return;
+
+    const tickerSymbols = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY'];
+    const filteredRates = liveRates.filter(item => tickerSymbols.includes(item.quote) && item.quote !== baseCurrencyCode);
+
+    let marqueeHtml = '';
+    
+    filteredRates.forEach(item => {
+        marqueeHtml += `
+            <li>${baseCurrencyCode}/${item.quote} ${item.rate.toFixed(4)} <span class="trend up">▲ 0.12%</span></li>
+        `;
+    });
+
+    marqueeTrack.innerHTML = marqueeHtml + marqueeHtml;
+}
+
+// --- CORE CALCULATION ENGINE ---
+// --- CENTRAL CALCULATOR AND PANEL DISPATCHER ---
+async function calculateForex() {
+    const inputField = document.getElementById('send-amount');
+    const outputField = document.getElementById('receive-amount');
+    if (!inputField || !outputField) return;
+
+    let sourceAmount = parseFloat(inputField.value);
+
+    if (isNaN(sourceAmount) || sourceAmount <= 0) {
+        sourceAmount = 0;
+        outputField.textContent = '0.00';
+    }
+
+    const codeBlocks = document.querySelectorAll('.currency-code');
+    if (codeBlocks.length < 2) return;
+    const sourceCode = codeBlocks[0].textContent.trim();
+    const targetCode = codeBlocks[1].textContent.trim();
+
+    if (sourceAmount === 0) {
+        outputField.textContent = '0.00';
+    } else if (sourceCode === targetCode) {
+        outputField.textContent = sourceAmount.toFixed(2);
+    } else {
+        const liveRates = await fetchLatestRates(sourceCode);
+        if (liveRates && Array.isArray(liveRates)) {
+            const match = liveRates.find(item => item.quote === targetCode);
+            if (match) {
+                outputField.textContent = (sourceAmount * match.rate).toLocaleString(undefined, { 
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2 
+                });
+            }
+        }
+    }
+
+    if (typeof updateComparePanel === 'function') {
+        updateComparePanel(sourceAmount, sourceCode);
+    }
+
+    if (typeof updateMarqueeTicker === 'function') {
+        updateMarqueeTicker(sourceCode);
+    }
+}
+
+// --- EVENT LISTENER REGISTRATION VIA DISPATCHER ---
+const sendAmountInput = document.getElementById('send-amount');
+if (sendAmountInput) {
+    sendAmountInput.addEventListener('input', calculateForex);
+}
+
+function initDefaultExchangeRate() {
+    const codeBlocks = document.querySelectorAll('.currency-code');
+    
+    if (codeBlocks.length >= 2) {
+        const defaultSource = codeBlocks[0].textContent.trim();
+        const defaultTarget = codeBlocks[1].textContent.trim();
+        
+        updateExchangeRate(defaultSource, defaultTarget);
+        updateMarqueeTicker(defaultSource);
+    } else {
+        updateExchangeRate('USD', 'EUR');
+        updateMarqueeTicker('USD');
+    }
+}
+
+initDefaultExchangeRate();
