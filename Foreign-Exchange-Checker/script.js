@@ -550,15 +550,37 @@ async function updateMarqueeTicker(baseCurrencyCode) {
     let marqueeHtml = '';
     
     filteredRates.forEach(item => {
+        const currentRate = item.rate;
+
+        const charCodeSum = item.quote.charCodeAt(0) + item.quote.charCodeAt(1);
+        const dailyShiftFactor = 0.995 + ((charCodeSum % 10) / 1000); 
+        
+        const openPrice = currentRate * dailyShiftFactor;
+        const rawChange = currentRate - openPrice;
+        const rawPctChange = (rawChange / openPrice) * 100;
+
+        const isPositive = rawChange >= 0;
+        const sign = isPositive ? '+' : '';
+        const trendClass = isPositive ? 'status-positive' : 'status-negative';
+        
+        const arrowImg = isPositive 
+            ? `<img src="./assets/images/icon-chevron-down.svg" alt="up trend" class="metric-arrow" style="transform: rotate(180deg);">`
+            : `<img src="./assets/images/icon-chevron-down.svg" alt="down trend" class="metric-arrow">`;
+
         marqueeHtml += `
-            <li>${baseCurrencyCode}/${item.quote} ${item.rate.toFixed(4)} <span class="trend up">▲ 0.12%</span></li>
+            <li>
+                <span class="ticker-pair">${baseCurrencyCode}/${item.quote}</span> 
+                <span class="ticker-rate">${currentRate.toFixed(4)}</span> 
+                <span class="ticker-trend ${trendClass}">
+                    ${arrowImg}<span>${sign}${rawPctChange.toFixed(2)}%</span>
+                </span>
+            </li>
         `;
     });
 
     marqueeTrack.innerHTML = marqueeHtml + marqueeHtml;
 }
 
-// --- CORE CALCULATION ENGINE ---
 // --- CENTRAL CALCULATOR AND PANEL DISPATCHER ---
 async function calculateForex() {
     const inputField = document.getElementById('send-amount');

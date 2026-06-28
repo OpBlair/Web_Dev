@@ -115,6 +115,8 @@ header section {
 .ticker-list:hover {
     animation-play-state: paused;
 }
+.ticker-pair{ color: var(--text-secondary); }
+.ticker-rate{ color: var(--text-primary); }
 
 .ticker-list li {
     padding: 1rem;
@@ -881,7 +883,7 @@ nav {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-left: auto; /* Pushes the numbers right next to the status indicators */
+    margin-left: auto; 
     font-family: var(--font-mono);
 }
 
@@ -919,7 +921,6 @@ nav {
 .unpin-row-btn img {
     width: 16px;
     height: 16px;
-    /* Invert filter forces regular dark assets into high-vis lime to show selection active status */
     filter: drop-shadow(0 0 2px rgba(206, 247, 57, 0.2));
 }
 
@@ -931,7 +932,6 @@ nav {
    PANEL: CONVERSION LOGS (HISTORICAL LEDGER)
    ========================================================================== */
 
-/* Extends the standard header container with an inline clear trigger utility anchor link */
 #panel-log .panel-header {
     flex-direction: row;
     justify-content: space-between;
