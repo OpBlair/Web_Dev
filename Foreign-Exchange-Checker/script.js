@@ -291,6 +291,11 @@ timeframeButtons.forEach(button => {
         
         const selectedTimeframe = button.textContent.trim();
         console.log(`Loading metrics pipeline history for range index: ${selectedTimeframe}`);
+        
+        const { from, to } = calculateTimeFrame();
+
+        console.log(from, to);
+        updateForexChart();
     });
 });
 
@@ -616,3 +621,154 @@ function initDefaultExchangeRate() {
 }
 
 initDefaultExchangeRate();
+
+// timeseries data
+async function fetchTimeSeriesRates(baseCurrency, quoteCurrency, startDate, endDate){
+    try{
+        const response = await fetch(`https://api.frankfurter.dev/v2/rates?from=${startDate}&to=${endDate}&base=${baseCurrency}&quotes=${quoteCurrency}`);
+        if(!response.ok) throw new Error('Network rates delivery error.');
+        return await response.json();
+    } catch(error){
+        console.error("Rates time series integration fault:", error);
+        return null;
+    }
+}
+const { from, to } = calculateTimeFrame();
+fetchTimeSeriesRates('EUR', 'USD', from, to).then(data => console.log(data));
+
+// calculate TimeFrame
+function calculateTimeFrame(){
+    const endDate = new Date();
+    const activeButton = document.querySelector('.timeFrame button[aria-checked="true"]');
+    const selectedTimeFrame = activeButton.textContent.trim();
+    const startDate = new Date(endDate);
+
+    switch(selectedTimeFrame){
+        case "1d":
+            startDate.setDate(endDate.getDate() - 1);
+            break;
+        case "1w":
+            startDate.setDate(endDate.getDate() - 7);
+            break;
+        case "1m":
+            startDate.setMonth(endDate.getMonth() - 1);
+            break;
+        case "3m":
+            startDate.setMonth(endDate.getMonth() - 3);
+            break;
+        case "1y":
+            startDate.setFullYear(endDate.getFullYear() - 1);
+            break;
+        case "5y":
+            startDate.setFullYear(endDate.getFullYear() - 5);
+            break;
+    }
+
+    return {
+        from: formatDate(startDate),
+        to: formatDate(endDate)
+    };
+}
+
+// Helper Function for Formatting
+function formatDate(date) {
+    return date.toISOString().split("T")[0];
+}
+
+// Global variable to keep track of the chart instance and prevent rendering conflicts
+let forexChartInstance = null;
+
+// --- DYNAMIC CORE CHART ENGINE ---
+async function updateForexChart() {
+    const canvasElement = document.getElementById('forexChart');
+    if (!canvasElement) return;
+
+    const codeBlocks = document.querySelectorAll('.currency-code');
+    if (codeBlocks.length < 2) return;
+    const base = codeBlocks[0].textContent.trim();
+    const target = codeBlocks[1].textContent.trim();
+
+    const { from, to } = calculateTimeFrame();
+
+    if (base === target) {
+        if (forexChartInstance) {
+            forexChartInstance.destroy();
+            forexChartInstance = null;
+        }
+        const ctx = canvasElement.getContext('2d');
+        ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        return;
+    }
+
+    const apiData = await fetchTimeSeriesRates(base, target, from, to);
+    if (!apiData || !Array.isArray(apiData) || apiData.length === 0) return;
+
+    const dates = apiData.map(item => {
+        const dateObj = new Date(item.date);
+        
+        const activeButton = document.querySelector('.timeFrame button[aria-checked="true"]');
+        const timeframe = activeButton ? activeButton.textContent.trim().toLowerCase() : "1m";
+
+        if (timeframe === "1y" || timeframe === "5y") {
+            return dateObj.toLocaleDateString('en-US', { 
+                month: 'short', 
+                year: '2-digit'
+            });
+        } else {
+            return dateObj.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+    });
+
+    const rates = apiData.map(item => item.rate);
+
+    if (forexChartInstance) {
+        forexChartInstance.destroy();
+    }
+
+    const ctx = canvasElement.getContext('2d');
+    forexChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: `${base}/${target}`,
+                data: rates,
+                borderColor: '#cef739',
+                backgroundColor: 'rgba(206, 247, 57, 0.05)',
+                borderWidth: 2,
+                pointRadius: dates.length > 30 ? 0 : 2, 
+                tension: 0.2, 
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false } 
+            },
+            scales: {
+                x: { 
+                    grid: { display: false },
+                    ticks: {
+                        maxRotation: 0,
+                        minRotation: 0,
+                        autoSkip: true,  
+                        maxTicksLimit: 8
+                    }
+                },
+                y: { 
+                    ticks: { precision: 4 } 
+                }
+            }
+        }
+    });
+}
+
+window.onload = () => {
+    initDefaultExchangeRate();
+    updateForexChart();
+};
