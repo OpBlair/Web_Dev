@@ -303,69 +303,81 @@ timeframeButtons.forEach(button => {
     });
 });
 
-// --- COMPARE PANEL DATA ENGINE ---
-
-const comparisonDataMock = [
-    { code: 'EUR', name: 'Euro', flag: './assets/images/flags/eu.webp', rate: 0.8530 },
-    { code: 'GBP', name: 'British Pound', flag: './assets/images/flags/gb.webp', rate: 0.7845 },
-    { code: 'JPY', name: 'Japanese Yen', flag: './assets/images/flags/jp.webp', rate: 156.42 },
-    { code: 'AUD', name: 'Australian Dollar', flag: './assets/images/flags/au.webp', rate: 1.5120 },
-    { code: 'CAD', name: 'Canadian Dollar', flag: './assets/images/flags/ca.webp', rate: 1.3650 },
-    { code: 'CHF', name: 'Swiss Franc', flag: './assets/images/flags/ch.webp', rate: 0.8910 }
-];
-
+// --- COMPONENT COMPARISON ENGINE  ---
 /**
- * Renders and updates the multi-currency comparison panel grid
+ * Renders and updates the multi-currency comparison panel grid dynamically using live API data
  * @param {number} baseAmount - The numeric input value from the user (e.g., 1000)
  * @param {string} baseCurrencyCode - The active 3-letter source currency (e.g., "USD")
  */
-function updateComparePanel(baseAmount, baseCurrencyCode) {
+async function updateComparePanel(baseAmount, baseCurrencyCode) {
     const listContainer = document.querySelector('.comparison-list');
     const emptyState = document.querySelector('#panel-compare .empty-state');
     const summaryAmount = document.querySelector('#panel-compare .meta-summary .amount');
     const summaryBase = document.querySelector('#panel-compare .meta-summary .base-currency');
-    const summaryCount = document.querySelector('#panel-compare .meta-summary .row-count');
+    const summaryCount = document.querySelector('#panel-compare .row-count');
 
     if (!baseAmount || baseAmount <= 0) {
-        listContainer.innerHTML = '';
-        emptyState.classList.remove('hidden');
+        if (listContainer) listContainer.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
         return;
     }
 
-    emptyState.classList.add('hidden');
+    if (emptyState) emptyState.classList.add('hidden');
+
+    const liveRatesData = await fetchLatestRates(baseCurrencyCode);
+    
+    if (!liveRatesData || !Array.isArray(liveRatesData)) {
+        console.error(`Could not fetch live comparisons for baseline currency: ${baseCurrencyCode}`);
+        return;
+    }
+
+    const targetSymbols = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY'];
+    const activeDisplaySymbols = targetSymbols.filter(symbol => symbol !== baseCurrencyCode);
 
     if (summaryAmount) summaryAmount.textContent = Number(baseAmount).toLocaleString(undefined, { minimumFractionDigits: 0 });
     if (summaryBase) summaryBase.textContent = baseCurrencyCode;
-    if (summaryCount) summaryCount.textContent = `${comparisonDataMock.length} pairs`;
+    if (summaryCount) summaryCount.textContent = `${activeDisplaySymbols.length} pairs`;
 
     let htmlPayload = '';
 
-    comparisonDataMock.forEach(item => {
+    activeDisplaySymbols.forEach(symbol => {
+        const matchPair = liveRatesData.find(item => item.quote === symbol);
+        if (!matchPair) return; 
 
-        const totalConverted = (baseAmount * item.rate).toFixed(2);
+        const liveRate = matchPair.rate;
+
+        const masterMatch = currencies.find(c => c.code === symbol);
+        const flagPath = masterMatch ? masterMatch.flag : './assets/images/flags/generic.webp';
+        const currencyName = masterMatch ? masterMatch.name : symbol;
+
+        const totalConverted = (baseAmount * liveRate).toFixed(2);
         const localizedTotal = Number(totalConverted).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
         htmlPayload += `
             <li class="comparison-row">
                 <div class="currency-info">
-                    <img src="${item.flag}" alt="${item.name} flag" class="flag">
-                    <span class="code">${item.code}</span>
-                    <span class="name">${item.name}</span>
+                    <img src="${flagPath}" alt="${currencyName} flag" class="flag">
+                    <span class="code">${symbol}</span>
+                    <span class="name">${currencyName}</span>
                 </div>
                 <div class="conversion-data">
                     <span class="converted-amount">${localizedTotal}</span>
-                    <span class="reference-rate">@ ${item.rate.toFixed(4)}</span>
+                    <span class="reference-rate">@ ${liveRate.toFixed(4)}</span>
                 </div>
-                <button type="button" class="pin-row-btn" aria-label="Pin ${item.code} pair" data-code="${item.code}">
+                <button type="button" class="pin-row-btn" aria-label="Pin ${symbol} pair" data-code="${symbol}">
                     <img src="./assets/images/icon-star.svg" alt="star outline icon">
                 </button>
             </li>
         `;
     });
 
-    listContainer.innerHTML = htmlPayload;
+    if (listContainer) {
+        listContainer.innerHTML = htmlPayload;
+    }
 
-    setupPinRowListeners();
+    if (typeof setupPinRowListeners === 'function') {
+        setupPinRowListeners();
+    }
 }
 
 function setupPinRowListeners() {
@@ -379,7 +391,6 @@ function setupPinRowListeners() {
 }
 
 // --- FAVORITES PANEL DATA ENGINE ---
-
 let favoritesDataMock = [
     { source: 'USD', target: 'EUR', rate: 0.8530, change: '+0.24', direction: 'up' },
     { source: 'EUR', target: 'GBP', rate: 0.8841, change: '-0.12', direction: 'down' },
@@ -643,6 +654,10 @@ function initDefaultExchangeRate() {
         });
 
         updateMarqueeTicker(defaultSource);
+
+        if (typeof updateComparePanel === 'function') {
+            updateComparePanel(1, defaultSource);
+        }
     } else {
         updateExchangeRate('USD', 'EUR');
         updateMarqueeTicker('USD');
