@@ -395,6 +395,75 @@ let favoritesDataMock = [
     { source: 'BTC', target: 'USD', rate: 64250.00, change: '+4.19', direction: 'up' }
 ];
 
+// --- FAVORITE BUTTON COMPONENT ENGINE ---
+
+function syncMainFavoriteButtonState() {
+    const favoriteBtn = document.querySelector('.favorite-toggle-btn');
+    if (!favoriteBtn) return;
+
+    const codeBlocks = document.querySelectorAll('.currency-code');
+    if (codeBlocks.length < 2) return;
+
+    const sourceCode = codeBlocks[0].textContent.trim();
+    const targetCode = codeBlocks[1].textContent.trim();
+
+    const isFavorited = favoritesDataMock.some(
+        fav => fav.source === sourceCode && fav.target === targetCode
+    );
+
+    const unpinnedSpan = favoriteBtn.querySelector('.state-unpinned');
+    const pinnedSpan = favoriteBtn.querySelector('.state-pinned');
+
+    if (isFavorited) {
+        favoriteBtn.setAttribute('aria-pressed', 'true');
+        if (unpinnedSpan) unpinnedSpan.classList.add('hidden');
+        if (pinnedSpan) pinnedSpan.classList.remove('hidden');
+    } else {
+        favoriteBtn.setAttribute('aria-pressed', 'false');
+        if (unpinnedSpan) unpinnedSpan.classList.remove('hidden');
+        if (pinnedSpan) pinnedSpan.classList.add('hidden');
+    }
+
+    favoriteBtn.onclick = () => {
+        const currentRateElement = document.querySelector('.exchange-rate');
+        let activeRate = 1.0000;
+
+        if (currentRateElement) {
+            const parts = currentRateElement.textContent.split('=');
+            if (parts.length > 1) {
+                activeRate = parseFloat(parts[1]) || 1.0000;
+            }
+        }
+
+        const existingIndex = favoritesDataMock.findIndex(
+            fav => fav.source === sourceCode && fav.target === targetCode
+        );
+
+        if (existingIndex > -1) {
+            favoritesDataMock.splice(existingIndex, 1);
+        } else {
+            favoritesDataMock.push({
+                source: sourceCode,
+                target: targetCode,
+                rate: activeRate,
+                change: '+0.00',
+                direction: 'up'
+            });
+        }
+
+        syncMainFavoriteButtonState();
+        
+        if (typeof updateFavoritesPanel === 'function') {
+            updateFavoritesPanel();
+        }
+        if (typeof setupPinRowListeners === 'function') {
+            setupPinRowListeners(); 
+        }
+    };
+}
+
+syncMainFavoriteButtonState();
+
 function updateFavoritesPanel() {
     const favoritesContainer = document.querySelector('.favorites-list');
     const emptyState = document.querySelector('#panel-favorites .empty-state');
@@ -449,9 +518,7 @@ function setupUnpinListeners() {
         btn.addEventListener('click', (e) => {
             const rowItem = btn.closest('.favorites-row');
             const targetIndex = parseInt(rowItem.getAttribute('data-index'), 10);
-            
-            console.log(`Removing item index target from favorites array stack: ${targetIndex}`);
-            
+                
             favoritesDataMock.splice(targetIndex, 1);
             
             updateFavoritesPanel();
@@ -674,6 +741,10 @@ async function calculateForex() {
 
     if (typeof updateMarqueeTicker === 'function') {
         updateMarqueeTicker(sourceCode);
+    }
+
+    if (typeof syncMainFavoriteButtonState === 'function') {
+        syncMainFavoriteButtonState();
     }
 }
 

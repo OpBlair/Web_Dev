@@ -199,6 +199,40 @@ main {
     transition: border-color 0.2s ease;
 }
 
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-primary); 
+    border: 1px solid #2e2e2e;          
+    border-radius: 8px;
+    padding: 0 12px;                     
+    height: 36px;     
+}
+
+.search-lens-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.4;
+    flex-shrink: 0;                     
+    margin-right: 12px; 
+    filter: brightness(0) invert(1);
+    opacity: 1;                 
+}
+
+#currency-search {
+    flex: 1;                             
+    width: 100%;
+    background: transparent !important;   
+    border: none !important;             
+    padding: 0 !important;              
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    outline: none;
+}
+
 .input-group input,
 .input-group output {
     flex: 1;
@@ -326,6 +360,10 @@ main {
 .favorite-toggle-btn img {
     filter: invert(1);
     object-fit: contain;
+}
+
+.favorite-toggle-btn .state-pinned img {
+    filter: brightness(0) saturate(100%) invert(3%) sepia(0%) saturate(0%) hue-rotate(152deg) brightness(96%) contrast(96%);
 }
 
 .log-conversion-btn {

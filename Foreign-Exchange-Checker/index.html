@@ -99,8 +99,11 @@
         <!-- Currency picker — popover opened from either currency button -->
         <dialog id="currency-picker">
             <form>
-                <label for="currency-search"></label>
-                <input type="search" id="currency-search" placeholder="Search currencies...">
+                <div class="search-wrapper">
+                    <label for="currency-search"></label>
+                    <img src="./assets/images/icon-search.svg" alt="search lens icon" class="search-lens-icon">
+                    <input type="search" id="currency-search" placeholder="Search currencies...">
+                </div>
             </form>
 
             <div class="picker-sections">
@@ -110,7 +113,7 @@
                     <h3>Popular (<span class="count">[4]</span>)</h3>
                     <ul class="currency-list" role="listbox">
                         <li class="currency-row is-selected" role="option" aria-selected="true">
-                            <img src="./assets/images/flags/usd.svg" alt="" class="flag">
+                            <img src="./assets/images/flags/us.webp" alt="us flag" class="flag">
                             <span class="code">USD</span>
                             <span class="name">US Dollar</span>
                             <span class="checkmark" aria-hidden="true">✓</span>
@@ -125,7 +128,7 @@
                 <h3>Other currencies (<span class="count">[51]</span>)</h3>
                 <ul class="currency-list" role="listbox">
                     <li class="currency-row" role="option" aria-selected="false">
-                        <img src="./assets/images/flags/aud.svg" alt="" class="flag">
+                        <img src="./assets/images/flags/au.webp" alt="" class="flag">
                         <span class="code">AUD</span>
                         <span class="name">Australian Dollar</span>
                     </li>
@@ -232,18 +235,18 @@
 
             <ul class="comparison-list">
                 <li class="comparison-row">
-                <div class="currency-info">
-                    <img src="./assets/images/flags/eur.svg" alt="" class="flag">
-                    <span class="code">EUR</span>
-                    <span class="name">Euro</span>
-                </div>
-                <div class="conversion-data">
-                    <span class="converted-amount">853.00</span>
-                    <span class="reference-rate">@ 0.8530</span>
-                </div>
-                <button type="button" class="pin-row-btn" aria-label="Pin pair">
-                    <img src="./assets/images/icon-star.svg" alt="star outline icon">
-                </button>
+                    <div class="currency-info">
+                        <img src="./assets/images/flags/eu.webp" alt="" class="flag">
+                        <span class="code">EUR</span>
+                        <span class="name">Euro</span>
+                    </div>
+                    <div class="conversion-data">
+                        <span class="converted-amount">853.00</span>
+                        <span class="reference-rate">@ 0.8530</span>
+                    </div>
+                    <button type="button" class="pin-row-btn" aria-label="Pin pair">
+                        <img src="./assets/images/icon-star.svg" alt="star outline icon">
+                    </button>
                 </li>
             </ul>
 
