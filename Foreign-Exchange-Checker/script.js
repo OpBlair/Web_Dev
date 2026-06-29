@@ -294,11 +294,9 @@ timeframeButtons.forEach(button => {
         button.setAttribute('aria-checked', 'true');
         
         const selectedTimeframe = button.textContent.trim();
-        console.log(`Loading metrics pipeline history for range index: ${selectedTimeframe}`);
         
         const { from, to } = calculateTimeFrame();
 
-        console.log(from, to);
         updateForexChart();
     });
 });
@@ -464,12 +462,55 @@ function setupUnpinListeners() {
 updateFavoritesPanel();
 
 // --- CONVERSION HISTORICAL LOG ENGINE ---
-
 let logsDataMock = [
     { id: 101, fromAmount: 1000, fromCode: 'USD', toAmount: 853.00, toCode: 'EUR', timeLabel: '14:32 · Jun 26' },
     { id: 102, fromAmount: 250, fromCode: 'GBP', toAmount: 318.50, toCode: 'USD', timeLabel: '11:15 · Jun 25' },
     { id: 103, fromAmount: 50000, fromCode: 'JPY', toAmount: 284.12, toCode: 'CHF', timeLabel: '09:04 · Jun 24' }
 ];
+
+// --- LOG CONVERSION BUTTON ---
+const logConversionBtn = document.querySelector('.log-conversion-btn');
+if (logConversionBtn) {
+    logConversionBtn.onclick = () => {
+        const amountInput = document.querySelector('#send-amount'); 
+        const outputField = document.querySelector('#receive-amount'); 
+        
+        const codeBlocks = document.querySelectorAll('.currency-code');
+        if (!amountInput || !outputField || codeBlocks.length < 2) return;
+
+        const sourceAmount = parseFloat(amountInput.value);
+        const sourceCode = codeBlocks[0].textContent.trim();
+        const targetCode = codeBlocks[1].textContent.trim();
+
+        if (!sourceAmount || sourceAmount <= 0) return;
+
+        const targetAmountText = outputField.textContent.replace(/,/g, '');
+        const targetAmount = parseFloat(targetAmountText);
+
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const dateString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        const newLogEntry = {
+            id: Date.now(),
+            fromAmount: sourceAmount,
+            fromCode: sourceCode,
+            toAmount: targetAmount,
+            toCode: targetCode,
+            timeLabel: `${timeString} · ${dateString}`,
+            datetimeAttr: now.toISOString()
+        };
+
+        logsDataMock.unshift(newLogEntry);
+        if (logsDataMock.length > 20) logsDataMock.pop();
+
+        updateLogPanel();
+        
+        const originalText = logConversionBtn.textContent;
+        logConversionBtn.textContent = 'saved!';
+        setTimeout(() => { logConversionBtn.textContent = originalText; }, 1000);
+    };
+}
 
 function updateLogPanel() {
     const logsContainer = document.querySelector('.log-timeline-list');
@@ -677,8 +718,6 @@ async function fetchTimeSeriesRates(baseCurrency, quoteCurrency, startDate, endD
         return null;
     }
 }
-const { from, to } = calculateTimeFrame();
-fetchTimeSeriesRates('EUR', 'USD', from, to).then(data => console.log(data));
 
 // calculate TimeFrame
 function calculateTimeFrame(){
