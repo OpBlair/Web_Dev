@@ -60,7 +60,7 @@
                 <!-- Swap the send and receive currencies (icon button) -->
                 <button class="swap-currencies-btn">
                     <picture>
-                        <source media="(min-width: 375px)" srcset="assets/images/icon-exchange-vertical.svg">
+                        <source media="(max-width: 375px)" srcset="assets/images/icon-exchange-vertical.svg">
                         <source media="(min-width: 768px)" srcset="assets/images/icon-exchange.svg">
                         <img src="assets/images/icon-exchange-vertical.svg" alt="exchange currency">
                     </picture>
@@ -70,7 +70,7 @@
                     <label for="receive-amount">receive</label>
                     <!-- Dynamic: converted amount -->
                     <div class="input-group">
-                        <output id="receive-amount" for="send-amount">0.00</output>
+                        <output id="receive-amount" for="send-amount" style="color: #cef739;">0.00</output>
                         <!-- Dynamic: selected "receive" currency — flag + code; opens the currency picker -->
                         <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select receive currency">
                             <img src="./assets/images/flags/eu.webp" alt="europe flag" class="flag">
@@ -153,10 +153,10 @@
                 <button>History</button>
                 <button>Compare</button>
                 <button>
-                    Favorites <span class="badge">[10]</span>
+                    Favorites <span class="badge favorites-badge">0</span>
                 </button>
                 <button>
-                    Log <span class="badge">[8]</span>
+                    Log <span class="badge logs-badge">0</span>
                 </button>
             </div>
         </nav>
