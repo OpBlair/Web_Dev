@@ -148,7 +148,7 @@ main {
     gap: 40px;
 }
 
-/* --- CONVERTER SECTION CONTAINER --- */
+/* converter */
 .convert-section {
     display: flex;
     flex-direction: column;
@@ -172,7 +172,7 @@ main {
     gap: 12px;
 }
 
-/* --- INPUT CARDS --- */
+/* form input cards */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -181,6 +181,7 @@ main {
     border: 1px solid #2e2e2e;
     padding: 14px 16px;
     width: 100%; 
+    min-width: 80px;
 }
 
 .form-group label {
@@ -246,14 +247,13 @@ main {
     outline: none;
 }
 
-/* Chrome, Safari, Edge, Opera */
+/* hide number input spinners */
 .input-group input::-webkit-outer-spin-button,
 .input-group input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-/* Firefox */
 .input-group input[type="number"] {
     -moz-appearance: textfield;
 }
@@ -301,7 +301,7 @@ main {
     width: 16px;
 }
 
-/* --- THE META AND DIVIDER BARS --- */
+/* conversion meta row */
 .conversion-meta {
     width: 100%;
     display: flex;
@@ -324,8 +324,7 @@ main {
     display: flex;
     gap: 12px;
     width: 100%;
-    height: 32px;
-    align-items: center;
+    align-items: stretch;
 }
 
 .conversion-actions button {
@@ -333,7 +332,7 @@ main {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 12px;
+    padding: 10px 12px;
     border-radius: 8px;
     cursor: pointer;
     text-transform: uppercase;
@@ -376,7 +375,7 @@ main {
     display: none !important;
 }
 
-/* --- CURRENCY PICKER DIALOG --- */
+/* currency picker */
 dialog#currency-picker {
     position: absolute;
     margin: 0;
@@ -479,7 +478,7 @@ dialog#currency-picker form {
     flex-shrink: 0; 
 }
 
-/* --- NAVIGATION TABS --- */
+/* tabs */
 nav {
     width: 100%;
     margin-top: -10px; 
@@ -547,11 +546,8 @@ nav {
     margin-left: 4px;
 }
 
-/* ==========================================================================
-   PANEL WORKSPACES
-   ========================================================================== */
+/* panels */
 
-/* --- METRICS GRID (Strict 2x2 on Mobile Viewports) --- */
 .metrics-card {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important; 
@@ -594,7 +590,7 @@ nav {
     color: #4ade80; 
 }
 
-/* --- TIMEFRAME SELECTOR --- */
+/* timeframe selector */
 .timeFrame {
     display: flex;
     justify-content: space-between;
@@ -630,7 +626,7 @@ nav {
     color: var(--bg-lime);
 }
 
-/* --- CHART VISUALIZATION ZONE --- */
+/* chart */
 .chart-container {
     background-color: #171719;
     border: 1px solid #2e2e2e;
@@ -670,7 +666,7 @@ nav {
     position: relative;
 }
 
-/* --- SYSTEM MESSAGES --- */
+/* error state */
 .error-state {
     display: flex;
     flex-direction: column;
@@ -694,11 +690,9 @@ nav {
     line-height: 1.4;
 }
 
-/* ==========================================================================
-   PANEL: COMPARE (MULTI-CURRENCY)
-   ========================================================================== */
+/* compare panel */
 
-/* --- SHARED PANEL HEADERS --- */
+/* panel headers */
 .panel-header {
     display: flex;
     flex-direction: column;
@@ -732,7 +726,7 @@ nav {
     font-weight: 700;
 }
 
-/* --- COMPARISON LIST AND ROWS --- */
+/* comparison rows */
 .comparison-list {
     display: flex;
     flex-direction: column;
@@ -757,7 +751,7 @@ nav {
     border-color: #3e3e42;
 }
 
-/* Currency Block (Left Side) */
+
 .currency-info {
     display: flex;
     align-items: center;
@@ -790,7 +784,6 @@ nav {
     text-overflow: ellipsis;
 }
 
-/* Calculation Metrics (Middle Side) */
 .conversion-data {
     display: flex;
     flex-direction: column;
@@ -811,7 +804,6 @@ nav {
     color: var(--text-secondary);
 }
 
-/* Pin Action Anchor Button (Right Side) */
 .pin-row-btn {
     background: transparent;
     border: none;
@@ -843,7 +835,7 @@ nav {
     transform: scale(0.9);
 }
 
-/* --- EMPTY CONTAINER FALLBACK STATES --- */
+/* empty states */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -872,9 +864,7 @@ nav {
     max-width: 280px;
 }
 
-/* ==========================================================================
-   PANEL: FAVORITES (PINNED PAIRS)
-   ========================================================================== */
+/* favorites panel */
 #panel-favorites .panel-header{
     display: flex;
     flex-direction: row;
@@ -900,7 +890,6 @@ nav {
     gap: 12px;
 }
 
-/* Direction Pair Indicator (Left Side) */
 .pair-direction {
     display: flex;
     align-items: center;
@@ -916,13 +905,23 @@ nav {
     opacity: 0.4;
 }
 
-/* Market Trends & Data Rates (Middle Side) */
 .favorites-row .live-rate {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-left: auto; 
     font-family: var(--font-mono);
+}
+
+.favorites-row .unpin-row-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--bg-lime);
+    border-radius: 8px;
+    background: transparent;
 }
 
 .change-pct {
@@ -933,7 +932,6 @@ nav {
     white-space: nowrap;
 }
 
-/* Precise trend state badges */
 .change-pct.status-positive {
     background-color: rgba(74, 222, 128, 0.1);
     color: #4ade80;
@@ -944,7 +942,6 @@ nav {
     color: #f87171;
 }
 
-/* Unpin Star Trigger Button (Right Side) */
 .unpin-row-btn {
     background: transparent;
     border: none;
@@ -966,9 +963,7 @@ nav {
     transform: scale(1.05);
 }
 
-/* ==========================================================================
-   PANEL: CONVERSION LOGS (HISTORICAL LEDGER)
-   ========================================================================== */
+/* log panel */
 
 #panel-log .panel-header {
     flex-direction: row;
@@ -979,7 +974,7 @@ nav {
 .clear-all-log-btn {
     background: transparent;
     border: none;
-    color: #f87171; /* High-vis clear warning indicator label accent */
+    color: #f87171;
     font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 700;
@@ -994,8 +989,6 @@ nav {
     background-color: rgba(248, 113, 113, 0.08);
 }
 
-/* --- TIMELINE LIST MATRIX CONTAINER --- */
-
 .log-timeline-list {
     display: flex;
     flex-direction: column;
@@ -1004,14 +997,13 @@ nav {
     width: 100%;
 }
 
-/* --- MOBILE VIEWPORTS (Stacked Column Card) --- */
 .log-item-row {
     background-color: #171719;
     border: 1px solid #2e2e2e;
     border-radius: 14px;
     padding: 14px 16px;
     display: flex;
-    align-items: center; /* Keeps delete icon centered on the right edge */
+    align-items: center;
     justify-content: space-between;
     gap: 16px;
     font-family: var(--font-mono);
@@ -1059,7 +1051,7 @@ nav {
 
 .currency-pair-amount {
     display: flex;
-    flex-direction: column; /* Stack the send and receive values on mobile */
+    flex-direction: column; 
     gap: 2px;
 }
 
@@ -1078,18 +1070,17 @@ nav {
     color: var(--bg-lime);
 }
 
-/* Delete Trigger Button Structure */
 .delete-log-row-item {
-    background: transparent;
-    border: none;
+    background: #202022;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 8px;
     border-radius: 8px;
-    transition: background-color 0.15s ease;
-    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid #2e2e2e;
 }
 
 .delete-log-row-item:hover {
@@ -1101,11 +1092,10 @@ nav {
     height: 16px;
     opacity: 0.5;
     transition: opacity 0.15s ease;
+    filter: brightness(0) invert(100%);
+    opacity: 1;
 }
 
-.delete-log-row-item:hover img { opacity: 1; }
-
-/* Chevron arrow style */
 .metric-icon {
     display: inline-block;
     vertical-align: middle;
@@ -1134,31 +1124,171 @@ nav {
     filter: brightness(0) saturate(100%) invert(32%) sepia(55%) saturate(5185%) hue-rotate(344deg) brightness(96%) contrast(92%);
 }
 
-/* --- TABLET / DESKTOP BREAKPOINT (Flat Horizontal Row) --- */
-@media (min-width: 480px) {
+/* TABLET  —  768px */
+@media (min-width: 768px) {
+
+    header, main {
+        max-width: 768px;
+    }
+
+    header section {
+        display: flex;
+        justify-content: space-between;
+        height: 60px;
+        padding: 0 24px;
+    }
+
+    .logo img { height: 1.8rem; }
+    .market-meta { font-size: 0.7rem; }
+
+    /* Ticker */
+    .live-markets { height: 38px; }
+    .ticker-list li { font-size: 0.7rem; }
+
+    .mobile-tab-dropdown { display: none; }
+    .tablet-tab-dropdown { display: flex; }
+
+    /* Main padding */
+    main { padding: 24px; gap: 32px; }
+
+    .convert-section form {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 0;
+        padding: 24px;
+        position: relative;
+    }
+
+    .convert-section form .form-group {
+        flex: 1;
+    }
+
+    .swap-currencies-btn {
+        width: 44px;
+        height: 44px;
+        align-self: center;
+        margin: 0 8px;
+        flex-shrink: 0;
+    }
+
+    .conversion-meta {
+        flex-basis: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px dashed #2e2e2e;
+        margin-top: 16px;
+        padding-top: 16px;
+    }
+
+    .exchange-rate { text-align: left; }
+
+    .conversion-actions {
+        width: auto;
+        flex-shrink: 0;
+        gap: 10px;
+    }
+
+    .metrics-card {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    .chart-visuallization { height: 240px; }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: #283300;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .comparison-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
     .log-content-meta {
-        flex-direction: row; /* Flattens content container */
+        flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 20px;
     }
 
-    .time-currency-pair {
-        flex-shrink: 0;
-    }
+    .time-currency-pair { flex-shrink: 0; }
 
     .currency-pair-amount {
-        flex-direction: row; /* Flattens numbers inline alongside tokens */
+        flex-direction: row;
         align-items: center;
         gap: 16px;
         text-align: right;
     }
 
-    .log-send-amount {
-        font-size: 0.8rem;
+    .log-send-amount    { font-size: 0.8rem; }
+    .log-receive-amount { font-size: 0.9rem; }
+
+    dialog#currency-picker {
+        max-width: 380px;
+        max-height: 320px;
     }
 
-    .log-receive-amount {
-        font-size: 0.9rem;
+    .picker-sections { max-height: 230px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   DESKTOP  —  1440px
+   ═══════════════════════════════════════════════════ */
+@media (min-width: 1440px) {
+    header{
+        max-width: 1440px;
     }
+    main {
+        max-width: 1100px;
+    }
+
+    header section {
+        display: flex;
+        justify-content: space-between;
+        height: 68px;
+        padding: 0 32px;
+    }
+
+    .logo img { height: 2rem; }
+    .market-meta { font-size: 0.75rem; }
+    .ticker-list li { font-size: 0.75rem; padding: 1rem 1.25rem; }
+
+    /* Main */
+    main {
+        padding: 40px 0;
+        gap: 40px;
+    }
+
+    .metrics-card { gap: 16px; }
+    .metric-value { font-size: 1.25rem; }
+
+    .chart-visuallization { height: 360px; }
+
+    .comparison-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .favorites-row { padding: 16px 20px; }
+    .favorites-row .live-rate { font-size: 1.1rem; }
+
+    .log-item-row { padding: 16px 20px; }
+    .log-receive-amount { font-size: 1.1rem; }
+
+    dialog#currency-picker {
+        max-width: 440px;
+        max-height: 400px;
+    }
+
+    .picker-sections { max-height: 300px; }
 }

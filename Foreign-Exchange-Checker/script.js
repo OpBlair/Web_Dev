@@ -1,10 +1,11 @@
 'use strict';
 
+// --- Global States & Selectors ---
 const picker = document.getElementById('currency-picker');
 const triggerBtns = document.querySelectorAll('.currency-select-btn');
 let activeTriggerButton = null;
 
-// Currencies and Flags Data
+// --- Currencies Dataset ---
 const currencies = [
   {code: 'ARS', name: 'Argentine Peso', flag: './assets/images/flags/ar.webp', popular: false},
   {code: 'AUD', name: 'Australian Dollar', flag: './assets/images/flags/au.webp', popular: true},
@@ -64,7 +65,7 @@ const currencies = [
   {code: 'ZAR', name: 'South African Rand', flag: './assets/images/flags/za.webp', popular: false}
 ];
 
-// --- LIVE FOREX RATES API ENGINE ---
+// --- Fetch Exchange Rates ---
 async function fetchLatestRates(baseCurrency) {
     try {
         const response = await fetch(`https://api.frankfurter.dev/v2/rates?base=${baseCurrency}`);
@@ -76,6 +77,7 @@ async function fetchLatestRates(baseCurrency) {
     }
 }
 
+// --- Update UI Live Rates ---
 async function updateExchangeRate(sourceCode, targetCode) {
     if (sourceCode === targetCode) {
         const uiExchangeText = document.querySelector('.exchange-rate');
@@ -95,7 +97,7 @@ async function updateExchangeRate(sourceCode, targetCode) {
     }
 }
 
-// DOM Renderer Setup
+// --- Render Currency Picker ---
 function populateCurrencyPicker() {
     const pickerSections = document.querySelector('.picker-sections');
     if (!pickerSections) return;
@@ -120,7 +122,7 @@ function populateCurrencyPicker() {
     `;
 }
 
-// --- CURRENCY PICKER FILTER SEARCH ENGINE ---
+// --- Filter Search Initialization ---
 function setupPickerSearch() {
     const searchInput = document.getElementById('currency-search');
     if (!searchInput) return;
@@ -156,6 +158,7 @@ function setupPickerSearch() {
 
 setupPickerSearch();
 
+// --- Build Row Item Template ---
 function createRowHtml(currency) {
     return `
         <li class="currency-row" role="option" data-code="${currency.code}">
@@ -168,12 +171,12 @@ function createRowHtml(currency) {
 
 populateCurrencyPicker();
 
+// --- Triggers: Click Listener Management ---
 triggerBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation(); 
         activeTriggerButton = btn; 
         
-        // Clear previous search terms
         const searchInput = document.getElementById('currency-search');
         if (searchInput) {
             searchInput.value = '';
@@ -195,6 +198,7 @@ triggerBtns.forEach(btn => {
     });
 });
 
+// --- Picker Selection Processing ---
 document.querySelector('.picker-sections').addEventListener('click', async (e) => {
     const row = e.target.closest('.currency-row');
     if (!row || !activeTriggerButton) return;
@@ -215,20 +219,20 @@ document.querySelector('.picker-sections').addEventListener('click', async (e) =
         const targetCurrency = codeBlocks[1].textContent.trim();
         
         await updateExchangeRate(sourceCurrency, targetCurrency);
-
         syncChartHeadings(sourceCurrency, targetCurrency);
     }
     calculateForex();
     updateForexChart();
 });
 
+// --- Backdrop Click Dismissal ---
 document.addEventListener('click', (e) => {
     if (picker.open && !picker.contains(e.target)) {
         picker.close();
     }
 });
 
-// --- TAB NAVIGATION CONTROLLER ---
+// --- Tab Navigation View Controls ---
 const mobileSelect = document.querySelector('.mobile-tab-dropdown select');
 const desktopButtons = document.querySelectorAll('.tablet-tab-dropdown button');
 
@@ -260,7 +264,6 @@ function switchTab(tabId) {
     });
 }
 
-// Event Listener for Mobile Select Dropdown
 if (mobileSelect) {
     mobileSelect.addEventListener('change', (e) => {
         switchTab(e.target.value);
@@ -278,10 +281,9 @@ desktopButtons.forEach(btn => {
     });
 });
 
-// Initialize on page load (Show History default)
 switchTab('history');
 
-// --- TIMEFRAME SELECTOR ENGINE ---
+// --- Timeframe Controls ---
 const timeframeButtons = document.querySelectorAll('.timeFrame button');
 
 timeframeButtons.forEach(button => {
@@ -292,21 +294,14 @@ timeframeButtons.forEach(button => {
         }
         
         button.setAttribute('aria-checked', 'true');
-        
         const selectedTimeframe = button.textContent.trim();
-        
         const { from, to } = calculateTimeFrame();
 
         updateForexChart();
     });
 });
 
-// --- COMPONENT COMPARISON ENGINE  ---
-/**
- * Renders and updates the multi-currency comparison panel grid dynamically using live API data
- * @param {number} baseAmount - The numeric input value from the user (e.g., 1000)
- * @param {string} baseCurrencyCode - The active 3-letter source currency (e.g., "USD")
- */
+// --- Multi-Currency Comparison Grid ---
 async function updateComparePanel(baseAmount, baseCurrencyCode) {
     const listContainer = document.querySelector('.comparison-list');
     const emptyState = document.querySelector('#panel-compare .empty-state');
@@ -343,7 +338,6 @@ async function updateComparePanel(baseAmount, baseCurrencyCode) {
         if (!matchPair) return; 
 
         const liveRate = matchPair.rate;
-
         const masterMatch = currencies.find(c => c.code === symbol);
         const flagPath = masterMatch ? masterMatch.flag : './assets/images/flags/generic.webp';
         const currencyName = masterMatch ? masterMatch.name : symbol;
@@ -378,6 +372,7 @@ async function updateComparePanel(baseAmount, baseCurrencyCode) {
     }
 }
 
+// --- Row Pin Listeners ---
 function setupPinRowListeners() {
     const pinButtons = document.querySelectorAll('.pin-row-btn');
     pinButtons.forEach(btn => {
@@ -388,15 +383,10 @@ function setupPinRowListeners() {
     });
 }
 
-// --- FAVORITES PANEL DATA ENGINE ---
-let favoritesDataMock = [
-    { source: 'USD', target: 'EUR', rate: 0.8530, change: '+0.24', direction: 'up' },
-    { source: 'EUR', target: 'GBP', rate: 0.8841, change: '-0.12', direction: 'down' },
-    { source: 'BTC', target: 'USD', rate: 64250.00, change: '+4.19', direction: 'up' }
-];
+// --- Mock Datasets for Favorites ---
+let favoritesDataMock = [];
 
-// --- FAVORITE BUTTON COMPONENT ENGINE ---
-
+// --- Favorite Status Toggle Sync ---
 function syncMainFavoriteButtonState() {
     const favoriteBtn = document.querySelector('.favorite-toggle-btn');
     if (!favoriteBtn) return;
@@ -453,10 +443,10 @@ function syncMainFavoriteButtonState() {
 
         syncMainFavoriteButtonState();
         
-        if (typeof updateFavoritesPanel === 'function') {
+        if(typeof updateFavoritesPanel === 'function') {
             updateFavoritesPanel();
         }
-        if (typeof setupPinRowListeners === 'function') {
+        if(typeof setupPinRowListeners === 'function') {
             setupPinRowListeners(); 
         }
     };
@@ -464,22 +454,24 @@ function syncMainFavoriteButtonState() {
 
 syncMainFavoriteButtonState();
 
+// --- Render Favorites View ---
 function updateFavoritesPanel() {
     const favoritesContainer = document.querySelector('.favorites-list');
     const emptyState = document.querySelector('#panel-favorites .empty-state');
     const favCountBadge = document.querySelector('#panel-favorites .meta-summary .fav-count');
+    const favoritesCount = document.querySelector('.favorites-badge');
 
     if (!favoritesDataMock || favoritesDataMock.length === 0) {
         favoritesContainer.innerHTML = '';
         emptyState.classList.remove('hidden');
         if (favCountBadge) favCountBadge.textContent = '0';
+        if (favoritesCount) favoritesCount.textContent = '0';
         return;
     }
 
     emptyState.classList.add('hidden');
-
     if (favCountBadge) favCountBadge.textContent = favoritesDataMock.length;
-
+    if (favoritesCount) favoritesCount.textContent = favoritesDataMock.length;
     let htmlPayload = '';
 
     favoritesDataMock.forEach((item, index) => {
@@ -508,10 +500,10 @@ function updateFavoritesPanel() {
     });
 
     favoritesContainer.innerHTML = htmlPayload;
-
     setupUnpinListeners();
 }
 
+// --- Favorites Unpin Listeners ---
 function setupUnpinListeners() {
     const unpinButtons = document.querySelectorAll('.unpin-row-btn');
     unpinButtons.forEach(btn => {
@@ -520,7 +512,6 @@ function setupUnpinListeners() {
             const targetIndex = parseInt(rowItem.getAttribute('data-index'), 10);
                 
             favoritesDataMock.splice(targetIndex, 1);
-            
             updateFavoritesPanel();
         });
     });
@@ -528,14 +519,10 @@ function setupUnpinListeners() {
 
 updateFavoritesPanel();
 
-// --- CONVERSION HISTORICAL LOG ENGINE ---
-let logsDataMock = [
-    { id: 101, fromAmount: 1000, fromCode: 'USD', toAmount: 853.00, toCode: 'EUR', timeLabel: '14:32 · Jun 26' },
-    { id: 102, fromAmount: 250, fromCode: 'GBP', toAmount: 318.50, toCode: 'USD', timeLabel: '11:15 · Jun 25' },
-    { id: 103, fromAmount: 50000, fromCode: 'JPY', toAmount: 284.12, toCode: 'CHF', timeLabel: '09:04 · Jun 24' }
-];
+// --- Mock Datasets for Logs ---
+let logsDataMock = [];
 
-// --- LOG CONVERSION BUTTON ---
+// --- Submit & Save Conversion Entry ---
 const logConversionBtn = document.querySelector('.log-conversion-btn');
 if (logConversionBtn) {
     logConversionBtn.onclick = () => {
@@ -579,10 +566,12 @@ if (logConversionBtn) {
     };
 }
 
+// --- Render Audit Log Timeline ---
 function updateLogPanel() {
     const logsContainer = document.querySelector('.log-timeline-list');
     const emptyState = document.querySelector('#panel-log .empty-state');
     const countBadge = document.querySelector('#panel-log .meta-summary .log-count');
+    const logCount = document.querySelector('.logs-badge');
     const clearAllBtn = document.querySelector('.clear-all-log-btn');
 
     if (!logsDataMock || logsDataMock.length === 0) {
@@ -590,12 +579,15 @@ function updateLogPanel() {
         emptyState.classList.remove('hidden');
         if (countBadge) countBadge.textContent = '0';
         if (clearAllBtn) clearAllBtn.classList.add('hidden'); 
+        if (logCount) logCount.textContent = '0';
         return;
     }
 
     emptyState.classList.add('hidden');
     if (clearAllBtn) clearAllBtn.classList.remove('hidden');
     if (countBadge) countBadge.textContent = logsDataMock.length;
+    // Count of logged pairs
+    if (logCount) logCount.textContent = logsDataMock.length;
 
     let htmlPayload = '';
 
@@ -627,10 +619,10 @@ function updateLogPanel() {
     });
 
     logsContainer.innerHTML = htmlPayload;
-
     setupLogListeners();
 }
 
+// --- Log Deletion Row Listeners ---
 function setupLogListeners() {
     const deleteButtons = document.querySelectorAll('.delete-log-row-item');
     deleteButtons.forEach(btn => {
@@ -639,7 +631,6 @@ function setupLogListeners() {
             const logId = parseInt(rowItem.getAttribute('data-log-id'), 10);
             
             logsDataMock = logsDataMock.filter(item => item.id !== logId);
-            
             updateLogPanel();
         });
     });
@@ -655,7 +646,7 @@ function setupLogListeners() {
 
 updateLogPanel();
 
-// --- DYNAMIC MARQUEE ENGINE ---
+// --- Marquee Ticker Setup ---
 async function updateMarqueeTicker(baseCurrencyCode) {
     const marqueeTrack = document.querySelector('.ticker-list'); 
     if (!marqueeTrack) return;
@@ -670,7 +661,6 @@ async function updateMarqueeTicker(baseCurrencyCode) {
     
     filteredRates.forEach(item => {
         const currentRate = item.rate;
-
         const charCodeSum = item.quote.charCodeAt(0) + item.quote.charCodeAt(1);
         const dailyShiftFactor = 0.995 + ((charCodeSum % 10) / 1000); 
         
@@ -700,7 +690,7 @@ async function updateMarqueeTicker(baseCurrencyCode) {
     marqueeTrack.innerHTML = marqueeHtml + marqueeHtml;
 }
 
-// --- CENTRAL CALCULATOR AND PANEL DISPATCHER ---
+// --- Central Live Processing Engine ---
 async function calculateForex() {
     const inputField = document.getElementById('send-amount');
     const outputField = document.getElementById('receive-amount');
@@ -738,17 +728,15 @@ async function calculateForex() {
     if (typeof updateComparePanel === 'function') {
         updateComparePanel(sourceAmount, sourceCode);
     }
-
     if (typeof updateMarqueeTicker === 'function') {
         updateMarqueeTicker(sourceCode);
     }
-
     if (typeof syncMainFavoriteButtonState === 'function') {
         syncMainFavoriteButtonState();
     }
 }
 
-// --- EVENT LISTENER REGISTRATION VIA DISPATCHER ---
+// --- Event Handlers & Initializers ---
 const sendAmountInput = document.getElementById('send-amount');
 if (sendAmountInput) {
     sendAmountInput.addEventListener('input', calculateForex);
@@ -776,9 +764,7 @@ function initDefaultExchangeRate() {
     }
 }
 
-initDefaultExchangeRate();
-
-// timeseries data
+// --- Historical API Time Series Data Fetch ---
 async function fetchTimeSeriesRates(baseCurrency, quoteCurrency, startDate, endDate){
     try{
         const response = await fetch(`https://api.frankfurter.dev/v2/rates?from=${startDate}&to=${endDate}&base=${baseCurrency}&quotes=${quoteCurrency}`);
@@ -790,11 +776,11 @@ async function fetchTimeSeriesRates(baseCurrency, quoteCurrency, startDate, endD
     }
 }
 
-// calculate TimeFrame
+// --- Process Custom Time Windows ---
 function calculateTimeFrame(){
     const endDate = new Date();
     const activeButton = document.querySelector('.timeFrame button[aria-checked="true"]');
-    const selectedTimeFrame = activeButton.textContent.trim();
+    const selectedTimeFrame = activeButton ? activeButton.textContent.trim() : "1m";
     const startDate = new Date(endDate);
 
     switch(selectedTimeFrame){
@@ -824,15 +810,14 @@ function calculateTimeFrame(){
     };
 }
 
-// Helper Function for Formatting
 function formatDate(date) {
     return date.toISOString().split("T")[0];
 }
 
-// Global variable to keep track of the chart instance and prevent rendering conflicts
+// --- Chart Context Reference State ---
 let forexChartInstance = null;
 
-// --- DYNAMIC CORE CHART ENGINE ---
+// --- Chart Rendering Context Controls ---
 async function updateForexChart() {
     const canvasElement = document.getElementById('forexChart');
     if (!canvasElement) return;
@@ -859,25 +844,17 @@ async function updateForexChart() {
 
     const dates = apiData.map(item => {
         const dateObj = new Date(item.date);
-        
         const activeButton = document.querySelector('.timeFrame button[aria-checked="true"]');
         const timeframe = activeButton ? activeButton.textContent.trim().toLowerCase() : "1m";
 
         if (timeframe === "1y" || timeframe === "5y") {
-            return dateObj.toLocaleDateString('en-US', { 
-                month: 'short', 
-                year: '2-digit'
-            });
+            return dateObj.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
         } else {
-            return dateObj.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric' 
-            });
+            return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
     });
 
     const rates = apiData.map(item => item.rate);
-
     updateHistoricalMetrics(apiData);
 
     if (forexChartInstance) {
@@ -885,7 +862,6 @@ async function updateForexChart() {
     }
 
     const ctx = canvasElement.getContext('2d');
-
     forexChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -897,14 +873,10 @@ async function updateForexChart() {
                 backgroundColor: function(context) {
                     const chart = context.chart;
                     const { ctx, chartArea } = chart;
-
                     if (!chartArea) return null;
-
                     const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                    
                     gradient.addColorStop(0, '#cef739'); 
                     gradient.addColorStop(1, '#171719');
-                    
                     return gradient;
                 },
                 borderWidth: 2,
@@ -916,27 +888,15 @@ async function updateForexChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false } 
-            },
+            plugins: { legend: { display: false } },
             scales: {
                 x: { 
                     grid: { display: false },
-                    ticks: {
-                        maxRotation: 0,
-                        minRotation: 0,
-                        autoSkip: true,  
-                        maxTicksLimit: 8
-                    }
+                    ticks: { maxRotation: 0, minRotation: 0, autoSkip: true, maxTicksLimit: 8 }
                 },
                 y: { 
-                    grid: {
-                        color: '#2e2e2e',           
-                        borderColor: 'transparent',  
-                        borderDash: [5, 5], 
-                        drawTicks: false            
-                    },
-                    ticks: { precision: 4},
+                    grid: { color: '#2e2e2e', borderColor: 'transparent', borderDash: [5, 5], drawTicks: false },
+                    ticks: { precision: 4 },
                     color: '#9d9d9d'
                 }
             }
@@ -944,12 +904,7 @@ async function updateForexChart() {
     });
 }
 
-window.onload = () => {
-    initDefaultExchangeRate();
-    updateForexChart();
-};
-
-// Function to Keep Chart Headings in Sync using source timestamps
+// --- Sync Layout Titles & Metrics Labels ---
 function syncChartHeadings(base, target, sourceTimestamp = null) {
     const activeCurrencyPair = document.querySelector('.active-pair');
     const timeStamp = document.querySelector('.chart-timestamp');
@@ -962,7 +917,6 @@ function syncChartHeadings(base, target, sourceTimestamp = null) {
     if (timeStamp && rateTextElement) {
         const rateParts = rateTextElement.textContent.split('=');
         const visualRate = rateParts[1] ? rateParts[1].trim().split(' ')[0] : '0.0000';
-
         const rateDate = sourceTimestamp ? new Date(sourceTimestamp) : new Date();
         
         const formattedDate = rateDate.toLocaleString('en-US', {
@@ -978,12 +932,8 @@ function syncChartHeadings(base, target, sourceTimestamp = null) {
     }
 }
 
-/**
- * Calculates historical math aggregates and updates panel cards
- * @param {Array} apiData - The chronological array of historical rate objects
- */
+// --- Aggregate Calculation Processing ---
 function updateHistoricalMetrics(apiData) {
-    // Exact structural map to match your updated production HTML classes
     const targetOpen = document.querySelector('.metric-open');
     const targetLast = document.querySelector('.metric-last');
     const changeEl = document.querySelector('.metric-change');
@@ -999,7 +949,6 @@ function updateHistoricalMetrics(apiData) {
 
     const formattedOpen = openRate.toFixed(4);
     const formattedLast = lastRate.toFixed(4);
-    
     const sign = rawChange >= 0 ? '+' : '';
     const formattedChange = `${sign}${rawChange.toFixed(4)}`;
 
@@ -1009,7 +958,6 @@ function updateHistoricalMetrics(apiData) {
         
     const formattedPct = `${arrowImg}<span>${sign}${rawPctChange.toFixed(2)}%</span>`;
 
-    // 4. Safe DOM injection
     if (targetOpen) targetOpen.textContent = formattedOpen;
     if (targetLast) targetLast.textContent = formattedLast;
     if (changeEl) changeEl.textContent = formattedChange;
@@ -1024,3 +972,9 @@ function updateHistoricalMetrics(apiData) {
         }
     });
 }
+
+// --- Core Runtime Entry Points ---
+window.onload = () => {
+    initDefaultExchangeRate();
+    updateForexChart();
+};
