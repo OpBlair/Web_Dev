@@ -49,7 +49,7 @@
                     <label for="send-amount">send</label>
                     <!-- Dynamic: amount to convert (number input, defaults to 1,000) -->
                     <div class="input-group">
-                        <input type="number" id="send-amount" value="1000" min="0" step="any" required placeholder="0">
+                        <input type="number" id="send-amount" value="0" min="0" step="any" required placeholder="0">
                         <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select send currency">
                             <img src="./assets/images/flags/us.webp" alt="usa flag" class="flag">
                             <span class="currency-code">USD</span>
@@ -228,27 +228,12 @@
             <div class="panel-header">
                 <div class="panel-header-top">
                     <h3>Multi-currency</h3>
-                    <p class="meta-summary"><span class="amount">1,000</span> from <span class="base-currency">USD</span></p>
+                    <p class="meta-summary"><span class="amount"></span> from <span class="base-currency"></span></p>
                 </div>
-                <span class="row-count">8 pairs</span>
+                <span class="row-count"></span>
             </div>
 
-            <ul class="comparison-list">
-                <li class="comparison-row">
-                    <div class="currency-info">
-                        <img src="./assets/images/flags/eu.webp" alt="" class="flag">
-                        <span class="code">EUR</span>
-                        <span class="name">Euro</span>
-                    </div>
-                    <div class="conversion-data">
-                        <span class="converted-amount">853.00</span>
-                        <span class="reference-rate">@ 0.8530</span>
-                    </div>
-                    <button type="button" class="pin-row-btn" aria-label="Pin pair">
-                        <img src="./assets/images/icon-star.svg" alt="star outline icon">
-                    </button>
-                </li>
-            </ul>
+            <ul class="comparison-list"></ul>
 
             <!-- Compare empty state -->
             <div class="empty-state hidden">
@@ -266,16 +251,7 @@
             </div>
 
             <!-- Dynamic: one row per pinned pair, each: pair (e.g. "USD → EUR"), live rate, 24h change %, and a filled star to unpin -->
-            <ul class="favorites-list">
-                <li class="favorites-row">
-                <span class="pair-direction">USD <img src="assets/images/icon-arrow-right.svg" alt="right arrow"> EUR</span>
-                <span class="live-rate">0.8530</span>
-                <span class="change-pct status-positive">▲ 0.24%</span>
-                <button type="button" class="unpin-row-btn" aria-label="Unpin pair">
-                    <img src="./assets/images/icon-star-filled.svg" alt="filled star icon">
-                </button>
-                </li>
-            </ul>
+            <ul class="favorites-list"></ul>
 
             <!-- Favorites empty state -->
             <div class="empty-state hidden">
@@ -294,16 +270,7 @@
             </div>
 
             <!-- Dynamic: one row per logged conversion, each: relative time (e.g. "20m", "1h", "13 May"), pair, send amount, receive amount, and a delete button -->
-            <ul class="log-timeline-list">
-                <li class="log-row">
-                    <time class="log-time" datetime="PT20M">20m</time>
-                    <span class="log-pair">USD/EUR</span>
-                    <span class="log-send">1,000 USD</span>
-                    <span class="log-arrow"><img src="assets/images/icon-arrow-right.svg" alt="right arrow"></span>
-                    <span class="log-receive">853.00 EUR</span>
-                    <button type="button" class="delete-log-item" aria-label="Delete entry"><img src="assets/images/icon-delete.svg" alt="recycle-bin icon"></button>
-                </li>
-            </ul>
+            <ul class="log-timeline-list"></ul>
 
             <!-- Log empty state -->
             <div class="empty-state hidden">

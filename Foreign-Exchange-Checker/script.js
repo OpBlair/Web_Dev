@@ -349,8 +349,10 @@ async function updateComparePanel(baseAmount, baseCurrencyCode) {
             <li class="comparison-row">
                 <div class="currency-info">
                     <img src="${flagPath}" alt="${currencyName} flag" class="flag">
-                    <span class="code">${symbol}</span>
-                    <span class="name">${currencyName}</span>
+                    <div class="currency-abbr-name">
+                        <span class="code">${symbol}</span>
+                        <span class="name">${currencyName}</span>
+                    </div>
                 </div>
                 <div class="conversion-data">
                     <span class="converted-amount">${localizedTotal}</span>

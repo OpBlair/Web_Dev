@@ -101,6 +101,7 @@ header section {
     overflow: hidden;
     display: flex;
     align-items: center;
+    background-color: #2e2e2e;
 }
 
 .ticker-list {
@@ -156,10 +157,11 @@ main {
 }
 
 .convert-section h2 {
-    font-size: 0.85rem;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-secondary);
+    color: var(--text-primary);
+    font-weight: 300;
 }
 
 .convert-section form {
@@ -706,8 +708,9 @@ nav {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
+.row-count { color: var(--text-secondary);}
 .panel-header-top {
     display: flex;
     justify-content: space-between;
@@ -759,6 +762,7 @@ nav {
     flex: 1;
     min-width: 0;
 }
+.comparison-list .comparison-row .currency-info .currency-abbr-name{ display: flex; flex-direction: column;}
 
 .comparison-row .flag {
     width: 22px;
@@ -784,7 +788,7 @@ nav {
     text-overflow: ellipsis;
 }
 
-.conversion-data {
+.conversion-data{
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -1188,8 +1192,11 @@ nav {
         width: auto;
         flex-shrink: 0;
         gap: 10px;
+        height: 32px;
     }
 
+    .favorite-toggle-btn, 
+    .log-conversion-btn{ width: 132px; display:flex; align-items: center;}
     .metrics-card {
         grid-template-columns: repeat(4, 1fr) !important;
     }
@@ -1239,6 +1246,8 @@ nav {
     }
 
     .picker-sections { max-height: 230px; }
+    .panel-header { flex-direction: row; justify-content: space-between;}
+    .panel-header-top { gap: 12px;}
 }
 
 /* ═══════════════════════════════════════════════════
