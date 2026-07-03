@@ -708,7 +708,7 @@ nav {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 .row-count { color: var(--text-secondary);}
 .panel-header-top {
@@ -975,21 +975,23 @@ nav {
     align-items: flex-end;
 }
 
-.clear-all-log-btn {
-    background: transparent;
+.clear-all-btn {
+    background: #3d3d3d;
     border: none;
-    color: #f87171;
+    color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
     padding: 4px 8px;
+    border: 1px solid #9d9d9d;
     border-radius: 4px;
     transition: background-color 0.15s ease;
+    cursor: pointer;
 }
 
-.clear-all-log-btn:hover {
+.clear-all-btn:hover {
     background-color: rgba(248, 113, 113, 0.08);
 }
 
