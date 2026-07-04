@@ -574,7 +574,7 @@ function updateLogPanel() {
     const emptyState = document.querySelector('#panel-log .empty-state');
     const countBadge = document.querySelector('#panel-log .meta-summary .log-count');
     const logCount = document.querySelector('.logs-badge');
-    const clearAllBtn = document.querySelector('.clear-all-log-btn');
+    const clearAllBtn = document.querySelector('.clear-all-btn');
 
     if (!logsDataMock || logsDataMock.length === 0) {
         logsContainer.innerHTML = '';
@@ -637,7 +637,7 @@ function setupLogListeners() {
         });
     });
 
-    const clearAllBtn = document.querySelector('.clear-all-log-btn');
+    const clearAllBtn = document.querySelector('.clear-all-btn');
     if (clearAllBtn) {
         clearAllBtn.onclick = () => {
             logsDataMock = [];
