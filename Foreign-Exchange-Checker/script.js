@@ -232,6 +232,43 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// --- Swap Currencies ---
+document.querySelector('.swap-currencies-btn').addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const sendBtn = document.querySelector('button[aria-label="Select send currency"]');
+    const receiveBtn = document.querySelector('button[aria-label="Select receive currency"]');
+
+    if (!sendBtn || !receiveBtn) return;
+
+    const sendImg = sendBtn.querySelector('.flag');
+    const sendCode = sendBtn.querySelector('.currency-code');
+
+    const receiveImg = receiveBtn.querySelector('.flag');
+    const receiveCode = receiveBtn.querySelector('.currency-code');
+
+    if (!sendImg || !sendCode || !receiveImg || !receiveCode) return;
+
+    // capture codes before DOM mutation so updateExchangeRate gets the right pair
+    const tempSrc        = sendImg.src;
+    const tempAlt        = sendImg.alt;
+    const tempCode       = sendCode.textContent;
+    const newSendCode    = receiveCode.textContent.trim();
+    const newReceiveCode = tempCode.trim();
+
+    sendImg.src  = receiveImg.src;
+    sendImg.alt  = receiveImg.alt;
+    sendCode.textContent = receiveCode.textContent;
+
+    receiveImg.src = tempSrc;
+    receiveImg.alt = tempAlt;
+    receiveCode.textContent = tempCode;
+
+    calculateForex();
+    updateExchangeRate(newSendCode, newReceiveCode);
+    syncChartHeadings(newSendCode, newReceiveCode);
+});
+
 // --- Tab Navigation View Controls ---
 const mobileSelect = document.querySelector('.mobile-tab-dropdown select');
 const desktopButtons = document.querySelectorAll('.tablet-tab-dropdown button');
@@ -746,6 +783,12 @@ if (sendAmountInput) {
 
 function initDefaultExchangeRate() {
     const codeBlocks = document.querySelectorAll('.currency-code');
+
+    // set default send amount so the converter shows a result on load
+    const sendInput = document.getElementById('send-amount');
+    if (sendInput && (sendInput.value === '0' || sendInput.value === '')) {
+        sendInput.value = '1000';
+    }
     
     if (codeBlocks.length >= 2) {
         const defaultSource = codeBlocks[0].textContent.trim();
@@ -753,15 +796,16 @@ function initDefaultExchangeRate() {
         
         updateExchangeRate(defaultSource, defaultTarget).then(() => {
             syncChartHeadings(defaultSource, defaultTarget);
+            calculateForex();
         });
 
         updateMarqueeTicker(defaultSource);
 
         if (typeof updateComparePanel === 'function') {
-            updateComparePanel(1, defaultSource);
+            updateComparePanel(1000, defaultSource);
         }
     } else {
-        updateExchangeRate('USD', 'EUR');
+        updateExchangeRate('USD', 'EUR').then(() => calculateForex());
         updateMarqueeTicker('USD');
     }
 }
