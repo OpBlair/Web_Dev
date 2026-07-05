@@ -605,6 +605,25 @@ if (logConversionBtn) {
     };
 }
 
+// --- Time Formatting Helper ---
+function formatTimeLabel(datetimeAttr) {
+    const logDate = new Date(datetimeAttr);
+    const now = new Date();
+    const diffMs = now - logDate;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+ 
+    if (diffMins < 1) return 'now';
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffHours < 24) return `${diffHours}h`;
+    
+    // older than 1 day — show as "12 May" or "04 Jul"
+    const day = String(logDate.getDate()).padStart(2, '0');
+    const month = logDate.toLocaleString('en-US', { month: 'short' });
+    return `${day} ${month}`;
+}
+
 // --- Render Audit Log Timeline ---
 function updateLogPanel() {
     const logsContainer = document.querySelector('.log-timeline-list');
@@ -634,11 +653,13 @@ function updateLogPanel() {
         const fmtFrom = Number(log.fromAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
         const fmtTo = Number(log.toAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
+        const formattedTime = formatTimeLabel(log.datetimeAttr);
+
         htmlPayload += `
             <li class="log-item-row" data-log-id="${log.id}">
                 <div class="log-content-meta">
                     <div class="time-currency-pair">
-                        <time class="log-time" datetime="${log.datetimeAttr}">${log.timeLabel}</time>
+                        <time class="log-time" datetime="${log.datetimeAttr}">${formattedTime}</time>
                         <div class="pair-tokens">
                             <span class="log-code">${log.fromCode}</span>
                             <img src="assets/images/icon-arrow-right.svg" alt="right arrow" class="log-arrow-icon">
