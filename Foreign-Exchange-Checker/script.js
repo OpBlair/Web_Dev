@@ -494,7 +494,7 @@ function syncMainFavoriteButtonState() {
 syncMainFavoriteButtonState();
 
 // --- Render Favorites View ---
-function updateFavoritesPanel() {
+async function updateFavoritesPanel() {
     const favoritesContainer = document.querySelector('.favorites-list');
     const emptyState = document.querySelector('#panel-favorites .empty-state');
     const favCountBadge = document.querySelector('#panel-favorites .meta-summary .fav-count');
@@ -511,16 +511,28 @@ function updateFavoritesPanel() {
     emptyState.classList.add('hidden');
     if (favCountBadge) favCountBadge.textContent = favoritesDataMock.length;
     if (favoritesCount) favoritesCount.textContent = favoritesDataMock.length;
+
     let htmlPayload = '';
 
-    favoritesDataMock.forEach((item, index) => {
-        const isUp = item.direction === 'up';
+    for (let index = 0; index < favoritesDataMock.length; index++) {
+        const item = favoritesDataMock[index];
+        const liveRatesData = await fetchLatestRates(item.source);
+        
+        let currentRate = item.rate;
+        let changePercent = 0;
+        
+        if (liveRatesData && liveRatesData.rates && liveRatesData.rates[item.target]) {
+            currentRate = liveRatesData.rates[item.target];
+            changePercent = ((currentRate - item.rate) / item.rate) * 100;
+        }
+        
+        const isUp = changePercent >= 0;
         const trendIcon = isUp ? '▲' : '▼';
         const trendClass = isUp ? 'status-positive' : 'status-negative';
         
-        const displayRate = item.rate >= 100 
-            ? item.rate.toLocaleString(undefined, { minimumFractionDigits: 2 }) 
-            : item.rate.toFixed(4);
+        const displayRate = currentRate >= 100 
+            ? currentRate.toLocaleString(undefined, { minimumFractionDigits: 2 }) 
+            : currentRate.toFixed(4);
 
         htmlPayload += `
             <li class="favorites-row" data-index="${index}">
@@ -530,13 +542,13 @@ function updateFavoritesPanel() {
                     ${item.target}
                 </span>
                 <span class="live-rate">${displayRate}</span>
-                <span class="change-pct ${trendClass}">${trendIcon} ${Math.abs(item.change)}%</span>
+                <span class="change-pct ${trendClass}">${trendIcon} ${Math.abs(changePercent).toFixed(2)}%</span>
                 <button type="button" class="unpin-row-btn" aria-label="Unpin ${item.source} to ${item.target} pair">
                     <img src="./assets/images/icon-star-filled.svg" alt="filled star icon">
                 </button>
             </li>
         `;
-    });
+    }
 
     favoritesContainer.innerHTML = htmlPayload;
     setupUnpinListeners();
