@@ -107,14 +107,14 @@ function populateCurrencyPicker() {
 
     pickerSections.innerHTML = `
         <section class="picker-group">
-            <h3>Popular (<span class="count">[${popularList.length}]</span>)</h3>
+            <h3>Popular <span class="count">${popularList.length}</span></h3>
             <ul class="currency-list" id="popular-container" role="listbox">
                 ${popularList.map(c => createRowHtml(c)).join('')}
             </ul>
         </section>
 
         <section class="picker-group">
-            <h3>Other currencies (<span class="count">[${otherList.length}]</span>)</h3>
+            <h3>Other currencies <span class="count">${otherList.length}</span></h3>
             <ul class="currency-list" id="other-container" role="listbox">
                 ${otherList.map(c => createRowHtml(c)).join('')}
             </ul>
@@ -165,6 +165,7 @@ function createRowHtml(currency) {
             <img src="${currency.flag}" alt="${currency.name} flag" class="flag">
             <span class="code">${currency.code}</span>
             <span class="name">${currency.name}</span>
+            <span class="checkmark" aria-hidden="true"><img src="./assets/images/icon-check.svg" alt="checked item icon"></span>
         </li>
     `;
 }
@@ -202,6 +203,15 @@ triggerBtns.forEach(btn => {
 document.querySelector('.picker-sections').addEventListener('click', async (e) => {
     const row = e.target.closest('.currency-row');
     if (!row || !activeTriggerButton) return;
+
+    const previousSelected = document.querySelector('.currency-row.is-selected');
+    if (previousSelected) {
+        previousSelected.classList.remove('is-selected');
+        previousSelected.setAttribute('aria-selected', 'false');
+    }
+    // 2. Add selected state to the row that was just clicked
+    row.classList.add('is-selected');
+    row.setAttribute('aria-selected', 'true');
 
     const selectedCode = row.getAttribute('data-code');
     const selectedFlagSrc = row.querySelector('.flag').getAttribute('src');
@@ -270,7 +280,9 @@ document.querySelector('.swap-currencies-btn').addEventListener('click', (event)
 });
 
 // --- Tab Navigation View Controls ---
-const mobileSelect = document.querySelector('.mobile-tab-dropdown select');
+const mobileTrigger = document.querySelector('.mobile-dropdown-trigger');
+const mobileList = document.querySelector('.mobile-dropdown-list');
+const mobileLabel = document.querySelector('.mobile-dropdown-label');
 const desktopButtons = document.querySelectorAll('.tablet-tab-dropdown button');
 
 const panels = {
@@ -289,7 +301,10 @@ function switchTab(tabId) {
         }
     });
 
-    if (mobileSelect) mobileSelect.value = tabId;
+    if (mobileLabel) mobileLabel.textContent = tabId;
+        document.querySelectorAll('.mobile-dropdown-list li').forEach(li => {
+        li.classList.toggle('is-active', li.getAttribute('data-tab') === tabId);
+    });
 
     desktopButtons.forEach(btn => {
         const btnText = btn.textContent.toLowerCase().trim();
@@ -301,9 +316,27 @@ function switchTab(tabId) {
     });
 }
 
-if (mobileSelect) {
-    mobileSelect.addEventListener('change', (e) => {
-        switchTab(e.target.value);
+if (mobileTrigger && mobileList) {
+    mobileTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !mobileList.classList.contains('hidden');
+        mobileList.classList.toggle('hidden', isOpen);
+        mobileTrigger.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    mobileList.addEventListener('click', (e) => {
+        const li = e.target.closest('li');
+        if (!li) return;
+        switchTab(li.getAttribute('data-tab'));
+        mobileList.classList.add('hidden');
+        mobileTrigger.setAttribute('aria-expanded', 'false');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!mobileList.contains(e.target) && e.target !== mobileTrigger) {
+            mobileList.classList.add('hidden');
+            mobileTrigger.setAttribute('aria-expanded', 'false');
+        }
     });
 }
 
@@ -498,7 +531,7 @@ async function updateFavoritesPanel() {
     const favoritesContainer = document.querySelector('.favorites-list');
     const emptyState = document.querySelector('#panel-favorites .empty-state');
     const favCountBadge = document.querySelector('#panel-favorites .meta-summary .fav-count');
-    const favoritesCount = document.querySelector('.favorites-badge');
+    const favoritesCount = document.querySelectorAll('.favorites-badge');
 
     if (!favoritesDataMock || favoritesDataMock.length === 0) {
         favoritesContainer.innerHTML = '';
@@ -510,7 +543,10 @@ async function updateFavoritesPanel() {
 
     emptyState.classList.add('hidden');
     if (favCountBadge) favCountBadge.textContent = favoritesDataMock.length;
-    if (favoritesCount) favoritesCount.textContent = favoritesDataMock.length;
+    favoritesCount.forEach(el => el.textContent = favoritesDataMock.length);
+    // sync number of favoritted data on mobile
+    const mobileFavOption = document.querySelector('.mobile-tab-dropdown select option[value="favorites"]');
+    if (mobileFavOption) mobileFavOption.textContent = `favorites ${favoritesDataMock.length}`;
 
     let htmlPayload = '';
 
@@ -626,9 +662,9 @@ function formatTimeLabel(datetimeAttr) {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
  
-    if (diffMins < 1) return 'now';
-    if (diffMins < 60) return `${diffMins}m`;
-    if (diffHours < 24) return `${diffHours}h`;
+    if (diffMins < 1) return 'NOW';
+    if (diffMins < 60) return `${diffMins}M`;
+    if (diffHours < 24) return `${diffHours}H`;
     
     // older than 1 day — show as "12 May" or "04 Jul"
     const day = String(logDate.getDate()).padStart(2, '0');
@@ -641,7 +677,7 @@ function updateLogPanel() {
     const logsContainer = document.querySelector('.log-timeline-list');
     const emptyState = document.querySelector('#panel-log .empty-state');
     const countBadge = document.querySelector('#panel-log .meta-summary .log-count');
-    const logCount = document.querySelector('.logs-badge');
+    const logCount = document.querySelectorAll('.logs-badge');
     const clearAllBtn = document.querySelector('.clear-all-btn');
 
     if (!logsDataMock || logsDataMock.length === 0) {
@@ -657,7 +693,10 @@ function updateLogPanel() {
     if (clearAllBtn) clearAllBtn.classList.remove('hidden');
     if (countBadge) countBadge.textContent = logsDataMock.length;
     // Count of logged pairs
-    if (logCount) logCount.textContent = logsDataMock.length;
+    logCount.forEach(el => el.textContent = logsDataMock.length);
+    // sync number of logged data on mobile
+    const mobileLogOption = document.querySelector('.mobile-tab-dropdown select option[value="logs"]');
+    if (mobileLogOption) mobileLogOption.textContent = `logs ${logsDataMock.length}`;
 
     let htmlPayload = '';
 
@@ -768,7 +807,8 @@ async function calculateForex() {
     const outputField = document.getElementById('receive-amount');
     if (!inputField || !outputField) return;
 
-    let sourceAmount = parseFloat(inputField.value);
+    const cleanValue = inputField.value.replace(/,/g, '');
+    let sourceAmount = parseFloat(cleanValue);
 
     if (isNaN(sourceAmount) || sourceAmount <= 0) {
         sourceAmount = 0;
@@ -783,7 +823,10 @@ async function calculateForex() {
     if (sourceAmount === 0) {
         outputField.textContent = '0.00';
     } else if (sourceCode === targetCode) {
-        outputField.textContent = sourceAmount.toFixed(2);
+        outputField.textContent = sourceAmount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
     } else {
         const liveRates = await fetchLatestRates(sourceCode);
         if (liveRates && Array.isArray(liveRates)) {
@@ -810,8 +853,37 @@ async function calculateForex() {
 
 // --- Event Handlers & Initializers ---
 const sendAmountInput = document.getElementById('send-amount');
+
 if (sendAmountInput) {
-    sendAmountInput.addEventListener('input', calculateForex);
+    if (sendAmountInput.value) {
+        let baseValue = sendAmountInput.value.replace(/,/g, '');
+        if (!isNaN(baseValue) && baseValue !== '') {
+            const formatted = new Intl.NumberFormat('en-US').format(Number(baseValue));
+            sendAmountInput.value = formatted;
+            sendAmountInput.style.width = `${formatted.length}ch`;
+        } else {
+            sendAmountInput.style.width = `${sendAmountInput.value.length}ch`;
+        }
+    } else {
+        sendAmountInput.style.width = `${sendAmountInput.placeholder.length || 1}ch`;
+    }
+
+    sendAmountInput.addEventListener('input', (e) => {
+        let rawValue = e.target.value.replace(/,/g, '');
+        
+        if (!rawValue) {
+            e.target.value = '';
+            e.target.style.width = `${e.target.placeholder.length || 1}ch`;
+            calculateForex(); 
+            return;
+        }
+
+        const formattedValue = new Intl.NumberFormat('en-US').format(Number(rawValue));
+        e.target.value = formattedValue;
+        e.target.style.width = `${formattedValue.length}ch`;
+
+        calculateForex();
+    });
 }
 
 function initDefaultExchangeRate() {
@@ -1057,3 +1129,9 @@ window.onload = () => {
     initDefaultExchangeRate();
     updateForexChart();
 };
+
+setInterval(() => {
+    if((logsDataMock && logsDataMock.length > 0)){
+        updateLogPanel();
+    }
+}, 60000);

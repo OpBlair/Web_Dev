@@ -238,8 +238,7 @@ main {
 
 .input-group input,
 .input-group output {
-    flex: 1;
-    min-width: 0;
+    flex: 0 0 auto;
     background: transparent;
     border: none;
     color: var(--text-primary);
@@ -258,6 +257,20 @@ main {
 
 .input-group input[type="number"] {
     -moz-appearance: textfield;
+}
+
+#send-amount, #receive-amount {
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s ease-in-out; 
+}
+
+#send-amount:hover, #receive-amount:hover {
+    border-bottom: 1px solid var(--text-secondary); 
+}
+
+#send-amount:focus {
+    border-bottom: 1px solid var(--text-secondary);
+    outline: none; 
 }
 
 .currency-select-btn {
@@ -372,7 +385,10 @@ main {
     background: transparent;
     border: 1px solid var(--bg-lime);
 }
-
+.log-conversion-btn:hover {
+    background: #283300;
+    color: var(--bg-lime);
+}
 .hidden {
     display: none !important;
 }
@@ -433,6 +449,10 @@ dialog#currency-picker form {
 }
 
 .picker-group h3 {
+    display: flex;
+    border-bottom: 1px solid var(--bg-secondary);
+    padding-bottom: 8px;
+    justify-content: space-between;
     font-size: 0.65rem;
     text-transform: uppercase;
     color: var(--text-secondary);
@@ -451,11 +471,15 @@ dialog#currency-picker form {
     align-items: center;
     gap: 12px;
     padding: 8px 12px;
-    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.15s ease;
 }
-
+.currency-row:hover {
+    border: 1px solid var(--text-secondary);
+    border-radius: 4px;
+    background-color: #202022;
+}
+.currency-row .checkmark{ display: none; }
+.currency-row.is-selected .checkmark{ display: inline-block; margin-left: auto;}
 .currency-row:hover,
 .currency-row.is-selected {
     background-color: var(--bg-secondary);
@@ -487,12 +511,14 @@ nav {
 }
 
 .mobile-tab-dropdown {
-    display: block;
-    width: 100%;
+    position: relative;
 }
 
-.mobile-tab-dropdown select {
+.mobile-dropdown-trigger {
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: #171719;
     border: 1px solid #2e2e2e;
     color: var(--text-primary);
@@ -500,9 +526,61 @@ nav {
     font-size: 0.85rem;
     padding: 12px 16px;
     border-radius: 12px;
-    outline: none;
     text-transform: uppercase;
     cursor: pointer;
+}
+
+.mobile-dropdown-chevron {
+    filter: invert();
+    width: 15px;
+    height: 15px;
+    transition: transform 0.2s ease;
+}
+
+.mobile-dropdown-trigger[aria-expanded="true"] .mobile-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.mobile-dropdown-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background-color: #171719;
+    border: 1px solid #2e2e2e;
+    border-radius: 12px;
+    list-style: none;
+    padding: 6px;
+    z-index: 20;
+}
+
+.mobile-dropdown-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.mobile-dropdown-list li:hover,
+.mobile-dropdown-list li.is-active {
+    background-color: #232326;
+    color: var(--text-primary);
+}
+
+/* badge with background pill, mobile only */
+.mobile-dropdown-list .badge {
+    background-color: var(--bg-lime);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
 }
 
 .tablet-tab-dropdown {
@@ -750,8 +828,9 @@ nav {
     transition: border-color 0.15s ease;
 }
 
-.comparison-row:hover {
-    border-color: #3e3e42;
+.comparison-row:hover, .favorites-row:hover {
+    border: 1px solid var(--bg-lime);
+    cursor: pointer;
 }
 
 
@@ -1027,7 +1106,7 @@ nav {
 .time-currency-pair {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
 }
 
@@ -1058,6 +1137,7 @@ nav {
 .currency-pair-amount {
     display: flex;
     flex-direction: column; 
+    align-items: flex-end;
     gap: 2px;
 }
 
@@ -1199,6 +1279,7 @@ nav {
 
     .favorite-toggle-btn, 
     .log-conversion-btn{ width: 132px; display:flex; align-items: center;}
+    
     .metrics-card {
         grid-template-columns: repeat(4, 1fr) !important;
     }
@@ -1230,7 +1311,7 @@ nav {
         gap: 20px;
     }
 
-    .time-currency-pair { flex-shrink: 0; }
+    .time-currency-pair { flex-direction: row; flex-shrink: 0; align-items: center;}
 
     .currency-pair-amount {
         flex-direction: row;

@@ -49,10 +49,11 @@
                     <label for="send-amount">send</label>
                     <!-- Dynamic: amount to convert (number input, defaults to 1,000) -->
                     <div class="input-group">
-                        <input type="number" id="send-amount" value="0" min="0" step="any" required placeholder="0">
+                        <input type="text" id="send-amount" inputmode="numeric" value="0" min="0" step="any" required placeholder="0">
                         <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select send currency">
                             <img src="./assets/images/flags/us.webp" alt="usa flag" class="flag">
                             <span class="currency-code">USD</span>
+                            <span><img src="./assets/images/icon-chevron-down.svg" alt="dropdown icon"></span>
                         </button>
                     </div>
                 </div>
@@ -75,6 +76,7 @@
                         <button type="button" class="currency-select-btn" aria-haspopup="dialog" aria-controls="currency-picker" aria-label="Select receive currency">
                             <img src="./assets/images/flags/eu.webp" alt="europe flag" class="flag">
                             <span class="currency-code">EUR</span>
+                            <span><img src="./assets/images/icon-chevron-down.svg" alt="dropdown icon"></span>
                         </button>
                     </div>
                 </div>
@@ -110,7 +112,7 @@
                 <!-- Dynamic: number of popular currencies -->
                 <!-- Dynamic: popular currencies, each row: flag, code, name (a checkmark marks the selected one) -->
                 <section class="picker-group">
-                    <h3>Popular (<span class="count">[4]</span>)</h3>
+                    <h3>Popular <span class="count">4</span></h3>
                     <ul class="currency-list" role="listbox">
                         <li class="currency-row is-selected" role="option" aria-selected="true">
                             <img src="./assets/images/flags/us.webp" alt="us flag" class="flag">
@@ -125,7 +127,7 @@
                 <!-- Dynamic: every other currency, each row: flag, code, name -->
                 <!-- Dynamic: while searching, the list filters to the currencies matching the query -->
                 <section class="picker-group">
-                <h3>Other currencies (<span class="count">[51]</span>)</h3>
+                <h3>Other currencies <span class="count">51</span></h3>
                 <ul class="currency-list" role="listbox">
                     <li class="currency-row" role="option" aria-selected="false">
                         <img src="./assets/images/flags/au.webp" alt="" class="flag">
@@ -141,12 +143,16 @@
         <!-- Tabs — collapse into a dropdown on mobile -->
         <nav>
             <div class="mobile-tab-dropdown">
-                <select name="" id="">
-                    <option value="history">history</option>
-                    <option value="compare">compare</option>
-                    <option value="favorites">favorites <span class="badge favorites-badge">0</span></option> <!-- Dynamic: number of favorited pairs (badge) -->
-                    <option value="logs">logs <span class="badge logs-badge">0</span></option> <!-- Dynamic: number of logged conversions (badge) -->
-                </select>
+                <button type="button" class="mobile-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="mobile-dropdown-label">history</span>
+                    <img src="./assets/images/chevron-down.svg" alt="dropdown icon" class="mobile-dropdown-chevron">
+                </button>
+                <ul class="mobile-dropdown-list hidden" role="listbox">
+                    <li role="option" data-tab="history" class="is-active">history</li>
+                    <li role="option" data-tab="compare">compare</li>
+                    <li role="option" data-tab="favorites">favorites <span class="badge favorites-badge">0</span></li>
+                    <li role="option" data-tab="logs">logs <span class="badge logs-badge">0</span></li>
+                </ul>
             </div>
 
             <div class="tablet-tab-dropdown">
