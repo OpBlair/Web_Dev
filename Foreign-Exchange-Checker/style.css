@@ -1210,16 +1210,17 @@ nav {
     filter: brightness(0) saturate(100%) invert(32%) sepia(55%) saturate(5185%) hue-rotate(344deg) brightness(96%) contrast(92%);
 }
 
-/* keyboard focus states — only shows up on tab navigation, not mouse clicks */
+/* keyboard focus states */
 button:focus-visible,
 input:focus-visible {
     outline: 2px solid var(--bg-lime);
     outline-offset: 2px;
 }
 
-#send-amount:focus-visible {
+#send-amount:focus-visible, #receive-amount:focus-visible {
     outline: 2px solid var(--bg-lime);
     outline-offset: 2px;
+    border-radius: 2px;
 }
 
 .currency-select-btn:focus-visible {
@@ -1230,8 +1231,8 @@ input:focus-visible {
 .pin-row-btn:focus-visible,
 .unpin-row-btn:focus-visible,
 .delete-log-row-item:focus-visible {
-    outline-offset: 1px;
-    border-radius: 50%;
+    outline-offset: 2px;
+    border-radius: 5%;
 }
 
 .tablet-tab-dropdown button:focus-visible {
