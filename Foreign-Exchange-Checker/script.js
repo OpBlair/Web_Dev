@@ -455,8 +455,12 @@ function setupPinRowListeners() {
     });
 }
 
-// --- Mock Datasets for Favorites ---
-let favoritesDataMock = [];
+// --- Favorites, persisted in localStorage ---
+let favoritesData = JSON.parse(localStorage.getItem('fx_favorites')) || [];
+
+function saveFavoritesToStorage() {
+    localStorage.setItem('fx_favorites', JSON.stringify(favoritesData));
+}
 
 // --- Favorite Status Toggle Sync ---
 function syncMainFavoriteButtonState() {
@@ -469,7 +473,7 @@ function syncMainFavoriteButtonState() {
     const sourceCode = codeBlocks[0].textContent.trim();
     const targetCode = codeBlocks[1].textContent.trim();
 
-    const isFavorited = favoritesDataMock.some(
+    const isFavorited = favoritesData.some(
         fav => fav.source === sourceCode && fav.target === targetCode
     );
 
@@ -497,14 +501,14 @@ function syncMainFavoriteButtonState() {
             }
         }
 
-        const existingIndex = favoritesDataMock.findIndex(
+        const existingIndex = favoritesData.findIndex(
             fav => fav.source === sourceCode && fav.target === targetCode
         );
 
         if (existingIndex > -1) {
-            favoritesDataMock.splice(existingIndex, 1);
+            favoritesData.splice(existingIndex, 1);
         } else {
-            favoritesDataMock.push({
+            favoritesData.push({
                 source: sourceCode,
                 target: targetCode,
                 rate: activeRate,
@@ -512,6 +516,8 @@ function syncMainFavoriteButtonState() {
                 direction: 'up'
             });
         }
+
+        saveFavoritesToStorage();
 
         syncMainFavoriteButtonState();
         
@@ -533,7 +539,7 @@ async function updateFavoritesPanel() {
     const favCountBadge = document.querySelector('#panel-favorites .meta-summary .fav-count');
     const favoritesCount = document.querySelectorAll('.favorites-badge');
 
-    if (!favoritesDataMock || favoritesDataMock.length === 0) {
+    if (!favoritesData || favoritesData.length === 0) {
         favoritesContainer.innerHTML = '';
         emptyState.classList.remove('hidden');
         if (favCountBadge) favCountBadge.textContent = '0';
@@ -542,16 +548,16 @@ async function updateFavoritesPanel() {
     }
 
     emptyState.classList.add('hidden');
-    if (favCountBadge) favCountBadge.textContent = favoritesDataMock.length;
-    favoritesCount.forEach(el => el.textContent = favoritesDataMock.length);
+    if (favCountBadge) favCountBadge.textContent = favoritesData.length;
+    favoritesCount.forEach(el => el.textContent = favoritesData.length);
     // sync number of favoritted data on mobile
     const mobileFavOption = document.querySelector('.mobile-tab-dropdown select option[value="favorites"]');
-    if (mobileFavOption) mobileFavOption.textContent = `favorites ${favoritesDataMock.length}`;
+    if (mobileFavOption) mobileFavOption.textContent = `favorites ${favoritesData.length}`;
 
     let htmlPayload = '';
 
-    for (let index = 0; index < favoritesDataMock.length; index++) {
-        const item = favoritesDataMock[index];
+    for (let index = 0; index < favoritesData.length; index++) {
+        const item = favoritesData[index];
         const liveRatesData = await fetchLatestRates(item.source);
         
         let currentRate = item.rate;
@@ -598,7 +604,8 @@ function setupUnpinListeners() {
             const rowItem = btn.closest('.favorites-row');
             const targetIndex = parseInt(rowItem.getAttribute('data-index'), 10);
                 
-            favoritesDataMock.splice(targetIndex, 1);
+            favoritesData.splice(targetIndex, 1);
+            saveFavoritesToStorage();
             updateFavoritesPanel();
         });
     });
@@ -606,8 +613,12 @@ function setupUnpinListeners() {
 
 updateFavoritesPanel();
 
-// --- Mock Datasets for Logs ---
-let logsDataMock = [];
+// --- Conversion log, persisted in localStorage ---
+let logsData = JSON.parse(localStorage.getItem('fx_logs')) || [];
+
+function saveLogsToStorage() {
+    localStorage.setItem('fx_logs', JSON.stringify(logsData));
+}
 
 // --- Submit & Save Conversion Entry ---
 const logConversionBtn = document.querySelector('.log-conversion-btn');
@@ -642,8 +653,10 @@ if (logConversionBtn) {
             datetimeAttr: now.toISOString()
         };
 
-        logsDataMock.unshift(newLogEntry);
-        if (logsDataMock.length > 20) logsDataMock.pop();
+        logsData.unshift(newLogEntry);
+        if (logsData.length > 20) logsData.pop();
+
+        saveLogsToStorage();
 
         updateLogPanel();
         
@@ -666,7 +679,6 @@ function formatTimeLabel(datetimeAttr) {
     if (diffMins < 60) return `${diffMins}M`;
     if (diffHours < 24) return `${diffHours}H`;
     
-    // older than 1 day — show as "12 May" or "04 Jul"
     const day = String(logDate.getDate()).padStart(2, '0');
     const month = logDate.toLocaleString('en-US', { month: 'short' });
     return `${day} ${month}`;
@@ -680,7 +692,7 @@ function updateLogPanel() {
     const logCount = document.querySelectorAll('.logs-badge');
     const clearAllBtn = document.querySelector('.clear-all-btn');
 
-    if (!logsDataMock || logsDataMock.length === 0) {
+    if (!logsData || logsData.length === 0) {
         logsContainer.innerHTML = '';
         emptyState.classList.remove('hidden');
         if (countBadge) countBadge.textContent = '0';
@@ -691,16 +703,16 @@ function updateLogPanel() {
 
     emptyState.classList.add('hidden');
     if (clearAllBtn) clearAllBtn.classList.remove('hidden');
-    if (countBadge) countBadge.textContent = logsDataMock.length;
+    if (countBadge) countBadge.textContent = logsData.length;
     // Count of logged pairs
-    logCount.forEach(el => el.textContent = logsDataMock.length);
+    logCount.forEach(el => el.textContent = logsData.length);
     // sync number of logged data on mobile
     const mobileLogOption = document.querySelector('.mobile-tab-dropdown select option[value="logs"]');
-    if (mobileLogOption) mobileLogOption.textContent = `logs ${logsDataMock.length}`;
+    if (mobileLogOption) mobileLogOption.textContent = `logs ${logsData.length}`;
 
     let htmlPayload = '';
 
-    logsDataMock.forEach(log => {
+    logsData.forEach(log => {
         const fmtFrom = Number(log.fromAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
         const fmtTo = Number(log.toAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
 
@@ -741,7 +753,8 @@ function setupLogListeners() {
             const rowItem = btn.closest('.log-item-row');
             const logId = parseInt(rowItem.getAttribute('data-log-id'), 10);
             
-            logsDataMock = logsDataMock.filter(item => item.id !== logId);
+            logsData = logsData.filter(item => item.id !== logId);
+            saveLogsToStorage();
             updateLogPanel();
         });
     });
@@ -749,7 +762,8 @@ function setupLogListeners() {
     const clearAllBtn = document.querySelector('.clear-all-btn');
     if (clearAllBtn) {
         clearAllBtn.onclick = () => {
-            logsDataMock = [];
+            logsData = [];
+            saveLogsToStorage();
             updateLogPanel();
         };
     }
@@ -1131,7 +1145,7 @@ window.onload = () => {
 };
 
 setInterval(() => {
-    if((logsDataMock && logsDataMock.length > 0)){
+    if((logsData && logsData.length > 0)){
         updateLogPanel();
     }
 }, 60000);
