@@ -928,10 +928,10 @@ if (sendAmountInput) {
 function initDefaultExchangeRate() {
     const codeBlocks = document.querySelectorAll('.currency-code');
 
-    // set default send amount so the converter shows a result on load
     const sendInput = document.getElementById('send-amount');
     if (sendInput && (sendInput.value === '0' || sendInput.value === '')) {
         sendInput.value = '1000';
+        sendInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
     
     if (codeBlocks.length >= 2) {
