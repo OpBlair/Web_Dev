@@ -173,10 +173,24 @@ function createRowHtml(currency) {
 populateCurrencyPicker();
 
 // --- Triggers: Click Listener Management ---
+function closePicker() {
+    picker.close();
+    triggerBtns.forEach(b => b.classList.remove('picker-open'));
+}
+
 triggerBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation(); 
+
+        // clicking the same trigger again while it's open just closes it
+        if (picker.open && activeTriggerButton === btn) {
+            closePicker();
+            return;
+        }
+
         activeTriggerButton = btn; 
+        triggerBtns.forEach(b => b.classList.remove('picker-open'));
+        btn.classList.add('picker-open');
         
         const searchInput = document.getElementById('currency-search');
         if (searchInput) {
@@ -220,7 +234,7 @@ document.querySelector('.picker-sections').addEventListener('click', async (e) =
     activeTriggerButton.querySelector('.flag').setAttribute('src', selectedFlagSrc);
     activeTriggerButton.querySelector('.flag').setAttribute('alt', `${selectedCode} flag`);
 
-    picker.close();
+    closePicker();
 
     const codeBlocks = document.querySelectorAll('.currency-code');
 
@@ -238,7 +252,7 @@ document.querySelector('.picker-sections').addEventListener('click', async (e) =
 // --- Backdrop Click Dismissal ---
 document.addEventListener('click', (e) => {
     if (picker.open && !picker.contains(e.target)) {
-        picker.close();
+        closePicker();
     }
 });
 
@@ -292,6 +306,20 @@ const panels = {
     logs: document.getElementById('panel-log')
 };
 
+function syncMobileTriggerLabel() {
+    if (!mobileLabel) return;
+    const activeLi = document.querySelector('.mobile-dropdown-list li.is-active');
+    const tabId = activeLi ? activeLi.getAttribute('data-tab') : 'history';
+
+    if (tabId === 'favorites') {
+        mobileLabel.innerHTML = `favorites <span class="badge">${favoritesData.length}</span>`;
+    } else if (tabId === 'logs') {
+        mobileLabel.innerHTML = `logs <span class="badge">${logsData.length}</span>`;
+    } else {
+        mobileLabel.textContent = tabId;
+    }
+}
+
 function switchTab(tabId) {
     Object.keys(panels).forEach(key => {
         if (key === tabId) {
@@ -301,10 +329,10 @@ function switchTab(tabId) {
         }
     });
 
-    if (mobileLabel) mobileLabel.textContent = tabId;
-        document.querySelectorAll('.mobile-dropdown-list li').forEach(li => {
+    document.querySelectorAll('.mobile-dropdown-list li').forEach(li => {
         li.classList.toggle('is-active', li.getAttribute('data-tab') === tabId);
     });
+    syncMobileTriggerLabel();
 
     desktopButtons.forEach(btn => {
         const btnText = btn.textContent.toLowerCase().trim();
@@ -543,16 +571,15 @@ async function updateFavoritesPanel() {
         favoritesContainer.innerHTML = '';
         emptyState.classList.remove('hidden');
         if (favCountBadge) favCountBadge.textContent = '0';
-        if (favoritesCount) favoritesCount.textContent = '0';
+        favoritesCount.forEach(el => el.textContent = '0');
+        syncMobileTriggerLabel();
         return;
     }
 
     emptyState.classList.add('hidden');
     if (favCountBadge) favCountBadge.textContent = favoritesData.length;
     favoritesCount.forEach(el => el.textContent = favoritesData.length);
-    // sync number of favoritted data on mobile
-    const mobileFavOption = document.querySelector('.mobile-tab-dropdown select option[value="favorites"]');
-    if (mobileFavOption) mobileFavOption.textContent = `favorites ${favoritesData.length}`;
+    syncMobileTriggerLabel();
 
     let htmlPayload = '';
 
@@ -697,18 +724,16 @@ function updateLogPanel() {
         emptyState.classList.remove('hidden');
         if (countBadge) countBadge.textContent = '0';
         if (clearAllBtn) clearAllBtn.classList.add('hidden'); 
-        if (logCount) logCount.textContent = '0';
+        logCount.forEach(el => el.textContent = '0');
+        syncMobileTriggerLabel();
         return;
     }
 
     emptyState.classList.add('hidden');
     if (clearAllBtn) clearAllBtn.classList.remove('hidden');
     if (countBadge) countBadge.textContent = logsData.length;
-    // Count of logged pairs
     logCount.forEach(el => el.textContent = logsData.length);
-    // sync number of logged data on mobile
-    const mobileLogOption = document.querySelector('.mobile-tab-dropdown select option[value="logs"]');
-    if (mobileLogOption) mobileLogOption.textContent = `logs ${logsData.length}`;
+    syncMobileTriggerLabel();
 
     let htmlPayload = '';
 
