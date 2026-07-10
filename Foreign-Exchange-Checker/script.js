@@ -70,7 +70,9 @@ async function fetchLatestRates(baseCurrency) {
     try {
         const response = await fetch(`https://api.frankfurter.dev/v2/rates?base=${baseCurrency}`);
         if (!response.ok) throw new Error('Network rates delivery error.');
-        return await response.json();
+        const data = await response.json();
+
+        return Object.entries(data.rates).map(([code, rate]) => ({ code, rate }));
     } catch (error) {
         console.error("Rates integration fault:", error);
         return null;
@@ -478,7 +480,6 @@ function setupPinRowListeners() {
     pinButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const targetCurrency = btn.getAttribute('data-code');
-            console.log(`Pin status requested toggled for: ${targetCurrency}`);
         });
     });
 }
