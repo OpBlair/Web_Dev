@@ -100,7 +100,7 @@ function addToCart(name, price){
     const existingItem = cart.find(item => item.name === name);
 
     if(existingItem){
-        existingItem++;
+        existingItem.quantity++;
     }else{
         cartItem = {
             name: name,
@@ -157,12 +157,36 @@ function renderCartItems(cartItemsArray){
         itemRow.className = 'cart-item';
 
         itemRow.innerHTML = `
-            <p>${item.name}</p>
-            <p><span>${item.quantity}</span> @$${item.price} <span>$${(item.price*item.quantity).toFixed(2)}</span></p>
-            <button class="remove-item-btn" data-name="${item.name}"><img src="./assets/images/icon-remove-item.svg"></button>
+            <p class="item-name">${item.name}</p>
+            <div class="item-price-details">
+                <p class="price-detail"><span class="item-quantity">${item.quantity}x</span> @ $${item.price} <span class="item-total-price">$${(item.price*item.quantity).toFixed(2)}</span></p>
+                <button class="remove-item-btn" data-name="${item.name}"><img src="./assets/images/icon-remove-item.svg"></button>
+            </div>
         `;
         cartItemsContainer.appendChild(itemRow);
     })
 }
+
+filledCart.addEventListener('click', (e) => {
+    const removeBtn = e.target.closest('.remove-item-btn');
+    if (!removeBtn) return;
+
+    const name = removeBtn.dataset.name;
+
+    cart = cart.filter(item => item.name !== name);
+
+    const productCards = productContainer.querySelectorAll('.product-item');
+    productCards.forEach(card => {
+        const titleElement = card.querySelector('.name');
+        if (titleElement && titleElement.textContent === name) {
+            card.classList.remove('selected');
+            
+            const countSpan = card.querySelector('.item-count');
+            if (countSpan) countSpan.textContent = 1;
+        }
+    });
+
+    renderCartItems(cart);
+})
 
 loadProducts();
