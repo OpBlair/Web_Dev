@@ -70,9 +70,7 @@ async function fetchLatestRates(baseCurrency) {
     try {
         const response = await fetch(`https://api.frankfurter.dev/v2/rates?base=${baseCurrency}`);
         if (!response.ok) throw new Error('Network rates delivery error.');
-        const data = await response.json();
-
-        return Object.entries(data.rates).map(([code, rate]) => ({ code, rate }));
+        return await response.json();
     } catch (error) {
         console.error("Rates integration fault:", error);
         return null;
