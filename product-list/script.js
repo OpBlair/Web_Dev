@@ -2,7 +2,7 @@
 
 const productContainer = document.getElementById('product-list');
 
-async function loadFoodItems(){
+async function loadProducts(){
     try{
         const response = await fetch('./data.json');
 
@@ -41,4 +41,4 @@ async function loadFoodItems(){
     }
 }
 
-loadFoodItems();
+loadProducts();

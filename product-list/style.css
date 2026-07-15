@@ -1,0 +1,148 @@
+@font-face {
+    font-family: 'Red Hat Text';
+    src: url('./assets/fonts/RedHatText-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+:root {
+    --red: hsl(14, 86%, 42%);
+    --green: hsl(159, 69%, 38%);
+    --Rose-50: hsl(20, 50%, 98%);
+    --Rose-100: hsl(13, 31%, 94%);
+    --Rose-300: hsl(14, 25%, 72%);
+    --Rose-400: hsl(7, 20%, 60%);
+    --Rose-500: hsl(12, 20%, 44%);
+    --Rose-900: hsl(14, 65%, 9%);
+    --product-names-font: 18px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Red Hat Text', sans-serif;
+    min-height: 100vh;
+    background-color: var(--Rose-50);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px;
+}
+
+main {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+    gap: 32px;
+}
+
+#product-items h2 {
+    text-transform: capitalize;
+    color: var(--Rose-900);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+
+/* Dynamic product grid */
+#product-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+.product-image-container {
+    position: relative;
+    margin-bottom: 24px; 
+}
+
+picture img {
+    height: 240px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
+.add-to-cart-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 3em;
+    height: 3em;
+    width: 11.5em;
+    border: 1px solid var(--Rose-400);
+    background-color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: absolute;
+    bottom: -1.5em;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.add-to-cart-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.category { 
+    color: var(--Rose-400); 
+    font-weight: 400;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.name {
+    color: var(--Rose-900);
+    font-weight: 600;
+    font-size: var(--product-names-font);
+    margin: 4px 0;
+}
+
+.price {
+    color: var(--red);
+    font-weight: 700;
+}
+
+/* Cart Styles */
+.cart {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.cart h2 {
+    color: var(--red);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 640px) {
+    #product-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    #product-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    main {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
+    }
+}
