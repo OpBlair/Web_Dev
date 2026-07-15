@@ -94,6 +94,54 @@ picture img {
     color: var(--red);
 }
 
+.cart-control-btn{
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 3em;
+    height: 3em;
+    width: 11.5em;
+    background-color: var(--red);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+    position: absolute;
+    bottom: -1.5em;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.decrement-btn, .increment-btn {
+    background: transparent;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.decrement-btn:hover, .increment-btn:hover {
+    background-color: #fff;
+    
+}
+
+.product-item.selected .add-to-cart-btn {
+    display: none;
+}
+
+.product-item.selected .cart-control-btn {
+    display: flex;
+}
+
+.product-item.selected picture img {
+    outline: 2px solid var(--red);
+}
+
 .category { 
     color: var(--Rose-400); 
     font-weight: 400;
