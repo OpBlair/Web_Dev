@@ -1,5 +1,6 @@
 'use strict';
 
+// DOM ELEMENTS
 const productContainer = document.getElementById('product-list');
 const cartItemsContainer = document.getElementById('cart-items-list');
 const emptyCart = document.querySelector('.empty-cart');
@@ -7,8 +8,16 @@ const filledCart = document.getElementById('cart-items');
 const totalCartItems = document.querySelector('.cart-count');
 const subTotalSpan = document.getElementById('subTotal');
 
+// Order Confirmation Modal 
+const modalOverlay = document.getElementById('modal-overlay');
+const confirmedItemsList = document.getElementById('confirmed-items-list');
+const modalGrandTotal = document.getElementById('modal-grand-total');
+const startNewOrderBtn = document.getElementById('start-new-order-btn');
+const confirmOrderBtn = document.querySelector('.confirm-order-btn');
+
 let cart = [];
 
+// LOAD PRODUCTS
 async function loadProducts(){
     try{
         const response = await fetch('./data.json');
@@ -66,9 +75,10 @@ productContainer.addEventListener('click', (e) => {
     if(addToCartBtn){
         const name = addToCartBtn.dataset.name;
         const price = parseFloat(addToCartBtn.dataset.price);
+        const image = addToCartBtn.dataset.image;
 
         productItem.classList.add('selected');
-        addToCart(name, price);
+        addToCart(name, price, image);
         renderCartItems(cart);
         return;
     }
@@ -95,7 +105,7 @@ productContainer.addEventListener('click', (e) => {
 })
 
 // Add to Cart
-function addToCart(name, price){
+function addToCart(name, price, image){
     let cartItem;
     const existingItem = cart.find(item => item.name === name);
 
@@ -105,6 +115,7 @@ function addToCart(name, price){
         cartItem = {
             name: name,
             price: price,
+            image: image,
             quantity: 1
         }
         cart.push(cartItem);
@@ -188,5 +199,54 @@ filledCart.addEventListener('click', (e) => {
 
     renderCartItems(cart);
 })
+
+function renderConfirmedModal(cartItemsArray) {
+    confirmedItemsList.innerHTML = '';
+
+    const total = cartItemsArray.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    modalGrandTotal.textContent = `$${total.toFixed(2)}`;
+
+    cartItemsArray.forEach(item => {
+        const confirmedItemRow = document.createElement('div');
+        confirmedItemRow.className = 'confirmed-item';
+
+        confirmedItemRow.innerHTML = `
+            <div class="confirmed-item-details">
+                <div class="confirmed-item-brief-detail">
+                    <img src="${item.image}" alt="${item.name}" class="confirmed-item-thumb">
+                    <div class="confirmed-item-meta">
+                        <p class="confirmed-item-name">${item.name}</p>
+                        <p class="confirmed-item-qty-price">
+                            <span class="confirmed-item-qty">${item.quantity}x</span>
+                            <span class="confirmed-item-single-price">@ $${item.price.toFixed(2)}</span>
+                        </p>
+                    </div>
+                </div>
+                <p class="confirmed-item-total">$${(item.price * item.quantity).toFixed(2)}</p>
+            </div>
+        `;
+        confirmedItemsList.appendChild(confirmedItemRow);
+    });
+}
+
+confirmOrderBtn.addEventListener('click', () => {
+    if (cart.length === 0) return;
+    renderConfirmedModal(cart);
+    modalOverlay.classList.remove('hidden'); 
+});
+
+startNewOrderBtn.addEventListener('click', () => {
+    cart = []; 
+
+    const productCards = productContainer.querySelectorAll('.product-item');
+    productCards.forEach(card => {
+        card.classList.remove('selected');
+        const countSpan = card.querySelector('.item-count');
+        if (countSpan) countSpan.textContent = 1;
+    });
+
+    renderCartItems(cart); 
+    modalOverlay.classList.add('hidden'); 
+});
 
 loadProducts();
