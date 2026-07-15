@@ -51,6 +51,7 @@ async function loadProducts(){
     }
 }
 
+// Event delegation
 productContainer.addEventListener('click', (e) => {
     const productItem = e.target.closest('.product-item');
     if(!productItem) return;
@@ -58,12 +59,70 @@ productContainer.addEventListener('click', (e) => {
     const addToCartBtn = e.target.closest('.add-to-cart-btn');
     if(addToCartBtn){
         const name = addToCartBtn.dataset.name;
-        const price = parseFloat(addToCartBtn.data.price);
+        const price = parseFloat(addToCartBtn.dataset.price);
 
         productItem.classList.add('selected');
-        addToCartBtn(name, price);
+        addToCart(name, price);
+        return;
+    }
+
+    const decrementBtn = e.target.closest('.decrement-btn');
+    if(decrementBtn){
+        const name = decrementBtn.dataset.name;
+        const countSpan = productItem.querySelector('.item-count');
+        
+        decrementCartItem(name, countSpan, productItem);
+        return;
+    }
+
+    const incrementBtn = e.target.closest('.increment-btn');
+    if(incrementBtn){
+        const name = incrementBtn.dataset.name;
+        const countSpan = productItem.querySelector('.item-count');
+
+        incrementCartItem(name, countSpan);
         return;
     }
 })
+
+// Add to Cart
+function addToCart(name, price){
+    let cartItem;
+    const existingItem = cart.find(item => item.name === name);
+
+    if(existingItem){
+        incrementCartItem();
+    }else{
+        cartItem = {
+            name: name,
+            price: price.toFixed(2),
+            quantity: 1
+        }
+        cart.push(cartItem);
+    }
+}
+
+// Decrement Cart Item
+function decrementCartItem(name, countSpan, productItem){
+    const existingItem = cart.find(item => item.name === name);
+    if(!existingItem) return;
+    existingItem.quantity--;
+    if(existingItem.quantity === 0){
+        cart = cart.filter(item => item.name !== name);
+
+        productItem.classList.remove('selected');
+        countSpan.textContent = 1;
+    }else{
+        countSpan.textContent = existingItem.quantity;
+    }
+}
+
+// Increment Cart Item
+function incrementCartItem(name, countSpan){
+    const existingItem = cart.find(item => item.name === name);
+    if(!existingItem) return;
+    existingItem.quantity++;
+    countSpan.textContent = existingItem.quantity;
+}
 
 loadProducts();
