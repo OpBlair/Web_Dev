@@ -1,6 +1,12 @@
 'use strict';
 
 const productContainer = document.getElementById('product-list');
+const cartItemsContainer = document.getElementById('cart-items-list');
+const emptyCart = document.querySelector('.empty-cart');
+const filledCart = document.getElementById('cart-items');
+const totalCartItems = document.querySelector('.cart-count');
+const subTotalSpan = document.getElementById('subTotal');
+
 let cart = [];
 
 async function loadProducts(){
@@ -63,6 +69,7 @@ productContainer.addEventListener('click', (e) => {
 
         productItem.classList.add('selected');
         addToCart(name, price);
+        renderCartItems(cart);
         return;
     }
 
@@ -72,6 +79,7 @@ productContainer.addEventListener('click', (e) => {
         const countSpan = productItem.querySelector('.item-count');
         
         decrementCartItem(name, countSpan, productItem);
+        renderCartItems(cart);
         return;
     }
 
@@ -81,6 +89,7 @@ productContainer.addEventListener('click', (e) => {
         const countSpan = productItem.querySelector('.item-count');
 
         incrementCartItem(name, countSpan);
+        renderCartItems(cart);
         return;
     }
 })
@@ -91,11 +100,11 @@ function addToCart(name, price){
     const existingItem = cart.find(item => item.name === name);
 
     if(existingItem){
-        incrementCartItem();
+        existingItem++;
     }else{
         cartItem = {
             name: name,
-            price: price.toFixed(2),
+            price: price,
             quantity: 1
         }
         cart.push(cartItem);
@@ -123,6 +132,37 @@ function incrementCartItem(name, countSpan){
     if(!existingItem) return;
     existingItem.quantity++;
     countSpan.textContent = existingItem.quantity;
+}
+
+// Render Items in the Cart
+function renderCartItems(cartItemsArray){
+    cartItemsContainer.innerHTML = '';
+
+    const totalItemsCount = cartItemsArray.reduce((acc, item) => acc + item.quantity, 0);
+    totalCartItems.textContent = totalItemsCount;
+
+    if(cartItemsArray.length === 0){
+        emptyCart.classList.remove('inactive');
+        filledCart.classList.remove('active');
+    }else{
+        filledCart.classList.add('active');
+        emptyCart.classList.add('inactive');
+    }
+
+    const grandTotal = cartItemsArray.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    subTotalSpan.textContent = `$${grandTotal.toFixed(2)}`;
+
+    cartItemsArray.forEach(item => {
+        const itemRow = document.createElement('div');
+        itemRow.className = 'cart-item';
+
+        itemRow.innerHTML = `
+            <p>${item.name}</p>
+            <p><span>${item.quantity}</span> @$${item.price} <span>$${(item.price*item.quantity).toFixed(2)}</span></p>
+            <button class="remove-item-btn" data-name="${item.name}"><img src="./assets/images/icon-remove-item.svg"></button>
+        `;
+        cartItemsContainer.appendChild(itemRow);
+    })
 }
 
 loadProducts();

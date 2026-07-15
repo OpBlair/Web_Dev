@@ -19,8 +19,23 @@
     </div>
     <div class="cart">
       <h2>Your Cart (<span class="cart-count">0</span>)</h2>
-      <img src="./assets/images/illustration-empty-cart.svg">
-      <p>Your added items will appear here</p>
+
+      <div class="empty-cart">
+        <img src="./assets/images/illustration-empty-cart.svg">
+        <p>Your added items will appear here</p>
+      </div>
+
+      <div id="cart-items">
+        <div id="cart-items-list"></div>
+          <p>Order Total</p><span id="subTotal"></span>
+          <span>
+            <img src="./assets/images/icon-carbon-neutral.svg" alt="carbon free neutral icon">
+            <p>This is a <strong>carbon-neutral</strong> delivery</p>
+            <button class="confirm-order-btn">
+              confirm order
+            </button>
+          </span>
+      </div>
     </div>
 
   </main>

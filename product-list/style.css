@@ -175,6 +175,24 @@ picture img {
     margin-bottom: 16px;
 }
 
+.empty-cart{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#cart-items{
+    display: none;
+}
+
+.empty-cart.inactive{
+    display: none;
+}
+#cart-items.active{
+    display: flex;
+}
+
 @media (min-width: 640px) {
     #product-list {
         grid-template-columns: repeat(2, 1fr);
