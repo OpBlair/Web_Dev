@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conference Ticket Generator</title>
+  <!-- Link your CSS stylesheet here -->
+</head>
+<body>
+
+  <main>
+    <!-- Header Section -->
+    <header>
+      <p class="logo">Coding Conf</p>
+      <h1>Your Journey to Coding Conf 2025 Starts Here!</h1>
+      <p>Secure your spot at next year's biggest coding conference.</p>
+    </header>
+
+    <!-- Ticket Generation Form -->
+    <form id="ticketForm">
+      
+      <div class="form-group">
+        <label for="avatar">Upload Avatar</label>
+        <div class="upload-area">
+          <input type="file" id="avatar" name="avatar" accept=".jpg, .jpeg, .png" required>
+          <p>Drag and drop or click to upload</p>
+          <p class="hint">Upload your photo (JPG or PNG, max size: 500KB).</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Jane Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="example@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="github">GitHub Username</label>
+        <input type="text" id="github" name="github" placeholder="@yourusername" required>
+      </div>
+
+      <button type="submit">Generate My Ticket</button>
+    </form>
+
+    <section class="generated-ticket" id="ticketResult" hidden>
+      <header class="ticket-header">
+        <h2>Congrats, <span id="ticketName">Username</span>! Your ticket is ready.</h2>
+        <p>We've emailed your ticket to <span id="ticketEmail">example@email.com</span> and will send updates in the run up to the event.</p>
+      </header>
+
+      <!-- The actual visual ticket layout -->
+      <div class="ticket-card">
+        <div class="ticket-body">
+          <h3>Coding Conf</h3>
+          <p class="ticket-date">Jan 31, 2025 / Austin, TX</p>
+        </div>
+        <div class="ticket-attendee">
+          <img src="" alt="" id="ticketAvatar" class="avatar-preview" width="50" height="50">
+          <div class="attendee-info">
+            <p class="attendee-name" id="displayFullName">Username</p>
+            <p class="attendee-github" id="displayGithub">@yourusername</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
