@@ -1,0 +1,30 @@
+:root {
+    --Neutral_0: hsl(0, 0%, 100%);
+    --Neutral_300: hsl(252, 6%, 83%);
+    --Neutral_500: hsl(245, 15%, 58%);
+    --Neutral_700: hsl(245, 19%, 35%);
+    --Neutral_900: hsl(248, 70%, 10%);
+    --Orange_500: hsl(7, 88%, 67%);
+    --Orange_700: hsl(7, 71%, 60%);
+    --Gradient_text: hsl(7, 86%, 67%) to hsl(0, 0%, 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+}
+
+main{
+    max-width: 375px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
