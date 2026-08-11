@@ -16,13 +16,14 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--Neutral_900);
+    background-color: black;
     color: var(--Neutral_0);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 1.5em;
+    position: relative;
+    overflow-x: hidden;
 }
 
 main {
@@ -31,6 +32,32 @@ main {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    padding: 1em 1em 5em 1em;
+    background-color: var(--Neutral_900);
+    background-image: 
+    url('./assets/images/pattern-circle.svg'),    
+    url('./assets/images/pattern-lines.svg'), 
+    url('./assets/images/pattern-squiggly-line-top.svg'), 
+    url('./assets/images/pattern-circle.svg'),    
+    url('./assets/images/pattern-squiggly-line-bottom-mobile-tablet.svg');
+    
+    /* Positioning each of the 5 background layers in order */
+    background-position: 
+        left -18px top -30px, 
+        top center, 
+        top 20px right, 
+        right center, 
+        bottom left;
+
+    /* Size settings matching all 5 layers in order */
+    background-size: 
+        90px, 
+        auto 500px, 
+        90px, 
+        100px, 
+        200px;
+
+    background-repeat: no-repeat;
 }
 
 /* --- Header Section --- */
@@ -50,7 +77,6 @@ header img {
 
 header h1 {
     font-size: 1.5rem;
-    line-height: 1.2;
     color: var(--Neutral_0);
     max-width: 320px;   
 }
@@ -127,6 +153,12 @@ input::placeholder {
     cursor: pointer;
 }
 
+.upload-area img {
+    border: 1px solid var(--Neutral_500);
+    background-color: var(--Neutral_700);
+    border-radius: 8px;
+}
+
 .upload-area p {
     font-size: 0.9rem;
     color: var(--Neutral_300);
@@ -136,6 +168,24 @@ input::placeholder {
     font-size: 0.75rem;
     color: var(--Neutral_500);
     margin-top: 0.3rem;
+}
+
+/* upload info */
+.upload-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+
+.upload-info img {
+    width: 14px;
+    height: 14px;
+}
+
+.upload-info .hint {
+    font-size: 0.75rem;
+    color: var(--Neutral_500);
 }
 
 /* --- Button Styles --- */
@@ -151,6 +201,7 @@ button[type="submit"] {
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
     margin-top: 0.5rem;
+    color: var(--Neutral_900);
 }
 
 button[type="submit"]:hover {
@@ -237,4 +288,48 @@ button[type="submit"]:active {
 .attendee-github {
     font-size: 0.8rem;
     color: var(--Neutral_300);
+}
+
+@media (min-width: 1440px) {
+    main {
+        max-width: 700px;
+        padding: 2em 2em 5em 2em;
+
+        background-image: 
+            url('./assets/images/pattern-circle.svg'),    
+            url('./assets/images/pattern-lines.svg'), 
+            url('./assets/images/pattern-squiggly-line-top.svg'), 
+            url('./assets/images/pattern-circle.svg'),    
+            url('./assets/images/pattern-squiggly-line-bottom-desktop.svg'); 
+        
+        background-position: 
+            left 28px top -50px,
+            top center, 
+            top 50px right, 
+            right 100px center, 
+            bottom left -35px;
+
+        background-size: 
+            120px, 
+            auto 600px, 
+            200px, 
+            110px, 
+            500px;
+    }
+
+    header h1 {
+        font-size: 2.2rem;
+        max-width: 500px;
+    }
+
+    form {
+        max-width: 300px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .upload-info .hint {
+        font-size: 0.6rem;
+        color: var(--Neutral_500);
+    }
 }
