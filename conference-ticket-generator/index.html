@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conference Ticket Generator</title>
   <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
 </head>
 <body>
 
@@ -12,8 +13,8 @@
     <!-- Header Section -->
     <header>
       <img src="./assets/images/logo-full.svg" alt="coding-conference-logo">
-      <h1>Your Journey to Coding Conf 2025 Starts Here!</h1>
-      <p>Secure your spot at next year's biggest coding conference.</p>
+      <h1 id="content-title">Your Journey to Coding Conf 2025 Starts Here!</h1>
+      <p id="content-description">Secure your spot at next year's biggest coding conference.</p>
     </header>
 
     <!-- Ticket Generation Form -->
@@ -50,28 +51,38 @@
       <button type="submit">Generate My Ticket</button>
     </form>
 
-    <section class="generated-ticket" id="ticketResult" hidden>
-      <header class="ticket-header">
-        <h2>Congrats, <span id="ticketName">Username</span>! Your ticket is ready.</h2>
-        <p>We've emailed your ticket to <span id="ticketEmail">example@email.com</span> and will send updates in the run up to the event.</p>
-      </header>
-
-      <!-- The actual visual ticket layout -->
-      <div class="ticket-card">
+    <!-- The actual visual ticket layout -->
+    <div class="ticket-card" id="ticketResult">
+      
+      <!-- Left Side content wrapper -->
+      <div class="ticket-left">
         <div class="ticket-body">
-          <h3>Coding Conf</h3>
+          <div class="logo-wrapper">
+            <img src="./assets/images/logo-mark.svg" alt="coding-conference-logo" class="ticket-logo">
+            <h3>Coding Conf</h3>
+          </div>
           <p class="ticket-date">Jan 31, 2025 / Austin, TX</p>
         </div>
+        
         <div class="ticket-attendee">
           <img src="" alt="" id="ticketAvatar" class="avatar-preview" width="50" height="50">
           <div class="attendee-info">
-            <p class="attendee-name" id="displayFullName">Username</p>
-            <p class="attendee-github" id="displayGithub">@yourusername</p>
+            <p class="attendee-name" id="displayFullName">Jonatan Kristof</p>
+            <p class="attendee-github">
+              <img src="./assets/images/icon-github.svg" alt="GitHub" class="github-icon">
+              <span id="displayGithub">@jonatankristof0101</span>
+            </p>
           </div>
         </div>
       </div>
-    </section>
 
+      <!-- Right Side ticket number -->
+      <div class="ticket-right">
+        <span class="ticket-number">#01609</span>
+      </div>
+
+    </div>
+    
   </main>
 
 </body>

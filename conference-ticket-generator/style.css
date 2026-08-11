@@ -213,34 +213,18 @@ button[type="submit"]:active {
 }
 
 /* --- Generated Ticket Section --- */
-.generated-ticket {
-    display: none;
-    flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-}
 
-.ticket-header h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.ticket-header h2 span {
-    color: var(--Orange_500);
-}
-
-.ticket-header p {
-    color: var(--Neutral_300);
-    font-size: 0.9rem;
-}
-
+/* --- Visual Ticket Card --- */
 /* --- Visual Ticket Card --- */
 .ticket-card {
     background: linear-gradient(135deg, var(--Neutral_700), var(--Neutral_900));
     border: 1px solid var(--Neutral_700);
     border-radius: 16px;
-    padding: 1.5rem;
-    display: flex;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: none; /* Controlled by JS */
+    flex-direction: row; /* Change to row for side-by-side layout */
     justify-content: space-between;
     align-items: center;
     position: relative;
@@ -248,8 +232,34 @@ button[type="submit"]:active {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-.ticket-body {
-    text-align: left;
+.ticket-left {
+    flex: 4;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.ticket-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 24px;
+}
+
+/* --- Ticket Branding / Logo Inside Card --- */
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ticket-logo {
+    width: 30px;
+    height: auto;
 }
 
 .ticket-body h3 {
@@ -263,6 +273,7 @@ button[type="submit"]:active {
     margin-top: 0.25rem;
 }
 
+/* --- Attendee Details --- */
 .ticket-attendee {
     display: flex;
     align-items: center;
@@ -270,6 +281,8 @@ button[type="submit"]:active {
 }
 
 .avatar-preview {
+    width: 50px;
+    height: 50px;
     border-radius: 8px;
     object-fit: cover;
     border: 1px solid var(--Neutral_500);
@@ -288,6 +301,58 @@ button[type="submit"]:active {
 .attendee-github {
     font-size: 0.8rem;
     color: var(--Neutral_300);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+}
+
+.github-icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* --- The Dynamic Dotted Separator Line --- */
+.ticket-right::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0%;
+    height: 100%;
+    border-left: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+/* --- The Circular Cutouts (Top and Bottom Notches) --- */
+.ticket-card::before,
+.ticket-card::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: var(--Neutral_900);
+    border-radius: 50%;
+    border: 1px solid var(--Neutral_700);
+    z-index: 2;
+}
+
+.ticket-card::before {
+    top: -15px;
+    right: 20%; 
+}
+
+.ticket-card::after {
+    bottom: -15px;
+    right: 20%;
+}
+
+/* --- Ticket Serial Number --- */
+.ticket-number {
+    transform: rotate(90deg);
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.3); 
+    letter-spacing: 2px;
+    white-space: nowrap;
 }
 
 @media (min-width: 1440px) {
