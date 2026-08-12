@@ -2,6 +2,7 @@
 
 const ticketForm = document.getElementById('ticketForm');
 const ticketResult = document.getElementById('ticketResult');
+const mainContainer = document.querySelector('main');
 
 const ticketHeaderTitle = document.getElementById('content-title');
 const ticketHeaderDescription = document.getElementById('content-description');
@@ -27,8 +28,7 @@ ticketForm.addEventListener('submit', (e) => {
         reader.readAsDataURL(avatarInput.files[0]);
     }
 
-    ticketForm.style.display = 'none';
-    ticketResult.style.display = 'flex';
+    mainContainer.classList.add('submitted');
     ticketResult.removeAttribute('hidden'); 
 
     ticketHeaderTitle.innerHTML = `Congrats, <span id="ticketName">${fullName}</span>! Your ticket is ready.`;
