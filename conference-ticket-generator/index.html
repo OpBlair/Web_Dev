@@ -22,11 +22,26 @@
       
       <div class="form-group">
         <label for="avatar">Upload Avatar</label>
-        <div class="upload-area">
-          <input type="file" id="avatar" name="avatar" accept=".jpg, .jpeg, .png" required>
-          <img src="./assets/images/icon-upload.svg" alt="icon-upload-logo">
-          <p>Drag and drop or click to upload</p>
+        <div class="upload-area" id="uploadArea">
+          
+          <!-- Default upload content -->
+          <div class="upload-default-content" id="uploadDefaultContent">
+            <input type="file" id="avatar" name="avatar" accept=".jpg, .jpeg, .png">
+            <img src="./assets/images/icon-upload.svg" alt="icon-upload-logo">
+            <p>Drag and drop or click to upload</p>
+          </div>
+
+          <!-- Image preview content (hidden by default) -->
+          <div class="upload-preview-content" id="uploadPreviewContent" style="display: none;">
+            <img src="" alt="Avatar Preview" id="formAvatarPreview" class="preview-thumb">
+            <div class="preview-actions">
+              <button type="button" id="removeAvatarBtn">Remove image</button>
+              <button type="button" id="changeAvatarBtn">Change image</button>
+            </div>
+          </div>
+
         </div>
+
         <div class="upload-info">
           <img src="./assets/images/icon-info.svg" alt="icon-info">
           <p class="hint">Upload your photo (JPG or PNG, max size: 500KB).</p>
