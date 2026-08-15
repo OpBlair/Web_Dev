@@ -24,6 +24,7 @@ const changeAvatarBtn = document.getElementById('changeAvatarBtn');
 const emailInput = document.getElementById('email');
 const emailError = document.getElementById('emailError');
 
+// email validation
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
