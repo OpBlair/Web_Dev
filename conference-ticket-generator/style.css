@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Inconsolata';
+    src: url('./assets/fonts/Inconsolata-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 400 500 700 800;
+    font-style: normal;
+}
+
 :root {
     --Neutral_0: hsl(0, 0%, 100%);
     --Neutral_300: hsl(252, 6%, 83%);
@@ -16,7 +23,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inconsolata', sans-serif;
     background-color: black;
     color: var(--Neutral_0);
     display: flex;
@@ -114,7 +121,7 @@ form {
 label {
     font-size: 0.9rem;
     color: var(--Neutral_300);
-    font-weight: 500;
+    font-weight: 700;
 }
 
 input[type="text"],
